@@ -6,6 +6,7 @@ import { works, episodes, comments } from "@kansou/db";
 import { eq, and, isNull, asc } from "drizzle-orm";
 
 import { CommentForm } from "@/app/_components/comment-form";
+import { AdSenseAd } from "@/app/_components/adsense";
 
 const BASE_URL = "https://kansou-web-dzqj.vercel.app";
 
@@ -84,6 +85,8 @@ export default async function VolumePage({ params }: { params: Params }) {
           ))
         )}
       </section>
+
+      <AdSenseAd slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_EPISODE ?? ""} format="auto" />
 
       <CommentForm slug={slug} volumeNumber={volNum} />
     </div>
