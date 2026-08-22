@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   },
   description:
     "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。「〇〇 感想」の決定版。",
+  verification: {
+    google: "jCN8CuiJ0wWU6dpVCo1dd6hYXsWmBP9gAA_8SrQ9Di4",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
