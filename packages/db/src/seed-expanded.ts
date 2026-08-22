@@ -421,7 +421,7 @@ async function seed() {
 
     const totalVolumes = Math.ceil(work.chapters / work.chaptersPerVolume);
 
-    // 巻単位エントリのみ（episodeNumber = null）
+    // 巻単位エントリ（episodeNumber = null）
     const volumeRows = Array.from({ length: totalVolumes }, (_, i) => ({
       workId: inserted.id,
       episodeNumber: null,
@@ -431,7 +431,18 @@ async function seed() {
       await db.insert(episodes).values(volumeRows.slice(i, i + 500));
     }
 
-    console.log(`✓ ${work.title}（${totalVolumes}巻）`);
+    // 話単位エントリ（volumeNumber = null、巻との紐付けなし）
+    const chapterRows = Array.from({ length: work.chapters }, (_, i) => ({
+      workId: inserted.id,
+      episodeNumber: i + 1,
+      volumeNumber: null,
+      title: work.chapterTitles?.[i + 1],
+    }));
+    for (let i = 0; i < chapterRows.length; i += 500) {
+      await db.insert(episodes).values(chapterRows.slice(i, i + 500));
+    }
+
+    console.log(`✓ ${work.title}（${totalVolumes}巻・${work.chapters}話）`);
   }
 
   console.log("\nアニメデータを投入中...");

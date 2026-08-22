@@ -48,10 +48,9 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
 
-  // 漫画：巻エントリ（episodeNumber=null）のみ
-  const volumes = isManga ? eps.filter((ep) => ep.episodeNumber === null) : [];
-  // アニメ・ドラマ・映画：話エントリ
-  const episodeList = !isManga ? eps : [];
+  // 漫画：巻エントリ（episodeNumber=null）と話エントリを分離
+  const volumes = eps.filter((ep) => ep.episodeNumber === null);
+  const episodeList = eps.filter((ep) => ep.episodeNumber !== null);
 
   return (
     <div className="space-y-6">
@@ -68,29 +67,53 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
         )}
       </div>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">
-          {isManga ? "巻一覧" : isMovie ? "作品" : "話数一覧"}
-        </h2>
+      {isManga ? (
+        <div className="space-y-8">
+          <section>
+            <h2 className="text-lg font-semibold mb-3">巻一覧</h2>
+            {volumes.length === 0 ? (
+              <p className="text-gray-400 text-sm">データがありません</p>
+            ) : (
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {volumes.map((vol) => (
+                  <Link
+                    key={vol.id}
+                    href={`/works/${slug}/volumes/${vol.volumeNumber}`}
+                    className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  >
+                    第{vol.volumeNumber}巻
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
 
-        {isManga ? (
-          volumes.length === 0 ? (
-            <p className="text-gray-400 text-sm">データがありません</p>
-          ) : (
-            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-              {volumes.map((vol) => (
-                <Link
-                  key={vol.id}
-                  href={`/works/${slug}/volumes/${vol.volumeNumber}`}
-                  className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                >
-                  第{vol.volumeNumber}巻
-                </Link>
-              ))}
-            </div>
-          )
-        ) : (
-          episodeList.length === 0 ? (
+          <section>
+            <h2 className="text-lg font-semibold mb-3">話一覧</h2>
+            {episodeList.length === 0 ? (
+              <p className="text-gray-400 text-sm">データがありません</p>
+            ) : (
+              <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+                {episodeList.map((ep) => (
+                  <Link
+                    key={ep.id}
+                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                    title={ep.title ?? undefined}
+                    className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  >
+                    {ep.episodeNumber}話
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">
+            {isMovie ? "作品" : "話数一覧"}
+          </h2>
+          {episodeList.length === 0 ? (
             <p className="text-gray-400 text-sm">データがありません</p>
           ) : (
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -105,9 +128,9 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
                 </Link>
               ))}
             </div>
-          )
-        )}
-      </section>
+          )}
+        </section>
+      )}
     </div>
   );
 }
