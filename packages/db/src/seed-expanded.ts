@@ -21,6 +21,7 @@ type EpisodeWork = {
 };
 
 const MANGA: MangaWork[] = [
+  { slug: "kochikame", title: "こちら葛飾区亀有公園前派出所", description: "秋本治による40年にわたる国民的ギャグ漫画。下町の警察官・両津勘吉の破天荒な日常。全200巻。", chapters: 1960, chaptersPerVolume: 10, chapterTitles: { 1: "おまわりさんがいっぱい!!" } },
   { slug: "one-piece", title: "ワンピース", description: "尾田栄一郎による海賊冒険漫画。ひとつなぎの大秘宝を求めるルフィの物語。", chapters: 1100, chaptersPerVolume: 10, chapterTitles: { 1: "ロマンス・ドーン", 100: "ビビの冒険", 309: "さよなら", 597: "約束", 1000: "ルフィ VS カイドウ" } },
   { slug: "naruto", title: "NARUTO", description: "岸本斉史による忍者漫画。落ちこぼれ忍者ナルトの成長を描く。", chapters: 700, chaptersPerVolume: 10, chapterTitles: { 1: "うずまきナルト!!", 245: "転身…!!", 700: "ナルトうずまき!!" } },
   { slug: "dragon-ball", title: "ドラゴンボール", description: "鳥山明による冒険漫画。少年悟空の冒険から始まる壮大な物語。", chapters: 519, chaptersPerVolume: 12, chapterTitles: { 1: "ブルマと孫悟空", 194: "さよなら悟空", 519: "おわり" } },
@@ -304,6 +305,7 @@ const DRAMA: EpisodeWork[] = [
   { slug: "good-doctor-jp", title: "グッド・ドクター", type: "drama", description: "韓国ドラマ原作。自閉症の天才外科医が活躍する医療ドラマ。フジ系。", episodeCount: 11 },
   { slug: "sumika", title: "住住", type: "drama", description: "ミムラ原作。同じ部屋に住む男女の日常コメディ。テレビ東京系。", episodeCount: 10 },
   { slug: "blue-giant-drama", title: "ゆるキャン△ Season 2", type: "drama", description: "なでしこたちのキャンプ活動を描く癒しのドラマ第2期。テレ東系。", episodeCount: 12 },
+  { slug: "vivant", title: "VIVANT", type: "drama", description: "堺雅人・阿部寛主演。モンゴルを舞台にスパイ組織を巡る大型エンターテインメントドラマ。TBS系。", episodeCount: 10, episodeTitles: { 1: "誤送金", 2: "追跡", 3: "対峙", 4: "砂漠", 5: "約束", 6: "真実", 7: "同志", 8: "裏切り", 9: "決断", 10: "VIVANT" } },
 ];
 
 const MOVIES: EpisodeWork[] = [
