@@ -61,13 +61,18 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
 
-  // Group by volume for manga
+  // Group chapters by volume for manga; separate volume entries (episodeNumber=null)
   const volumeGroups: Map<number, typeof eps> = new Map();
+  const volumeEntries: Map<number, (typeof eps)[0]> = new Map();
   if (isManga) {
     for (const ep of eps) {
       const vol = ep.volumeNumber ?? 0;
-      if (!volumeGroups.has(vol)) volumeGroups.set(vol, []);
-      volumeGroups.get(vol)!.push(ep);
+      if (ep.episodeNumber === null) {
+        volumeEntries.set(vol, ep);
+      } else {
+        if (!volumeGroups.has(vol)) volumeGroups.set(vol, []);
+        volumeGroups.get(vol)!.push(ep);
+      }
     }
   }
 
@@ -108,7 +113,18 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <div className="px-4 pb-4 pt-2 border-t border-gray-100">
+                <div className="px-4 pb-4 pt-3 border-t border-gray-100 space-y-3">
+                  {volumeEntries.has(vol) && (
+                    <Link
+                      href={`/works/${slug}/volumes/${vol}`}
+                      className="flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      第{vol}巻をまとめて語る
+                    </Link>
+                  )}
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                     {chapters.map((ch) => (
                       <Link

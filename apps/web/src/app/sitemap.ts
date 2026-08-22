@@ -14,11 +14,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select({
         slug: works.slug,
         episodeNumber: episodes.episodeNumber,
+        volumeNumber: episodes.volumeNumber,
         createdAt: episodes.createdAt,
       })
       .from(episodes)
       .innerJoin(works, eq(episodes.workId, works.id)),
   ]);
+
+  const chapterUrls = allEpisodes
+    .filter((ep) => ep.episodeNumber !== null)
+    .map((ep) => ({
+      url: `${BASE_URL}/works/${ep.slug}/episodes/${ep.episodeNumber}`,
+      lastModified: ep.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }));
+
+  const volumeUrls = allEpisodes
+    .filter((ep) => ep.episodeNumber === null && ep.volumeNumber !== null)
+    .map((ep) => ({
+      url: `${BASE_URL}/works/${ep.slug}/volumes/${ep.volumeNumber}`,
+      lastModified: ep.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
 
   return [
     {
@@ -33,11 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
-    ...allEpisodes.map((ep) => ({
-      url: `${BASE_URL}/works/${ep.slug}/episodes/${ep.episodeNumber}`,
-      lastModified: ep.createdAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    })),
+    ...volumeUrls,
+    ...chapterUrls,
   ];
 }

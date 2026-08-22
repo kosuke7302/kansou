@@ -1,0 +1,1 @@
+ALTER TABLE "episodes" ALTER COLUMN "episode_number" DROP NOT NULL;

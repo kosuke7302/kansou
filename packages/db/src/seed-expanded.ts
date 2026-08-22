@@ -130,7 +130,7 @@ const ANIME: EpisodeWork[] = [
   { slug: "anohana", title: "あの日見た花の名前を僕達はまだ知らない", type: "anime", description: "岡田麿里脚本。幼なじみの霊が現れた夏の感動アニメ。", episodeCount: 11 },
   { slug: "violet-evergarden", title: "ヴァイオレット・エヴァーガーデン", type: "anime", description: "暁佳奈原作。元兵器少女が手紙を書く代書屋で成長する物語。", episodeCount: 13, episodeTitles: { 10: "あの子に、ヴァイオレット・エヴァーガーデンを" } },
   { slug: "re-zero", title: "Re:ゼロから始める異世界生活", type: "anime", description: "長月達平原作。死に戻りの能力で異世界を生き抜く物語。", episodeCount: 25, episodeTitles: { 15: "ゼロから" } },
-  { slug: "your-name-series", title: "君の名は。（TV未放映）", type: "anime", description: "新海誠監督の劇場版関連シリーズ。", episodeCount: 1 },
+  { slug: "pluto-anime", title: "PLUTO", type: "anime", description: "浦沢直樹原作。手塚治虫「鉄腕アトム」を原案にしたNetflixアニメ。ロボット刑事ゲジヒトの捜査を描く。", episodeCount: 8 },
   { slug: "madoka-magica", title: "魔法少女まどか☆マギカ", type: "anime", description: "虚淵玄脚本。魔法少女の真実を描いたダーク・ファンタジーアニメ。", episodeCount: 12, episodeTitles: { 3: "もう何も恐くない", 10: "もう誰にも頼らない", 12: "わたしの、最高の友達" } },
   { slug: "gurren-lagann", title: "天元突破グレンラガン", type: "anime", description: "今石洋之監督。穴の中から始まる少年たちの宇宙規模の冒険。", episodeCount: 27, episodeTitles: { 27: "天の光はすべて星" } },
   { slug: "code-geass", title: "コードギアス 反逆のルルーシュ", type: "anime", description: "谷口悟朗監督。ギアスの力で世界に反逆する皇子の物語。", episodeCount: 50, episodeTitles: { 25: "零のレクイエム" } },
@@ -278,18 +278,18 @@ const DRAMA: EpisodeWork[] = [
   { slug: "homeroom-drama", title: "今ここにある危機とぼくの好感度について", type: "drama", description: "山本幸久原作。大学広報部員が危機対応に奮闘するブラックコメディ。NHK系。", episodeCount: 8 },
   { slug: "shinmai-mama", title: "コントが始まる", type: "drama", description: "生方美久脚本。解散を決めたコントトリオの最後の夜を描く群像劇。NTV系。", episodeCount: 10 },
   { slug: "yoru-no-hikari", title: "大恋愛〜僕を忘れる君と〜", type: "drama", description: "若年性アルツハイマーの小説家と医師の純愛ドラマ。TBS系。", episodeCount: 10 },
-  { slug: "last-dance-drama", title: "最後の灯台守（仮）", type: "drama", description: "孤島の灯台守をめぐる家族ドラマ。", episodeCount: 10 },
-  { slug: "kazu", title: "カズレーザーと学ぶ。", type: "drama", description: "日常の謎を科学的に解き明かす教養ドラマ。", episodeCount: 10 },
-  { slug: "fufu-no-katachi", title: "夫婦の形", type: "drama", description: "様々な夫婦の形を描いたオムニバスドラマ。", episodeCount: 10 },
+  { slug: "brushup-life", title: "ブラッシュアップライフ", type: "drama", description: "宮藤官九郎脚本。人生をやり直せるループで友達との絆を描くコメディ。NTV系。", episodeCount: 10 },
+  { slug: "sexy-tanakasan", title: "セクシー田中さん", type: "drama", description: "芦原妃名子原作。ベリーダンスを通じて自分を取り戻すOLの物語。NTV系。", episodeCount: 10 },
+  { slug: "nichiyou-yoru", title: "日曜の夜ぐらいは...", type: "drama", description: "水田沙也加脚本。さまざまな境遇の若者3人が出会う感動ドラマ。テレ朝系。", episodeCount: 9 },
   { slug: "ryusei-drama", title: "流星ワゴン", type: "drama", description: "重松清原作。タイムスリップして父と過去の自分に出会う家族ドラマ。TBS系。", episodeCount: 10 },
-  { slug: "majou-drama", title: "魔女の宅急便（TVドラマ）", type: "drama", description: "宮崎駿映画のTV実写ドラマ版。魔女見習いの成長物語。", episodeCount: 8 },
+  { slug: "nippon-noir", title: "ニッポンノワール", type: "drama", description: "検察のエリート女性が事件の核心に迫るサスペンスドラマ。NTV系。", episodeCount: 10 },
   { slug: "onna-joushu", title: "おんな城主 直虎", type: "drama", description: "大河ドラマ。戦国時代の女城主・井伊直虎の生涯を描く。", episodeCount: 50 },
   { slug: "yoshida-drama", title: "吉原炎上", type: "drama", description: "吉原遊郭を舞台にした時代劇ドラマ。", episodeCount: 12 },
   { slug: "daisuchi", title: "大地の子", type: "drama", description: "山崎豊子原作。中国残留孤児の過酷な運命を描く感動ドラマ。NHK系。", episodeCount: 8 },
-  { slug: "mikata", title: "味方はいないのか（仮）", type: "drama", description: "法廷ドラマシリーズ。", episodeCount: 10 },
+  { slug: "nijiiro-carte", title: "にじいろカルテ", type: "drama", description: "北海道の山奥の小さな診療所を舞台にした心温まる医療ドラマ。テレ朝系。", episodeCount: 10 },
   { slug: "suna-no-shiro", title: "砂の塔〜知ってはいけない隣人〜", type: "drama", description: "隣人の秘密をめぐるサスペンスドラマ。TBS系。", episodeCount: 10 },
-  { slug: "icy-world", title: "氷の世界", type: "drama", description: "科学者が未来の気候変動と向き合うSFドラマ。", episodeCount: 10 },
-  { slug: "fukugyo", title: "副業刑事", type: "drama", description: "副業を持つ型破り刑事のコメディドラマ。", episodeCount: 10 },
+  { slug: "kotaro-alone", title: "コタローは1人暮らし", type: "drama", description: "津村マミ原作。4歳の子供が一人で暮らす謎とほっこりする日常を描くドラマ。テレ朝系。", episodeCount: 8 },
+  { slug: "uchi-no-musume", title: "ウチの娘は、彼氏が出来ない!!", type: "drama", description: "深田恭子・三浦友和主演。恋愛苦手な漫画家娘と父の物語。NTV系。", episodeCount: 10 },
   { slug: "byouin-drama", title: "病院の治し方〜ドクター有原の挑戦〜", type: "drama", description: "経営危機に瀕した病院を再生する医師の物語。テレビ東京系。", episodeCount: 10 },
   { slug: "coffee-drama", title: "珈琲いかがでしょう", type: "drama", description: "コナリミサト原作。移動珈琲屋台の青年が訪れる人々の悩みをほぐす物語。テレビ東京系。", episodeCount: 10 },
   { slug: "kuitan", title: "くいたん", type: "drama", description: "美食探偵が食をヒントに事件を解決するドラマ。", episodeCount: 10 },
@@ -303,7 +303,7 @@ const DRAMA: EpisodeWork[] = [
   { slug: "kinpachi-sensei", title: "3年B組金八先生", type: "drama", description: "社会問題を取り上げながら中学生と向き合う教師の物語。TBS系。", episodeCount: 12 },
   { slug: "good-doctor-jp", title: "グッド・ドクター", type: "drama", description: "韓国ドラマ原作。自閉症の天才外科医が活躍する医療ドラマ。フジ系。", episodeCount: 11 },
   { slug: "sumika", title: "住住", type: "drama", description: "ミムラ原作。同じ部屋に住む男女の日常コメディ。テレビ東京系。", episodeCount: 10 },
-  { slug: "haikyu-drama", title: "ハイキュー！！実写（仮）", type: "drama", description: "バレーボール青春物語の実写ドラマ版。", episodeCount: 8 },
+  { slug: "blue-giant-drama", title: "ゆるキャン△ Season 2", type: "drama", description: "なでしこたちのキャンプ活動を描く癒しのドラマ第2期。テレ東系。", episodeCount: 12 },
 ];
 
 const MOVIES: EpisodeWork[] = [
@@ -361,26 +361,26 @@ const MOVIES: EpisodeWork[] = [
   { slug: "my-neighbor-yamada", title: "ホーホケキョ となりの山田くん", type: "movie", description: "高畑勲監督。ほのぼの家族漫画の映画化。独特の絵柄が特徴。", episodeCount: 1 },
   { slug: "arietty", title: "借りぐらしのアリエッティ", type: "movie", description: "米林宏昌監督。小人族アリエッティと人間の少年の出会いを描く。", episodeCount: 1 },
   { slug: "from-up-poppy-hill", title: "コクリコ坂から", type: "movie", description: "宮崎吾朗監督。1963年横浜を舞台にした青春ラブストーリー。", episodeCount: 1 },
-  { slug: "nausicaa-film", title: "ナウシカ（再掲）", type: "movie", description: "Placeholder - 削除用", episodeCount: 1 },
-  { slug: "the-tale-princess-kaguya", title: "かぐや姫の物語（再）", type: "movie", description: "Placeholder", episodeCount: 1 },
+  { slug: "blue-giant-movie", title: "BLUE GIANT", type: "movie", description: "石塚真一原作。ジャズに魂を燃やす若者たちの夢と情熱を描くアニメ映画。", episodeCount: 1 },
+  { slug: "kagami-no-kojou", title: "かがみの孤城", type: "movie", description: "辻村深月原作のベストセラー小説アニメ映画化。鏡の中の城に集まった7人の子供たちの物語。", episodeCount: 1 },
   { slug: "evangelion-1", title: "ヱヴァンゲリヲン新劇場版：序", type: "movie", description: "庵野秀明監督。TV版の再構成第1弾。ヤシマ作戦を中心に描く。", episodeCount: 1 },
   { slug: "evangelion-2", title: "ヱヴァンゲリヲン新劇場版：破", type: "movie", description: "庵野秀明監督。TV版からの独自展開が始まる第2弾。", episodeCount: 1 },
   { slug: "evangelion-3", title: "ヱヴァンゲリヲン新劇場版：Q", type: "movie", description: "庵野秀明監督。14年後の世界を描く第3弾。", episodeCount: 1 },
   { slug: "inu-oh", title: "犬王", type: "movie", description: "湯浅政明監督。室町時代の能楽師・犬王と琵琶法師の友情と音楽を描く。", episodeCount: 1 },
   { slug: "pom-poko", title: "平成狸合戦ぽんぽこ", type: "movie", description: "高畑勲監督。宅地開発に対抗するたぬきたちの物語。", episodeCount: 1 },
-  { slug: "nausicaa-valley", title: "風の谷のナウシカ（完全版）", type: "movie", description: "映画版ナウシカのセルフリバイバル版。", episodeCount: 1 },
+  { slug: "ai-no-utagoe", title: "アイの歌声を聴かせて", type: "movie", description: "吉浦康裕監督。AIの転校生シオンと5人の高校生の青春を描くオリジナルアニメ映画。", episodeCount: 1 },
   { slug: "blue-period-movie", title: "ブルーピリオド", type: "movie", description: "山口つばさ原作。美術に目覚めた高校生が東京芸大を目指す物語の映画版。", episodeCount: 1 },
-  { slug: "frieren-movie", title: "葬送のフリーレン 劇場版（仮）", type: "movie", description: "フリーレンシリーズの劇場版作品（予定）。", episodeCount: 1 },
+  { slug: "lost-care", title: "ロストケア", type: "movie", description: "葉真中顕原作。介護殺人犯と検事の対話を描く社会派映画。松山ケンイチ主演。", episodeCount: 1 },
   { slug: "promare", title: "プロメア", type: "movie", description: "今石洋之監督・中島かずき脚本。炎を操るバーニッシュと消防隊の戦いを描く。", episodeCount: 1 },
-  { slug: "kill-la-kill-movie", title: "劇場版 キルラキル", type: "movie", description: "今石洋之監督によるキルラキルの劇場版総集編。", episodeCount: 1 },
+  { slug: "misaki-mayoiga", title: "岬のマヨイガ", type: "movie", description: "柏葉幸子原作。岬の一軒家に住みついたおばあさんと少女たちの物語のアニメ映画。", episodeCount: 1 },
   { slug: "liz-blue-bird", title: "リズと青い鳥", type: "movie", description: "山田尚子監督。吹奏楽部の二人の少女の繊細な関係を描く。", episodeCount: 1 },
   { slug: "sound-euphonium-movie", title: "響け！ユーフォニアム〜誓いのフィナーレ〜", type: "movie", description: "山田尚子監督。久美子たちの高校吹奏楽部の集大成。", episodeCount: 1 },
   { slug: "a-whisker-away", title: "泣きたい私は猫をかぶる", type: "movie", description: "Netflix配信のオリジナルアニメ映画。猫に変身できる少女の物語。", episodeCount: 1 },
   { slug: "josee-tiger-fish", title: "ジョゼと虎と魚たち", type: "movie", description: "田辺聖子原作のアニメ映画。車椅子の少女ジョゼと大学生の恋愛。", episodeCount: 1 },
   { slug: "i-want-eat-pancreas", title: "君の膵臓をたべたい", type: "movie", description: "住野よる原作のアニメ映画。余命宣告された少女と地味な少年の物語。", episodeCount: 1 },
   { slug: "anthem-heart", title: "心が叫びたがってるんだ。", type: "movie", description: "岡田麿里脚本のオリジナルアニメ映画。言葉を封じられた少女の物語。", episodeCount: 1 },
-  { slug: "toriko-story", title: "トリコの物語", type: "movie", description: "美食家と食材探しの旅を描くアニメ映画。", episodeCount: 1 },
-  { slug: "mob-psycho-movie", title: "映画 モブサイコ100", type: "movie", description: "ONE原作のモブサイコ100の劇場版。", episodeCount: 1 },
+  { slug: "haken-anime", title: "ハケンアニメ！", type: "movie", description: "辻村深月原作。覇権アニメを目指す制作者たちの情熱を描く実写映画。", episodeCount: 1 },
+  { slug: "suzushiro-movie", title: "数分間のエールを", type: "movie", description: "映像研究部の少女とミュージックビデオに魂を込める少年の青春アニメ映画。", episodeCount: 1 },
   { slug: "haikyuu-movie-dumpster", title: "ハイキュー!! ゴミ捨て場の決戦", type: "movie", description: "烏野と音駒の宿命の対決を描く劇場版ハイキュー。", episodeCount: 1 },
   { slug: "haikyuu-movie-decisive", title: "ハイキュー!! 頂の景色", type: "movie", description: "ハイキュー劇場版シリーズ後編。全国大会決勝を描く。", episodeCount: 1 },
   { slug: "jujutsu-kaisen-0", title: "劇場版 呪術廻戦 0", type: "movie", description: "呪術廻戦の前日譚を描く劇場版。乙骨憂太が主人公。", episodeCount: 1 },
@@ -396,8 +396,8 @@ const MOVIES: EpisodeWork[] = [
   { slug: "red-turtle", title: "レッドタートル ある島の物語", type: "movie", description: "スタジオジブリとの共同制作。無人島に流れ着いた男と赤い亀の物語。", episodeCount: 1 },
   { slug: "earwig-witch", title: "アーヤと魔女", type: "movie", description: "宮崎吾朗監督のCGアニメ映画。孤児院で育った少女が魔女の家へ。", episodeCount: 1 },
   { slug: "the-boy-heron", title: "君たちはどう生きるか", type: "movie", description: "宮崎駿監督。アオサギに導かれた少年が異世界へ旅する物語。アカデミー賞受賞。", episodeCount: 1 },
-  { slug: "ponpoko-2", title: "うちのタマ知りませんか？", type: "movie", description: "迷子になった猫タマをめぐるほのぼの映画。", episodeCount: 1 },
-  { slug: "alice-borderland-movie", title: "今際の国のアリス（映画版）", type: "movie", description: "デスゲームサバイバルドラマの劇場版。", episodeCount: 1 },
+  { slug: "kubi-movie", title: "首", type: "movie", description: "北野武監督。本能寺の変前夜の謀略を描いた歴史映画。", episodeCount: 1 },
+  { slug: "the-fable-movie", title: "ザ・ファブル", type: "movie", description: "南勝久原作。最強の殺し屋が一般人として生活する実写映画。岡田准一主演。", episodeCount: 1 },
   { slug: "flow-the-movie", title: "流浪の月", type: "movie", description: "凪良ゆう原作。誘拐犯と被害者という関係の二人の再会。", episodeCount: 1 },
   { slug: "beeswax-thunder", title: "蜜蜂と遠雷", type: "movie", description: "恩田陸原作直木賞受賞作の映画化。国際ピアノコンクールを舞台にした物語。", episodeCount: 1 },
   { slug: "yakuza-family", title: "ヤクザと家族 The Family", type: "movie", description: "藤井道人監督。ヤクザに育てられた青年の30年を描く社会派映画。", episodeCount: 1 },
@@ -419,6 +419,19 @@ async function seed() {
       .values({ slug: work.slug, title: work.title, type: "manga", description: work.description })
       .returning();
 
+    const totalVolumes = Math.ceil(work.chapters / work.chaptersPerVolume);
+
+    // 巻単位エントリ（episodeNumber = null）
+    const volumeRows = Array.from({ length: totalVolumes }, (_, i) => ({
+      workId: inserted.id,
+      episodeNumber: null,
+      volumeNumber: i + 1,
+    }));
+    for (let i = 0; i < volumeRows.length; i += 500) {
+      await db.insert(episodes).values(volumeRows.slice(i, i + 500));
+    }
+
+    // 話単位エントリ
     const chapterRows = Array.from({ length: work.chapters }, (_, i) => {
       const chapter = i + 1;
       return {
@@ -428,11 +441,11 @@ async function seed() {
         title: work.chapterTitles?.[chapter],
       };
     });
-
     for (let i = 0; i < chapterRows.length; i += 500) {
       await db.insert(episodes).values(chapterRows.slice(i, i + 500));
     }
-    console.log(`✓ ${work.title}（${work.chapters}話・約${Math.ceil(work.chapters / work.chaptersPerVolume)}巻）`);
+
+    console.log(`✓ ${work.title}（${work.chapters}話・${totalVolumes}巻）`);
   }
 
   console.log("\nアニメデータを投入中...");

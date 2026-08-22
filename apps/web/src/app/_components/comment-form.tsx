@@ -5,7 +5,11 @@ import { postComment, type CommentActionState } from "@/app/actions/comments";
 
 const initialState: CommentActionState = {};
 
-export function CommentForm({ slug, episodeNumber }: { slug: string; episodeNumber: number }) {
+type Props =
+  | { slug: string; episodeNumber: number; volumeNumber?: never }
+  | { slug: string; volumeNumber: number; episodeNumber?: never };
+
+export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
 
   return (
@@ -13,7 +17,12 @@ export function CommentForm({ slug, episodeNumber }: { slug: string; episodeNumb
       <h2 className="text-sm font-semibold mb-3">感想を投稿する</h2>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
-        <input type="hidden" name="episodeNumber" value={episodeNumber} />
+        {episodeNumber !== undefined && (
+          <input type="hidden" name="episodeNumber" value={episodeNumber} />
+        )}
+        {volumeNumber !== undefined && (
+          <input type="hidden" name="volumeNumber" value={volumeNumber} />
+        )}
 
         {state.error && (
           <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{state.error}</p>
