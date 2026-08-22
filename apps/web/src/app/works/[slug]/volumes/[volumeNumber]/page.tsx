@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
 import { eq, and, isNull, asc } from "drizzle-orm";
+
 import { CommentForm } from "@/app/_components/comment-form";
 
 const BASE_URL = "https://kansou-web-dzqj.vercel.app";
@@ -48,20 +49,6 @@ export default async function VolumePage({ params }: { params: Params }) {
     .limit(1);
   if (!volume) notFound();
 
-  // この巻に含まれる話リスト
-  const chapterList = await db
-    .select()
-    .from(episodes)
-    .where(
-      and(
-        eq(episodes.workId, work.id),
-        eq(episodes.volumeNumber, volNum),
-        // episodeNumber が null でないもの = 話エントリ
-      )
-    )
-    .orderBy(asc(episodes.episodeNumber));
-  const chapters = chapterList.filter((ep) => ep.episodeNumber !== null);
-
   const commentList = await db
     .select()
     .from(comments)
@@ -79,23 +66,6 @@ export default async function VolumePage({ params }: { params: Params }) {
         </h1>
         <p className="text-gray-500 text-sm mt-1">{commentList.length}件のコメント</p>
       </div>
-
-      {chapters.length > 0 && (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-          <p className="text-xs text-gray-500 mb-2">この巻の収録話</p>
-          <div className="flex flex-wrap gap-2">
-            {chapters.map((ch) => (
-              <Link
-                key={ch.id}
-                href={`/works/${slug}/episodes/${ch.episodeNumber}`}
-                className="text-xs px-2 py-1 bg-white border border-gray-200 rounded hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-              >
-                {ch.episodeNumber}話{ch.title ? `「${ch.title}」` : ""}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
 
       <section className="space-y-3">
         {commentList.length === 0 ? (
