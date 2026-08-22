@@ -3,34 +3,22 @@ import { db } from "@/lib/db";
 import { works, episodes } from "@kansou/db";
 import { eq } from "drizzle-orm";
 
+export const revalidate = 86400; // 24時間キャッシュ
+
 const BASE_URL = "https://kansou-web-dzqj.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allWorks = await db.select().from(works);
-
-  const workUrls = allWorks.map((work) => ({
-    url: `${BASE_URL}/works/${work.slug}`,
-    lastModified: work.createdAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
-
-  const episodeUrls = (
-    await Promise.all(
-      allWorks.map(async (work) => {
-        const eps = await db
-          .select()
-          .from(episodes)
-          .where(eq(episodes.workId, work.id));
-        return eps.map((ep) => ({
-          url: `${BASE_URL}/works/${work.slug}/episodes/${ep.episodeNumber}`,
-          lastModified: ep.createdAt,
-          changeFrequency: "daily" as const,
-          priority: 0.6,
-        }));
+  const [allWorks, allEpisodes] = await Promise.all([
+    db.select({ slug: works.slug, createdAt: works.createdAt }).from(works),
+    db
+      .select({
+        slug: works.slug,
+        episodeNumber: episodes.episodeNumber,
+        createdAt: episodes.createdAt,
       })
-    )
-  ).flat();
+      .from(episodes)
+      .innerJoin(works, eq(episodes.workId, works.id)),
+  ]);
 
   return [
     {
@@ -39,7 +27,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 1.0,
     },
-    ...workUrls,
-    ...episodeUrls,
+    ...allWorks.map((work) => ({
+      url: `${BASE_URL}/works/${work.slug}`,
+      lastModified: work.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...allEpisodes.map((ep) => ({
+      url: `${BASE_URL}/works/${ep.slug}/episodes/${ep.episodeNumber}`,
+      lastModified: ep.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
   ];
 }

@@ -15,13 +15,34 @@ const TYPE_STYLES: Record<string, string> = {
   movie: "bg-orange-100 text-orange-700",
 };
 
+const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+
 export async function generateMetadata({ params }: PageProps<"/works/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return {};
+  const title = `${work.title} 感想`;
+  const description = `${work.title}の話数ごとの感想・レビュー・考察まとめ。ネタバレあり。`;
+  const url = `${BASE_URL}/works/${slug}`;
   return {
-    title: `${work.title} 感想`,
-    description: `${work.title}の話数ごとの感想・レビューまとめ。`,
+    title,
+    description,
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url,
+      siteName: "感想ログ",
+      locale: "ja_JP",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 

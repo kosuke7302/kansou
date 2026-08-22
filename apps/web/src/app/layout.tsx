@@ -7,7 +7,10 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "感想ログ | アニメ・漫画・ドラマの話数別感想サイト",
     template: "%s | 感想ログ",
@@ -16,6 +19,20 @@ export const metadata: Metadata = {
     "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。「〇〇 感想」の決定版。",
   verification: {
     google: "jCN8CuiJ0wWU6dpVCo1dd6hYXsWmBP9gAA_8SrQ9Di4",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    siteName: "感想ログ",
+    title: "感想ログ | アニメ・漫画・ドラマの話数別感想サイト",
+    description:
+      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。「〇〇 感想」の決定版。",
+  },
+  twitter: {
+    card: "summary",
+    title: "感想ログ",
+    description:
+      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。",
   },
 };
 
