@@ -126,7 +126,7 @@ export default async function EpisodePage({
           )}
         </section>
 
-        <AdSenseAd slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_EPISODE ?? ""} format="auto" />
+        <AdSenseAd slot="" format="auto" />
 
         <CommentForm slug={slug} episodeNumber={epNum} />
       </div>

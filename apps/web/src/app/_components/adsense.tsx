@@ -8,6 +8,8 @@ declare global {
   }
 }
 
+const ADSENSE_CLIENT_ID = "ca-pub-7816910499406617";
+
 interface Props {
   slot: string;
   format?: "auto" | "rectangle" | "horizontal" | "vertical";
@@ -15,24 +17,21 @@ interface Props {
 }
 
 export function AdSenseAd({ slot, format = "auto", className }: Props) {
-  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
-
   useEffect(() => {
-    if (!clientId) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
-      // adsbygoogle may not be loaded yet
+      // adsbygoogle not yet loaded
     }
-  }, [clientId]);
+  }, []);
 
-  if (!clientId) return null;
+  if (!slot) return null;
 
   return (
     <ins
       className={`adsbygoogle${className ? ` ${className}` : ""}`}
       style={{ display: "block" }}
-      data-ad-client={clientId}
+      data-ad-client={ADSENSE_CLIENT_ID}
       data-ad-slot={slot}
       data-ad-format={format}
       data-full-width-responsive="true"

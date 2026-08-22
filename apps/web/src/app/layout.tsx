@@ -38,20 +38,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+const ADSENSE_CLIENT_ID = "ca-pub-7816910499406617";
 
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
       <head>
-        {adsenseClientId && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
         <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -67,11 +65,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
 
         <footer className="bg-white border-t border-gray-200 mt-auto">
-          {!adsenseClientId && (
-            <div className="h-16 flex items-center justify-center bg-gray-100 text-sm text-gray-400">
-              広告スペース（AdSense設定後に表示）
-            </div>
-          )}
           <div className="max-w-4xl mx-auto px-4 py-5">
             <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-3">
               <Link href="/privacy-policy" className="text-xs text-gray-500 hover:text-indigo-500">

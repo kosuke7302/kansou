@@ -86,7 +86,7 @@ export default async function VolumePage({ params }: { params: Params }) {
         )}
       </section>
 
-      <AdSenseAd slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_EPISODE ?? ""} format="auto" />
+      <AdSenseAd slot="" format="auto" />
 
       <CommentForm slug={slug} volumeNumber={volNum} />
     </div>
