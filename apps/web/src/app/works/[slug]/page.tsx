@@ -35,7 +35,20 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
     .select()
     .from(episodes)
     .where(eq(episodes.workId, work.id))
-    .orderBy(asc(episodes.episodeNumber));
+    .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber));
+
+  const isManga = work.type === "manga";
+  const isMovie = work.type === "movie";
+
+  // Group by volume for manga
+  const volumeGroups: Map<number, typeof eps> = new Map();
+  if (isManga) {
+    for (const ep of eps) {
+      const vol = ep.volumeNumber ?? 0;
+      if (!volumeGroups.has(vol)) volumeGroups.set(vol, []);
+      volumeGroups.get(vol)!.push(ep);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -53,18 +66,54 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
       </div>
 
       <section>
-        <h2 className="text-lg font-semibold mb-3">話数一覧</h2>
+        <h2 className="text-lg font-semibold mb-3">
+          {isManga ? "巻・話一覧" : isMovie ? "作品" : "話数一覧"}
+        </h2>
+
         {eps.length === 0 ? (
-          <p className="text-gray-400 text-sm">話数データがありません</p>
+          <p className="text-gray-400 text-sm">データがありません</p>
+        ) : isManga ? (
+          <div className="space-y-4">
+            {Array.from(volumeGroups.entries()).map(([vol, chapters]) => (
+              <details key={vol} className="group border border-gray-200 rounded-lg bg-white overflow-hidden">
+                <summary className="flex items-center justify-between px-4 py-3 cursor-pointer select-none hover:bg-gray-50 transition-colors list-none">
+                  <span className="font-medium text-sm">
+                    第{vol}巻
+                    <span className="ml-2 text-xs text-gray-400 font-normal">
+                      第{chapters[0].episodeNumber}話〜第{chapters[chapters.length - 1].episodeNumber}話（{chapters.length}話）
+                    </span>
+                  </span>
+                  <svg className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div className="px-4 pb-4 pt-2 border-t border-gray-100">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {chapters.map((ch) => (
+                      <Link
+                        key={ch.id}
+                        href={`/works/${slug}/episodes/${ch.episodeNumber}`}
+                        title={ch.title ?? undefined}
+                        className="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                      >
+                        {ch.episodeNumber}話
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
             {eps.map((ep) => (
               <Link
                 key={ep.id}
                 href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                title={ep.title ?? undefined}
                 className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
               >
-                {work.type === "movie" ? "本編" : `第${ep.episodeNumber}話`}
+                {isMovie ? "本編" : `第${ep.episodeNumber}話`}
               </Link>
             ))}
           </div>

@@ -23,6 +23,7 @@ export const episodes = pgTable("episodes", {
     .references(() => works.id, { onDelete: "cascade" })
     .notNull(),
   episodeNumber: integer("episode_number").notNull(),
+  volumeNumber: integer("volume_number"),
   title: varchar("title", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
