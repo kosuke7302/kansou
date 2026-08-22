@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-// TODO: Replace with DB fetch
-const SAMPLE_WORKS: Record<string, { title: string; type: string; description: string; episodeCount: number }> = {
-  "dragon-ball": { title: "ドラゴンボール", type: "manga", description: "鳥山明による日本の漫画作品。", episodeCount: 42 },
-  "evangelion": { title: "新世紀エヴァンゲリオン", type: "anime", description: "庵野秀明監督のアニメ作品。", episodeCount: 26 },
-  "one-piece": { title: "ワンピース", type: "manga", description: "尾田栄一郎による漫画作品。", episodeCount: 110 },
-  "gto": { title: "GTO", type: "drama", description: "藤沢とおる原作のドラマ。", episodeCount: 12 },
-  "kimetsu": { title: "鬼滅の刃", type: "anime", description: "吾峠呼世晴原作のアニメ。", episodeCount: 26 },
-  "spirited-away": { title: "千と千尋の神隠し", type: "movie", description: "宮崎駿監督の映画作品。", episodeCount: 1 },
-};
+import { db } from "@/lib/db";
+import { works, episodes } from "@kansou/db";
+import { eq, asc } from "drizzle-orm";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
 };
-
 const TYPE_STYLES: Record<string, string> = {
   anime: "bg-purple-100 text-purple-700",
   manga: "bg-blue-100 text-blue-700",
@@ -25,7 +17,7 @@ const TYPE_STYLES: Record<string, string> = {
 
 export async function generateMetadata({ params }: PageProps<"/works/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const work = SAMPLE_WORKS[slug];
+  const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return {};
   return {
     title: `${work.title} 感想`,
@@ -35,10 +27,15 @@ export async function generateMetadata({ params }: PageProps<"/works/[slug]">): 
 
 export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   const { slug } = await params;
-  const work = SAMPLE_WORKS[slug];
+
+  const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
-  const episodes = Array.from({ length: work.episodeCount }, (_, i) => i + 1);
+  const eps = await db
+    .select()
+    .from(episodes)
+    .where(eq(episodes.workId, work.id))
+    .orderBy(asc(episodes.episodeNumber));
 
   return (
     <div className="space-y-6">
@@ -50,22 +47,28 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           </span>
           <h1 className="text-2xl font-bold">{work.title}</h1>
         </div>
-        <p className="text-gray-500 text-sm mt-1">{work.description}</p>
+        {work.description && (
+          <p className="text-gray-500 text-sm mt-1">{work.description}</p>
+        )}
       </div>
 
       <section>
         <h2 className="text-lg font-semibold mb-3">話数一覧</h2>
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-          {episodes.map((ep) => (
-            <Link
-              key={ep}
-              href={`/works/${slug}/episodes/${ep}`}
-              className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-            >
-              {work.type === "movie" ? "本編" : `第${ep}話`}
-            </Link>
-          ))}
-        </div>
+        {eps.length === 0 ? (
+          <p className="text-gray-400 text-sm">話数データがありません</p>
+        ) : (
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {eps.map((ep) => (
+              <Link
+                key={ep.id}
+                href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+              >
+                {work.type === "movie" ? "本編" : `第${ep.episodeNumber}話`}
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
