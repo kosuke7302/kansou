@@ -41,5 +41,6 @@ export async function postComment(
   await db.insert(comments).values({ episodeId: episode.id, body: body.trim() });
 
   revalidatePath(`/works/${slug}/episodes/${episodeNumber}`);
+  revalidatePath("/");
   return { success: true };
 }
