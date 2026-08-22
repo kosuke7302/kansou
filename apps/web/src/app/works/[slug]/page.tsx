@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes } from "@kansou/db";
-import { eq, asc } from "drizzle-orm";
+import { works, episodes, comments } from "@kansou/db";
+import { eq, asc, count } from "drizzle-orm";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -39,18 +39,26 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
-  const eps = await db
-    .select()
+  // エピソードとコメント数を一括取得
+  const epsWithCounts = await db
+    .select({
+      id: episodes.id,
+      episodeNumber: episodes.episodeNumber,
+      volumeNumber: episodes.volumeNumber,
+      title: episodes.title,
+      commentCount: count(comments.id),
+    })
     .from(episodes)
+    .leftJoin(comments, eq(comments.episodeId, episodes.id))
     .where(eq(episodes.workId, work.id))
+    .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
     .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber));
 
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
 
-  // 漫画：巻エントリ（episodeNumber=null）と話エントリを分離
-  const volumes = eps.filter((ep) => ep.episodeNumber === null);
-  const episodeList = eps.filter((ep) => ep.episodeNumber !== null);
+  const volumes = epsWithCounts.filter((ep) => ep.episodeNumber === null);
+  const episodeList = epsWithCounts.filter((ep) => ep.episodeNumber !== null);
 
   return (
     <div className="space-y-6">
@@ -79,9 +87,12 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
                   <Link
                     key={vol.id}
                     href={`/works/${slug}/volumes/${vol.volumeNumber}`}
-                    className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                   >
-                    第{vol.volumeNumber}巻
+                    <span>第{vol.volumeNumber}巻</span>
+                    {Number(vol.commentCount) > 0 && (
+                      <span className="text-xs text-indigo-500 font-medium">💬{vol.commentCount}</span>
+                    )}
                   </Link>
                 ))}
               </div>
@@ -99,9 +110,12 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
                     key={ep.id}
                     href={`/works/${slug}/episodes/${ep.episodeNumber}`}
                     title={ep.title ?? undefined}
-                    className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                    className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                   >
-                    {ep.episodeNumber}話
+                    <span>{ep.episodeNumber}話</span>
+                    {Number(ep.commentCount) > 0 && (
+                      <span className="text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                    )}
                   </Link>
                 ))}
               </div>
@@ -122,9 +136,12 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
                   key={ep.id}
                   href={`/works/${slug}/episodes/${ep.episodeNumber}`}
                   title={ep.title ?? undefined}
-                  className="flex items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
-                  {isMovie ? "本編" : `第${ep.episodeNumber}話`}
+                  <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
+                  {Number(ep.commentCount) > 0 && (
+                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                  )}
                 </Link>
               ))}
             </div>

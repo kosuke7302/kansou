@@ -15,6 +15,7 @@ type EpisodeWork = {
   slug: string;
   title: string;
   type: "anime" | "drama" | "movie";
+  platform?: "netflix" | "amazon_prime" | "disney_plus";
   description: string;
   episodeCount: number;
   episodeTitles?: Record<number, string>;
@@ -307,38 +308,38 @@ const DRAMA: EpisodeWork[] = [
   { slug: "blue-giant-drama", title: "ゆるキャン△ Season 2", type: "drama", description: "なでしこたちのキャンプ活動を描く癒しのドラマ第2期。テレ東系。", episodeCount: 12 },
   { slug: "vivant", title: "VIVANT", type: "drama", description: "堺雅人・阿部寛主演。モンゴルを舞台にスパイ組織を巡る大型エンターテインメントドラマ。TBS系。", episodeCount: 10, episodeTitles: { 1: "誤送金", 2: "追跡", 3: "対峙", 4: "砂漠", 5: "約束", 6: "真実", 7: "同志", 8: "裏切り", 9: "決断", 10: "VIVANT" } },
   // Netflix
-  { slug: "squid-game-s1", title: "イカゲーム シーズン1", type: "drama", description: "456人の敗者が命がけのデスゲームに挑む韓国サバイバルドラマ。Netflix。", episodeCount: 9, episodeTitles: { 1: "レッドライト グリーンライト", 2: "地獄", 3: "雨の中で傘を", 4: "くじ引き", 5: "公平な世界", 6: "ガラス橋", 7: "VIPたち", 8: "フロンティア", 9: "タフな世の中" } },
-  { slug: "squid-game-s2", title: "イカゲーム シーズン2", type: "drama", description: "ゲームへの復讐を誓ったギフンが再びゲームに参加する韓国サバイバルドラマ。Netflix。", episodeCount: 7 },
-  { slug: "alice-in-borderland-s1", title: "今際の国のアリス シーズン1", type: "drama", description: "麻生羽呂原作。渋谷に迷い込んだ青年たちがゲームで命をかけるNetflixオリジナル。", episodeCount: 8 },
-  { slug: "alice-in-borderland-s2", title: "今際の国のアリス シーズン2", type: "drama", description: "今際の国の真実が明かされる完結シーズン。Netflixオリジナル。", episodeCount: 8 },
-  { slug: "naked-director-s1", title: "全裸監督 シーズン1", type: "drama", description: "伝説のAV監督・村西とおるの破天荒な生涯を描くNetflixオリジナル。", episodeCount: 8 },
-  { slug: "jimeishi-tachi", title: "地面師たち", type: "drama", description: "黒沢友哉原作。実際に起きた数百億円の土地詐欺事件を描くNetflixオリジナル。", episodeCount: 7 },
-  { slug: "sanctuary-sumo", title: "サンクチュアリ", type: "drama", description: "相撲界を舞台に元不良の力士が頂点を目指す青春ドラマ。Netflixオリジナル。", episodeCount: 8 },
-  { slug: "stranger-things-s1", title: "ストレンジャー・シングス シーズン1", type: "drama", description: "80年代の米国の町で少年が失踪し、超常現象に巻き込まれる子供たちを描く。Netflix。", episodeCount: 8 },
-  { slug: "queens-gambit", title: "クイーンズ・ギャンビット", type: "drama", description: "1950〜60年代を舞台に孤児院育ちの天才少女がチェスで世界に挑むミニシリーズ。Netflix。", episodeCount: 7 },
-  { slug: "wednesday-s1", title: "ウェンズデー シーズン1", type: "drama", description: "アダムス・ファミリーのウェンズデーが個性派学校で謎を解く青春ホラーコメディ。Netflix。", episodeCount: 8 },
-  { slug: "crash-landing-on-you", title: "愛の不時着", type: "drama", description: "北朝鮮に不時着した韓国財閥令嬢と北の将校のラブストーリー。Netflix。", episodeCount: 16 },
-  { slug: "itaewon-class", title: "梨泰院クラス", type: "drama", description: "復讐と夢を胸に小さな飲食店から大企業に挑む青年の物語。Netflix。", episodeCount: 16 },
-  { slug: "money-heist-s1", title: "ペーパー・ハウス シーズン1", type: "drama", description: "完璧な強盗を計画するザ・プロフェッサーと仲間たちのスペインクライムドラマ。Netflix。", episodeCount: 13 },
-  { slug: "bridgerton-s1", title: "ブリジャートン シーズン1", type: "drama", description: "19世紀ロンドン上流社会の恋愛模様を描くロマンス・ドラマ。Netflix。", episodeCount: 8 },
-  { slug: "dp-s1", title: "DP: 脱走兵追跡官 シーズン1", type: "drama", description: "韓国軍の脱走兵を追う軍警察の物語。軍内いじめや人権問題も描く。Netflix。", episodeCount: 6 },
-  { slug: "my-mister", title: "マイ・マイスター〜私のおじさん〜", type: "drama", description: "孤独を抱えた中年男性と若い女性のつながりを描く韓国ヒューマンドラマ。Netflix。", episodeCount: 16 },
+  { slug: "squid-game-s1", platform: "netflix", title: "イカゲーム シーズン1", type: "drama", description: "456人の敗者が命がけのデスゲームに挑む韓国サバイバルドラマ。Netflix。", episodeCount: 9, episodeTitles: { 1: "レッドライト グリーンライト", 2: "地獄", 3: "雨の中で傘を", 4: "くじ引き", 5: "公平な世界", 6: "ガラス橋", 7: "VIPたち", 8: "フロンティア", 9: "タフな世の中" } },
+  { slug: "squid-game-s2", platform: "netflix", title: "イカゲーム シーズン2", type: "drama", description: "ゲームへの復讐を誓ったギフンが再びゲームに参加する韓国サバイバルドラマ。Netflix。", episodeCount: 7 },
+  { slug: "alice-in-borderland-s1", platform: "netflix", title: "今際の国のアリス シーズン1", type: "drama", description: "麻生羽呂原作。渋谷に迷い込んだ青年たちがゲームで命をかけるNetflixオリジナル。", episodeCount: 8 },
+  { slug: "alice-in-borderland-s2", platform: "netflix", title: "今際の国のアリス シーズン2", type: "drama", description: "今際の国の真実が明かされる完結シーズン。Netflixオリジナル。", episodeCount: 8 },
+  { slug: "naked-director-s1", platform: "netflix", title: "全裸監督 シーズン1", type: "drama", description: "伝説のAV監督・村西とおるの破天荒な生涯を描くNetflixオリジナル。", episodeCount: 8 },
+  { slug: "jimeishi-tachi", platform: "netflix", title: "地面師たち", type: "drama", description: "黒沢友哉原作。実際に起きた数百億円の土地詐欺事件を描くNetflixオリジナル。", episodeCount: 7 },
+  { slug: "sanctuary-sumo", platform: "netflix", title: "サンクチュアリ", type: "drama", description: "相撲界を舞台に元不良の力士が頂点を目指す青春ドラマ。Netflixオリジナル。", episodeCount: 8 },
+  { slug: "stranger-things-s1", platform: "netflix", title: "ストレンジャー・シングス シーズン1", type: "drama", description: "80年代の米国の町で少年が失踪し、超常現象に巻き込まれる子供たちを描く。Netflix。", episodeCount: 8 },
+  { slug: "queens-gambit", platform: "netflix", title: "クイーンズ・ギャンビット", type: "drama", description: "1950〜60年代を舞台に孤児院育ちの天才少女がチェスで世界に挑むミニシリーズ。Netflix。", episodeCount: 7 },
+  { slug: "wednesday-s1", platform: "netflix", title: "ウェンズデー シーズン1", type: "drama", description: "アダムス・ファミリーのウェンズデーが個性派学校で謎を解く青春ホラーコメディ。Netflix。", episodeCount: 8 },
+  { slug: "crash-landing-on-you", platform: "netflix", title: "愛の不時着", type: "drama", description: "北朝鮮に不時着した韓国財閥令嬢と北の将校のラブストーリー。Netflix。", episodeCount: 16 },
+  { slug: "itaewon-class", platform: "netflix", title: "梨泰院クラス", type: "drama", description: "復讐と夢を胸に小さな飲食店から大企業に挑む青年の物語。Netflix。", episodeCount: 16 },
+  { slug: "money-heist-s1", platform: "netflix", title: "ペーパー・ハウス シーズン1", type: "drama", description: "完璧な強盗を計画するザ・プロフェッサーと仲間たちのスペインクライムドラマ。Netflix。", episodeCount: 13 },
+  { slug: "bridgerton-s1", platform: "netflix", title: "ブリジャートン シーズン1", type: "drama", description: "19世紀ロンドン上流社会の恋愛模様を描くロマンス・ドラマ。Netflix。", episodeCount: 8 },
+  { slug: "dp-s1", platform: "netflix", title: "DP: 脱走兵追跡官 シーズン1", type: "drama", description: "韓国軍の脱走兵を追う軍警察の物語。軍内いじめや人権問題も描く。Netflix。", episodeCount: 6 },
+  { slug: "my-mister", platform: "netflix", title: "マイ・マイスター〜私のおじさん〜", type: "drama", description: "孤独を抱えた中年男性と若い女性のつながりを描く韓国ヒューマンドラマ。Netflix。", episodeCount: 16 },
   // Amazon Prime Video
-  { slug: "the-boys-s1", title: "ザ・ボーイズ シーズン1", type: "drama", description: "腐敗したスーパーヒーローに立ち向かう市民たちのダークコメディ。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "the-boys-s2", title: "ザ・ボーイズ シーズン2", type: "drama", description: "ヴォート・インターナショナルの陰謀がさらに深まる続編。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "the-boys-s3", title: "ザ・ボーイズ シーズン3", type: "drama", description: "スーパーパワーを手に入れたバッチャーたちとホームランダーの全面対決。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "rings-of-power-s1", title: "ロード・オブ・ザ・リング: 力の指輪 シーズン1", type: "drama", description: "指輪物語の第二紀を描く壮大な前日譚。中つ国の黎明期を舞台に。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "fallout-s1", title: "フォールアウト シーズン1", type: "drama", description: "ゲーム原作。核戦争後の荒廃した世界を舞台にしたサバイバルドラマ。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "jack-ryan-s1", title: "ジャック・ライアン シーズン1", type: "drama", description: "トム・クランシー原作。CIA分析官が世界規模のテロ組織に挑むスパイアクション。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "reacher-s1", title: "リーチャー シーズン1", type: "drama", description: "元陸軍憲兵隊員リーチャーが事件に巻き込まれるアクションドラマ。Amazon Prime Video。", episodeCount: 8 },
-  { slug: "invincible-s1", title: "インヴィンシブル シーズン1", type: "drama", description: "ロバート・カークマン原作。ヒーローの息子が父の衝撃の真実を知るアニメドラマ。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "the-boys-s1", platform: "amazon_prime", title: "ザ・ボーイズ シーズン1", type: "drama", description: "腐敗したスーパーヒーローに立ち向かう市民たちのダークコメディ。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "the-boys-s2", platform: "amazon_prime", title: "ザ・ボーイズ シーズン2", type: "drama", description: "ヴォート・インターナショナルの陰謀がさらに深まる続編。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "the-boys-s3", platform: "amazon_prime", title: "ザ・ボーイズ シーズン3", type: "drama", description: "スーパーパワーを手に入れたバッチャーたちとホームランダーの全面対決。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "rings-of-power-s1", platform: "amazon_prime", title: "ロード・オブ・ザ・リング: 力の指輪 シーズン1", type: "drama", description: "指輪物語の第二紀を描く壮大な前日譚。中つ国の黎明期を舞台に。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "fallout-s1", platform: "amazon_prime", title: "フォールアウト シーズン1", type: "drama", description: "ゲーム原作。核戦争後の荒廃した世界を舞台にしたサバイバルドラマ。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "jack-ryan-s1", platform: "amazon_prime", title: "ジャック・ライアン シーズン1", type: "drama", description: "トム・クランシー原作。CIA分析官が世界規模のテロ組織に挑むスパイアクション。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "reacher-s1", platform: "amazon_prime", title: "リーチャー シーズン1", type: "drama", description: "元陸軍憲兵隊員リーチャーが事件に巻き込まれるアクションドラマ。Amazon Prime Video。", episodeCount: 8 },
+  { slug: "invincible-s1", platform: "amazon_prime", title: "インヴィンシブル シーズン1", type: "drama", description: "ロバート・カークマン原作。ヒーローの息子が父の衝撃の真実を知るアニメドラマ。Amazon Prime Video。", episodeCount: 8 },
   // Disney+
-  { slug: "mandalorian-s1", title: "マンダロリアン シーズン1", type: "drama", description: "スター・ウォーズの世界を舞台に伝説の賞金稼ぎとザ・チャイルドの旅を描く。Disney+。", episodeCount: 8 },
-  { slug: "loki-s1", title: "ロキ シーズン1", type: "drama", description: "時間管理局（TVA）に捕らえられたロキが時間の謎に挑むマーベルドラマ。Disney+。", episodeCount: 6 },
-  { slug: "wandavision", title: "ワンダヴィジョン", type: "drama", description: "ワンダとヴィジョンが昔のシットコムのような世界で暮らす不思議なマーベルドラマ。Disney+。", episodeCount: 9 },
-  { slug: "andor-s1", title: "アンドー シーズン1", type: "drama", description: "反乱軍のスパイ・カシアン・アンドーの知られざる過去を描くスター・ウォーズ前日譚。Disney+。", episodeCount: 12 },
-  { slug: "moon-knight", title: "ムーンナイト", type: "drama", description: "多重人格を持つ男が月の神の使徒として悪と戦うマーベルドラマ。Disney+。", episodeCount: 6 },
-  { slug: "obi-wan-kenobi", title: "オビ=ワン・ケノービ", type: "drama", description: "エピソード3の10年後、砂漠の星タトゥイーンに潜むオビ=ワンの物語。Disney+。", episodeCount: 6 },
+  { slug: "mandalorian-s1", platform: "disney_plus", title: "マンダロリアン シーズン1", type: "drama", description: "スター・ウォーズの世界を舞台に伝説の賞金稼ぎとザ・チャイルドの旅を描く。Disney+。", episodeCount: 8 },
+  { slug: "loki-s1", platform: "disney_plus", title: "ロキ シーズン1", type: "drama", description: "時間管理局（TVA）に捕らえられたロキが時間の謎に挑むマーベルドラマ。Disney+。", episodeCount: 6 },
+  { slug: "wandavision", platform: "disney_plus", title: "ワンダヴィジョン", type: "drama", description: "ワンダとヴィジョンが昔のシットコムのような世界で暮らす不思議なマーベルドラマ。Disney+。", episodeCount: 9 },
+  { slug: "andor-s1", platform: "disney_plus", title: "アンドー シーズン1", type: "drama", description: "反乱軍のスパイ・カシアン・アンドーの知られざる過去を描くスター・ウォーズ前日譚。Disney+。", episodeCount: 12 },
+  { slug: "moon-knight", platform: "disney_plus", title: "ムーンナイト", type: "drama", description: "多重人格を持つ男が月の神の使徒として悪と戦うマーベルドラマ。Disney+。", episodeCount: 6 },
+  { slug: "obi-wan-kenobi", platform: "disney_plus", title: "オビ=ワン・ケノービ", type: "drama", description: "エピソード3の10年後、砂漠の星タトゥイーンに潜むオビ=ワンの物語。Disney+。", episodeCount: 6 },
 ];
 
 const MOVIES: EpisodeWork[] = [
@@ -484,7 +485,7 @@ async function seed() {
   for (const work of ANIME) {
     const [inserted] = await db
       .insert(works)
-      .values({ slug: work.slug, title: work.title, type: work.type, description: work.description })
+      .values({ slug: work.slug, title: work.title, type: work.type, platform: work.platform, description: work.description })
       .returning();
 
     const epRows = Array.from({ length: work.episodeCount }, (_, i) => ({
@@ -505,7 +506,7 @@ async function seed() {
   for (const work of DRAMA) {
     const [inserted] = await db
       .insert(works)
-      .values({ slug: work.slug, title: work.title, type: work.type, description: work.description })
+      .values({ slug: work.slug, title: work.title, type: work.type, platform: work.platform, description: work.description })
       .returning();
 
     const epRows = Array.from({ length: work.episodeCount }, (_, i) => ({

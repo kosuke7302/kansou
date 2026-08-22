@@ -1,0 +1,1 @@
+ALTER TABLE "works" ADD COLUMN "platform" varchar(50);

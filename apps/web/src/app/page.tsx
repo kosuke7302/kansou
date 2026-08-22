@@ -1,23 +1,23 @@
 import { db } from "@/lib/db";
 import { works, comments, episodes } from "@kansou/db";
-import { eq, count } from "drizzle-orm";
+import { eq, count, gte } from "drizzle-orm";
 import { WorksFilter, type Work } from "./_components/works-filter";
 
 async function getWorks(): Promise<Work[]> {
-  // 作品ごとの話数数
   const worksWithEpisodes = await db
     .select({
       id: works.id,
       slug: works.slug,
       title: works.title,
       type: works.type,
+      platform: works.platform,
       episodeCount: count(episodes.id),
     })
     .from(works)
     .leftJoin(episodes, eq(episodes.workId, works.id))
-    .groupBy(works.id, works.slug, works.title, works.type);
+    .groupBy(works.id, works.slug, works.title, works.type, works.platform);
 
-  // 作品ごとのコメント数（episodes 経由で集計）
+  // 総コメント数
   const commentCountRows = await db
     .select({
       workId: episodes.workId,
@@ -27,16 +27,29 @@ async function getWorks(): Promise<Work[]> {
     .innerJoin(episodes, eq(comments.episodeId, episodes.id))
     .groupBy(episodes.workId);
 
-  const commentMap = new Map(
-    commentCountRows.map((r) => [r.workId, Number(r.commentCount)])
-  );
+  // 直近7日間のコメント数（トレンド用）
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const recentCommentRows = await db
+    .select({
+      workId: episodes.workId,
+      recentCount: count(comments.id),
+    })
+    .from(comments)
+    .innerJoin(episodes, eq(comments.episodeId, episodes.id))
+    .where(gte(comments.createdAt, since))
+    .groupBy(episodes.workId);
+
+  const commentMap = new Map(commentCountRows.map((r) => [r.workId, Number(r.commentCount)]));
+  const recentMap = new Map(recentCommentRows.map((r) => [r.workId, Number(r.recentCount)]));
 
   return worksWithEpisodes.map((w) => ({
     slug: w.slug,
     title: w.title,
     type: w.type,
+    platform: (w.platform as import("./_components/works-filter").Platform | null) ?? null,
     episodeCount: Number(w.episodeCount),
     commentCount: commentMap.get(w.id) ?? 0,
+    recentCommentCount: recentMap.get(w.id) ?? 0,
   }));
 }
 

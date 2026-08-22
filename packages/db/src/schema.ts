@@ -12,6 +12,7 @@ export const works = pgTable("works", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: varchar("title", { length: 255 }).notNull(),
   type: contentTypeEnum("type").notNull(),
+  platform: varchar("platform", { length: 50 }), // "netflix" | "amazon_prime" | "disney_plus"
   description: text("description"),
   thumbnailUrl: varchar("thumbnail_url", { length: 512 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
