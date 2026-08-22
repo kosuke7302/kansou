@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
 
@@ -44,11 +43,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
       <head>
-        <Script
+        {/* AdSense: 初期HTMLに直接出力してクローラーに確実に認識させる */}
+        <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
       </head>
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
