@@ -7,6 +7,8 @@ import { eq, and, isNull, asc } from "drizzle-orm";
 
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
+import { ShareButtons } from "@/app/_components/share-buttons";
+import { LikeButton } from "@/app/_components/like-button";
 
 const BASE_URL = "https://kansou-log.com";
 
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     openGraph: { type: "article", title, description, url, siteName: "感想ログ", locale: "ja_JP" },
-    twitter: { card: "summary", title, description },
+    twitter: { card: "summary_large_image", title, description },
     alternates: { canonical: url },
   };
 }
@@ -36,7 +38,6 @@ export default async function VolumePage({ params }: { params: Params }) {
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
-  // 巻エントリ（episodeNumber = null）
   const [volume] = await db
     .select()
     .from(episodes)
@@ -56,6 +57,9 @@ export default async function VolumePage({ params }: { params: Params }) {
     .where(eq(comments.episodeId, volume.id))
     .orderBy(asc(comments.createdAt));
 
+  const shareTitle = `${work.title} 第${volNum}巻 感想`;
+  const pageUrl = `${BASE_URL}/works/${slug}/volumes/${volNum}`;
+
   return (
     <div className="space-y-6">
       <div>
@@ -65,7 +69,10 @@ export default async function VolumePage({ params }: { params: Params }) {
         <h1 className="text-2xl font-bold mt-2">
           {work.title} 第{volNum}巻 感想
         </h1>
-        <p className="text-gray-500 text-sm mt-1">{commentList.length}件のコメント</p>
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-gray-500 text-sm">{commentList.length}件のコメント</p>
+          <ShareButtons title={shareTitle} url={pageUrl} />
+        </div>
       </div>
 
       <section className="space-y-3">
@@ -74,11 +81,14 @@ export default async function VolumePage({ params }: { params: Params }) {
         ) : (
           commentList.map((comment) => (
             <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
-                <span className="text-xs text-gray-400">
-                  {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
-                </span>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+                  </span>
+                </div>
+                <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
             </div>

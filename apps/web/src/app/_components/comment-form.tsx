@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { postComment, type CommentActionState } from "@/app/actions/comments";
 
+const NICKNAME_KEY = "kansou_nickname";
 const initialState: CommentActionState = {};
 
 type Props =
@@ -11,6 +12,24 @@ type Props =
 
 export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
+  const [nickname, setNickname] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(NICKNAME_KEY);
+    if (saved) setNickname(saved);
+  }, []);
+
+  useEffect(() => {
+    if (state.success && textareaRef.current) {
+      textareaRef.current.value = "";
+    }
+  }, [state.success]);
+
+  function handleNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setNickname(e.target.value);
+    localStorage.setItem(NICKNAME_KEY, e.target.value);
+  }
 
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-4">
@@ -31,7 +50,17 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
           <p className="text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">投稿しました！</p>
         )}
 
+        <input
+          name="authorName"
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder="ニックネーム（省略可）"
+          maxLength={100}
+          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+          disabled={pending}
+        />
         <textarea
+          ref={textareaRef}
           name="body"
           placeholder="感想を書いてください（ネタバレ注意）"
           rows={4}

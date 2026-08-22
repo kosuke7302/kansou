@@ -36,6 +36,7 @@ export const comments = pgTable("comments", {
     .notNull(),
   body: text("body").notNull(),
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),
+  likeCount: integer("like_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

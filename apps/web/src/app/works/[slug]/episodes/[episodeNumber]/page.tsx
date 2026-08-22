@@ -6,6 +6,8 @@ import { works, episodes, comments } from "@kansou/db";
 import { eq, and, asc } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
+import { ShareButtons } from "@/app/_components/share-buttons";
+import { LikeButton } from "@/app/_components/like-button";
 
 const BASE_URL = "https://kansou-log.com";
 
@@ -36,7 +38,7 @@ export async function generateMetadata({
       locale: "ja_JP",
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
     },
@@ -71,11 +73,12 @@ export default async function EpisodePage({
 
   const label = work.type === "movie" ? "本編" : `第${epNum}話`;
   const pageUrl = `${BASE_URL}/works/${slug}/episodes/${epNum}`;
+  const shareTitle = `${work.title} ${label} 感想`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "DiscussionForumPosting",
-    "name": `${work.title} ${label} 感想`,
+    "name": shareTitle,
     "headline": `${work.title} ${label} 感想・考察スレッド`,
     "description": `${work.title} ${label}の感想・レビュー・考察をみんなで語るスレッド。`,
     "url": pageUrl,
@@ -105,7 +108,10 @@ export default async function EpisodePage({
           {episode.title && (
             <p className="text-gray-600 text-sm mt-0.5">「{episode.title}」</p>
           )}
-          <p className="text-gray-500 text-sm mt-1">{commentList.length}件のコメント</p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-gray-500 text-sm">{commentList.length}件のコメント</p>
+            <ShareButtons title={shareTitle} url={pageUrl} />
+          </div>
         </div>
 
         <section className="space-y-3">
@@ -114,11 +120,14 @@ export default async function EpisodePage({
           ) : (
             commentList.map((comment) => (
               <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
-                  <span className="text-xs text-gray-400">
-                    {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
-                  </span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+                    </span>
+                  </div>
+                  <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
                 </div>
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
               </div>
