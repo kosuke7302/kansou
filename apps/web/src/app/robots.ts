@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+const BASE_URL = "https://kansou-log.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

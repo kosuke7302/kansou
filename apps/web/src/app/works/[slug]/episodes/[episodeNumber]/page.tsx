@@ -7,7 +7,7 @@ import { eq, and, asc } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 
-const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+const BASE_URL = "https://kansou-log.com";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",

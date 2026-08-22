@@ -8,7 +8,7 @@ import { eq, and, isNull, asc } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 
-const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+const BASE_URL = "https://kansou-log.com";
 
 type Params = Promise<{ slug: string; volumeNumber: string }>;
 

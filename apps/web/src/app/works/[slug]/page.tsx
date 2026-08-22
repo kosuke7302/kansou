@@ -15,7 +15,7 @@ const TYPE_STYLES: Record<string, string> = {
   movie: "bg-orange-100 text-orange-700",
 };
 
-const BASE_URL = "https://kansou-web-dzqj.vercel.app";
+const BASE_URL = "https://kansou-log.com";
 
 export async function generateMetadata({ params }: PageProps<"/works/[slug]">): Promise<Metadata> {
   const { slug } = await params;
