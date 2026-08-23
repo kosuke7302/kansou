@@ -67,25 +67,27 @@ export function StreamingBanner({ platform }: { platform: string | null }) {
 
   const affiliateUrl = process.env[info.affiliateEnv];
   const url = affiliateUrl || info.serviceUrl;
-  const isAffiliate = !!affiliateUrl;
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between gap-4">
-      <div>
-        <p className="text-xs text-gray-500 mb-0.5">配信中のサービス</p>
-        <p className="font-semibold text-sm text-gray-800">{info.label}</p>
-        {isAffiliate && (
-          <p className="text-xs text-gray-400 mt-0.5">※ PRリンクを含みます</p>
-        )}
+    <div className="border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-gray-100 px-3 py-1 flex items-center gap-2">
+        <span className="text-xs font-bold text-gray-600 bg-gray-300 px-1.5 py-0.5 rounded">PR</span>
+        <span className="text-xs text-gray-500">このリンクはアフィリエイト広告を含みます</span>
       </div>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-        className={`shrink-0 ${info.bgColor} text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
-      >
-        {info.label} で観る →
-      </a>
+      <div className="bg-gray-50 p-4 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-xs text-gray-500 mb-0.5">配信中のサービス</p>
+          <p className="font-semibold text-sm text-gray-800">{info.label}</p>
+        </div>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className={`shrink-0 ${info.bgColor} text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
+        >
+          {info.label} で観る →
+        </a>
+      </div>
     </div>
   );
 }
