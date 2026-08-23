@@ -53,6 +53,7 @@ export default async function AdminWorksPage() {
               <th className="px-4 py-3 text-left">ジャンル</th>
               <th className="px-4 py-3 text-right">話数/巻数</th>
               <th className="px-4 py-3 text-left">配信</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -72,6 +73,11 @@ export default async function AdminWorksPage() {
                 <td className="px-4 py-2.5 text-right text-gray-500">{row.episodeCount}</td>
                 <td className="px-4 py-2.5 text-xs text-gray-400">
                   {row.platform === "netflix" ? "Netflix" : row.platform === "amazon_prime" ? "Prime" : row.platform === "disney_plus" ? "Disney+" : ""}
+                </td>
+                <td className="px-4 py-2.5 text-right">
+                  <Link href={`/admin/works/${row.id}`} className="text-xs text-indigo-500 hover:underline">
+                    編集
+                  </Link>
                 </td>
               </tr>
             ))}

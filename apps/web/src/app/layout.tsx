@@ -64,10 +64,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
         <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="max-w-4xl mx-auto px-4 h-14 flex items-center">
-            <a href="/" className="text-xl font-bold text-indigo-600 tracking-tight">
+          <div className="max-w-4xl mx-auto px-4 h-14 flex items-center gap-4">
+            <a href="/" className="text-xl font-bold text-indigo-600 tracking-tight shrink-0">
               感想ログ
             </a>
+            <form method="get" action="/search" className="flex-1 max-w-sm">
+              <input
+                name="q"
+                type="search"
+                placeholder="作品を検索..."
+                className="w-full border border-gray-200 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              />
+            </form>
           </div>
         </header>
 

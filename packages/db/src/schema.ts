@@ -14,6 +14,7 @@ export const works = pgTable("works", {
   type: contentTypeEnum("type").notNull(),
   platform: varchar("platform", { length: 50 }), // "netflix" | "amazon_prime" | "disney_plus"
   description: text("description"),
+  keywords: text("keywords"), // 検索用キーワード（スペース区切り）
   thumbnailUrl: varchar("thumbnail_url", { length: 512 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -43,6 +43,13 @@
       "when": 1787438845299,
       "tag": "0005_foamy_doctor_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787500000000,
+      "tag": "0006_add_keywords",
+      "breakpoints": true
     }
   ]
 }

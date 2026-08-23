@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { works, episodes } from "@kansou/db";
-import { eq } from "drizzle-orm";
+import { eq, max, and, isNull, isNotNull } from "drizzle-orm";
 
 export type LoginState = { error?: string };
 export type AddWorkState = { error?: string; success?: string };
@@ -43,6 +43,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
   const type = formData.get("type")?.toString() as "manga" | "anime" | "drama" | "movie";
   const platform = formData.get("platform")?.toString() || null;
   const description = formData.get("description")?.toString().trim() || null;
+  const keywords = formData.get("keywords")?.toString().trim() || null;
   const episodeCount = Number(formData.get("episodeCount") ?? 0);
   const volumeCount = Number(formData.get("volumeCount") ?? 0);
   const chapterCount = Number(formData.get("chapterCount") ?? 0);
@@ -58,7 +59,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
 
   const [work] = await db
     .insert(works)
-    .values({ slug, title, type, platform: platform || null, description })
+    .values({ slug, title, type, platform: platform || null, description, keywords })
     .returning();
 
   if (type === "manga") {
@@ -85,6 +86,71 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
   revalidatePath("/admin/works");
   revalidatePath("/");
   return { success: `「${title}」を追加しました（スラグ: ${slug}）` };
+}
+
+export async function updateWork(_prev: AddWorkState, formData: FormData): Promise<AddWorkState> {
+  const id = Number(formData.get("id"));
+  if (!id) return { error: "作品IDが不正です" };
+
+  const title = formData.get("title")?.toString().trim() ?? "";
+  const platform = formData.get("platform")?.toString() || null;
+  const description = formData.get("description")?.toString().trim() || null;
+  const keywords = formData.get("keywords")?.toString().trim() || null;
+  const addEpisodes = Number(formData.get("addEpisodes") ?? 0);
+  const addVolumes = Number(formData.get("addVolumes") ?? 0);
+  const addChapters = Number(formData.get("addChapters") ?? 0);
+
+  if (!title) return { error: "タイトルを入力してください" };
+
+  const [work] = await db.select().from(works).where(eq(works.id, id)).limit(1);
+  if (!work) return { error: "作品が見つかりません" };
+
+  await db
+    .update(works)
+    .set({ title, platform: platform || null, description, keywords })
+    .where(eq(works.id, id));
+
+  // 話数追加（アニメ・ドラマ）
+  if (addEpisodes > 0 && work.type !== "manga" && work.type !== "movie") {
+    const [{ maxEp }] = await db
+      .select({ maxEp: max(episodes.episodeNumber) })
+      .from(episodes)
+      .where(and(eq(episodes.workId, id), isNotNull(episodes.episodeNumber)));
+    const start = (maxEp ?? 0) + 1;
+    const rows = Array.from({ length: addEpisodes }, (_, i) => ({ workId: id, episodeNumber: start + i }));
+    for (let i = 0; i < rows.length; i += 500) await db.insert(episodes).values(rows.slice(i, i + 500));
+  }
+
+  // 巻追加（漫画）
+  if (addVolumes > 0 && work.type === "manga") {
+    const [{ maxVol }] = await db
+      .select({ maxVol: max(episodes.volumeNumber) })
+      .from(episodes)
+      .where(and(eq(episodes.workId, id), isNull(episodes.episodeNumber)));
+    const start = (maxVol ?? 0) + 1;
+    const rows = Array.from({ length: addVolumes }, (_, i) => ({
+      workId: id, episodeNumber: null as number | null, volumeNumber: start + i,
+    }));
+    for (let i = 0; i < rows.length; i += 500) await db.insert(episodes).values(rows.slice(i, i + 500));
+  }
+
+  // 話数追加（漫画の章）
+  if (addChapters > 0 && work.type === "manga") {
+    const [{ maxChap }] = await db
+      .select({ maxChap: max(episodes.episodeNumber) })
+      .from(episodes)
+      .where(and(eq(episodes.workId, id), isNotNull(episodes.episodeNumber)));
+    const start = (maxChap ?? 0) + 1;
+    const rows = Array.from({ length: addChapters }, (_, i) => ({
+      workId: id, episodeNumber: start + i, volumeNumber: null as number | null,
+    }));
+    for (let i = 0; i < rows.length; i += 500) await db.insert(episodes).values(rows.slice(i, i + 500));
+  }
+
+  revalidatePath(`/works/${work.slug}`);
+  revalidatePath("/admin/works");
+  revalidatePath("/");
+  return { success: "更新しました" };
 }
 
 export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Promise<AddWorkState> {
