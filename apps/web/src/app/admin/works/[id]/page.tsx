@@ -196,6 +196,12 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
               {pending ? "保存中..." : "保存"}
             </button>
             <Link
+              href={`/admin/works/${work.id}/episodes`}
+              className="text-sm text-gray-500 border border-gray-200 rounded-lg px-4 py-2 hover:border-indigo-300 hover:text-indigo-600 transition-colors"
+            >
+              サブタイトルを編集
+            </Link>
+            <Link
               href={`/works/${work.slug}`}
               target="_blank"
               className="text-sm text-indigo-500 hover:underline"
