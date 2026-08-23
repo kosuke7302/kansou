@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
-import { eq, asc, count } from "drizzle-orm";
+import { eq, asc, count, isNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
+import { WorkCommentForm } from "@/app/_components/work-comment-form";
+import { LikeButton } from "@/app/_components/like-button";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -54,6 +56,13 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
     .where(eq(episodes.workId, work.id))
     .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
     .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber));
+
+  // 作品全体のコメント取得
+  const workComments = await db
+    .select()
+    .from(comments)
+    .where(and(eq(comments.workId, work.id), isNull(comments.episodeId)))
+    .orderBy(asc(comments.createdAt));
 
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
@@ -151,6 +160,34 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           )}
         </section>
       )}
+
+      {/* 作品全体の感想 */}
+      <section className="space-y-4 border-t border-gray-100 pt-6">
+        <h2 className="text-lg font-semibold">作品全体の感想</h2>
+        {workComments.length === 0 ? (
+          <p className="text-center text-gray-400 py-4 text-sm">
+            まだ全体感想がありません。読了・視聴済みの方はぜひ投稿を！
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {workComments.map((comment) => (
+              <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+                    </span>
+                  </div>
+                  <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
+                </div>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <WorkCommentForm slug={slug} />
+      </section>
     </div>
   );
 }

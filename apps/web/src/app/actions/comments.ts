@@ -72,6 +72,35 @@ export async function postComment(
   return { success: true };
 }
 
+export async function postWorkComment(
+  _prev: CommentActionState,
+  formData: FormData
+): Promise<CommentActionState> {
+  const body = formData.get("body");
+  const slug = formData.get("slug");
+  const authorNameRaw = formData.get("authorName");
+
+  if (typeof body !== "string" || typeof slug !== "string" || body.trim().length === 0) {
+    return { error: "感想を入力してください" };
+  }
+  if (body.trim().length > 1000) {
+    return { error: "1000文字以内で入力してください" };
+  }
+
+  const authorName =
+    typeof authorNameRaw === "string" && authorNameRaw.trim()
+      ? authorNameRaw.trim().slice(0, 100)
+      : "名無し";
+
+  const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
+  if (!work) return { error: "作品が見つかりません" };
+
+  await db.insert(comments).values({ workId: work.id, body: body.trim(), authorName });
+  revalidatePath(`/works/${slug}`);
+  revalidatePath("/");
+  return { success: true };
+}
+
 export async function likeComment(commentId: number): Promise<void> {
   await db
     .update(comments)

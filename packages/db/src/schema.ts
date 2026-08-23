@@ -33,8 +33,9 @@ export const episodes = pgTable("episodes", {
 export const comments = pgTable("comments", {
   id: serial("id").primaryKey(),
   episodeId: integer("episode_id")
-    .references(() => episodes.id, { onDelete: "cascade" })
-    .notNull(),
+    .references(() => episodes.id, { onDelete: "cascade" }),
+  workId: integer("work_id")
+    .references(() => works.id, { onDelete: "cascade" }),
   body: text("body").notNull(),
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),
   likeCount: integer("like_count").default(0).notNull(),
