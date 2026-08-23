@@ -60,8 +60,45 @@ export default async function VolumePage({ params }: { params: Params }) {
   const shareTitle = `${work.title} 第${volNum}巻 感想`;
   const pageUrl = `${BASE_URL}/works/${slug}/volumes/${volNum}`;
 
+  const datePublished = commentList.length > 0
+    ? new Date(commentList[0].createdAt).toISOString()
+    : "2024-10-01T00:00:00+09:00";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DiscussionForumPosting",
+    "headline": shareTitle,
+    "url": pageUrl,
+    "inLanguage": "ja",
+    "author": {
+      "@type": "Organization",
+      "name": "感想ログ",
+      "url": BASE_URL,
+    },
+    "datePublished": datePublished,
+    "text": `${work.title} 第${volNum}巻の感想・レビュー・考察スレッドです。ネタバレを含む場合があります。`,
+    "about": {
+      "@type": "CreativeWork",
+      "name": work.title,
+    },
+    "commentCount": commentList.length,
+    ...(commentList.length > 0 && {
+      "comment": commentList.map((c) => ({
+        "@type": "Comment",
+        "author": { "@type": "Person", "name": c.authorName ?? "名無し" },
+        "datePublished": new Date(c.createdAt).toISOString(),
+        "text": c.body,
+      })),
+    }),
+  };
+
   return (
-    <div className="space-y-6">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="space-y-6">
       <div>
         <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
           ← {work.title}
@@ -100,5 +137,6 @@ export default async function VolumePage({ params }: { params: Params }) {
 
       <CommentForm slug={slug} volumeNumber={volNum} />
     </div>
+    </>
   );
 }

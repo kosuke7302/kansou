@@ -75,20 +75,37 @@ export default async function EpisodePage({
   const pageUrl = `${BASE_URL}/works/${slug}/episodes/${epNum}`;
   const shareTitle = `${work.title} ${label} 感想`;
 
+  const datePublished = commentList.length > 0
+    ? new Date(commentList[0].createdAt).toISOString()
+    : "2024-10-01T00:00:00+09:00";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "DiscussionForumPosting",
-    "name": shareTitle,
-    "headline": `${work.title} ${label} 感想・考察スレッド`,
-    "description": `${work.title} ${label}の感想・レビュー・考察をみんなで語るスレッド。`,
+    "headline": `${work.title} ${label} 感想・考察`,
     "url": pageUrl,
     "inLanguage": "ja",
+    "author": {
+      "@type": "Organization",
+      "name": "感想ログ",
+      "url": BASE_URL,
+    },
+    "datePublished": datePublished,
+    "text": `${work.title} ${label}の感想・レビュー・考察スレッドです。ネタバレを含む場合があります。`,
     "about": {
       "@type": "CreativeWork",
       "name": work.title,
       "genre": TYPE_LABELS[work.type],
     },
     "commentCount": commentList.length,
+    ...(commentList.length > 0 && {
+      "comment": commentList.map((c) => ({
+        "@type": "Comment",
+        "author": { "@type": "Person", "name": c.authorName ?? "名無し" },
+        "datePublished": new Date(c.createdAt).toISOString(),
+        "text": c.body,
+      })),
+    }),
   };
 
   return (
