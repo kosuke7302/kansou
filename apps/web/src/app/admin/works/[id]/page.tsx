@@ -96,6 +96,12 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
                 <option value="netflix">Netflix</option>
                 <option value="amazon_prime">Amazon Prime Video</option>
                 <option value="disney_plus">Disney+</option>
+                <option value="hulu">Hulu</option>
+                <option value="u_next">U-NEXT</option>
+                <option value="d_anime">dアニメストア</option>
+                <option value="abema">ABEMA</option>
+                <option value="lemino">Lemino</option>
+                <option value="fod">FOD Premium</option>
               </select>
             </div>
 

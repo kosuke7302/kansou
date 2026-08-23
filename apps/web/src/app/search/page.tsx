@@ -17,6 +17,12 @@ const PLATFORM_LABELS: Record<string, string> = {
   netflix: "Netflix",
   amazon_prime: "Prime Video",
   disney_plus: "Disney+",
+  hulu: "Hulu",
+  u_next: "U-NEXT",
+  d_anime: "dアニメストア",
+  abema: "ABEMA",
+  lemino: "Lemino",
+  fod: "FOD Premium",
 };
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {

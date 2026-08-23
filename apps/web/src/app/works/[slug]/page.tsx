@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
 import { eq, asc, count } from "drizzle-orm";
+import { StreamingBanner } from "@/app/_components/streaming-banner";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -74,6 +75,8 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           <p className="text-gray-500 text-sm mt-1">{work.description}</p>
         )}
       </div>
+
+      <StreamingBanner platform={work.platform} />
 
       {isManga ? (
         <div className="space-y-8">

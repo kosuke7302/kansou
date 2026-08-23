@@ -72,7 +72,7 @@ export default async function AdminWorksPage() {
                 </td>
                 <td className="px-4 py-2.5 text-right text-gray-500">{row.episodeCount}</td>
                 <td className="px-4 py-2.5 text-xs text-gray-400">
-                  {row.platform === "netflix" ? "Netflix" : row.platform === "amazon_prime" ? "Prime" : row.platform === "disney_plus" ? "Disney+" : ""}
+                  {{ netflix: "Netflix", amazon_prime: "Prime", disney_plus: "Disney+", hulu: "Hulu", u_next: "U-NEXT", d_anime: "dアニメ", abema: "ABEMA", lemino: "Lemino", fod: "FOD" }[row.platform ?? ""] ?? ""}
                 </td>
                 <td className="px-4 py-2.5 text-right">
                   <Link href={`/admin/works/${row.id}`} className="text-xs text-indigo-500 hover:underline">

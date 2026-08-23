@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 export type ContentType = "anime" | "manga" | "drama" | "movie";
-export type Platform = "netflix" | "amazon_prime" | "disney_plus";
+export type Platform = "netflix" | "amazon_prime" | "disney_plus" | "hulu" | "u_next" | "d_anime" | "abema" | "lemino" | "fod";
 
 export type Work = {
   slug: string;
@@ -30,10 +30,16 @@ const TYPE_LABELS: Record<ContentType, string> = {
   movie: "映画",
 };
 
-const PLATFORM_META: Record<Platform, { label: string; badge: string }> = {
-  netflix: { label: "Netflix", badge: "bg-red-100 text-red-700" },
-  amazon_prime: { label: "Prime", badge: "bg-sky-100 text-sky-700" },
-  disney_plus: { label: "Disney+", badge: "bg-blue-100 text-blue-800" },
+const PLATFORM_META: Record<Platform, { label: string; badge: string; activeBg: string }> = {
+  netflix:      { label: "Netflix",     badge: "bg-red-100 text-red-700",       activeBg: "bg-red-600 text-white" },
+  amazon_prime: { label: "Prime Video", badge: "bg-sky-100 text-sky-700",       activeBg: "bg-sky-600 text-white" },
+  disney_plus:  { label: "Disney+",     badge: "bg-blue-100 text-blue-800",     activeBg: "bg-blue-800 text-white" },
+  hulu:         { label: "Hulu",        badge: "bg-green-100 text-green-700",   activeBg: "bg-green-600 text-white" },
+  u_next:       { label: "U-NEXT",      badge: "bg-gray-800 text-white",        activeBg: "bg-gray-900 text-white" },
+  d_anime:      { label: "dアニメ",     badge: "bg-pink-100 text-pink-700",     activeBg: "bg-pink-600 text-white" },
+  abema:        { label: "ABEMA",       badge: "bg-teal-100 text-teal-700",     activeBg: "bg-teal-500 text-white" },
+  lemino:       { label: "Lemino",      badge: "bg-indigo-100 text-indigo-800", activeBg: "bg-indigo-800 text-white" },
+  fod:          { label: "FOD",         badge: "bg-rose-100 text-rose-700",     activeBg: "bg-rose-600 text-white" },
 };
 
 const GENRE_TABS = [
@@ -45,10 +51,16 @@ const GENRE_TABS = [
 ] as const;
 
 const PLATFORM_TABS: { key: Platform | "all"; label: string }[] = [
-  { key: "all", label: "すべて" },
-  { key: "netflix", label: "Netflix" },
+  { key: "all",          label: "すべて" },
+  { key: "netflix",      label: "Netflix" },
   { key: "amazon_prime", label: "Prime Video" },
-  { key: "disney_plus", label: "Disney+" },
+  { key: "disney_plus",  label: "Disney+" },
+  { key: "hulu",         label: "Hulu" },
+  { key: "u_next",       label: "U-NEXT" },
+  { key: "d_anime",      label: "dアニメ" },
+  { key: "abema",        label: "ABEMA" },
+  { key: "lemino",       label: "Lemino" },
+  { key: "fod",          label: "FOD" },
 ];
 
 type GenreKey = (typeof GENRE_TABS)[number]["key"];
@@ -65,7 +77,7 @@ function WorkCard({ work }: { work: Work }) {
         <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
           {TYPE_LABELS[work.type]}
         </span>
-        {work.platform && (
+        {work.platform && PLATFORM_META[work.platform] && (
           <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${PLATFORM_META[work.platform].badge}`}>
             {PLATFORM_META[work.platform].label}
           </span>
@@ -159,20 +171,16 @@ export function WorksFilter({ works }: { works: Work[] }) {
 
       {/* 配信サービスフィルター */}
       <div className="flex gap-2 flex-wrap items-center">
-        <span className="text-xs text-gray-400 font-medium">配信:</span>
+        <span className="text-xs text-gray-400 font-medium shrink-0">配信:</span>
         {PLATFORM_TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => handlePlatformChange(tab.key)}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
               platform === tab.key
-                ? tab.key === "netflix"
-                  ? "bg-red-600 text-white"
-                  : tab.key === "amazon_prime"
-                    ? "bg-sky-600 text-white"
-                    : tab.key === "disney_plus"
-                      ? "bg-blue-800 text-white"
-                      : "bg-indigo-600 text-white"
+                ? tab.key === "all"
+                  ? "bg-indigo-600 text-white"
+                  : (PLATFORM_META[tab.key as Platform]?.activeBg ?? "bg-indigo-600 text-white")
                 : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300"
             }`}
           >
