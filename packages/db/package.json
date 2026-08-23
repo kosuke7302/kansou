@@ -12,6 +12,7 @@
     "db:seed": "tsx src/seed.ts",
     "db:seed-expanded": "tsx src/seed-expanded.ts",
     "db:seed-add": "tsx src/seed-add.ts",
+    "db:seed-streaming": "tsx src/seed-streaming.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
