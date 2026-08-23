@@ -5,8 +5,6 @@ import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
 import { eq, asc, count, isNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
-import { WorkCommentForm } from "@/app/_components/work-comment-form";
-import { LikeButton } from "@/app/_components/like-button";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -57,12 +55,11 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
     .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
     .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber));
 
-  // 作品全体のコメント取得
-  const workComments = await db
-    .select()
+  // 作品全体コメント件数（リンクバッジ用）
+  const [{ workCommentCount }] = await db
+    .select({ workCommentCount: count(comments.id) })
     .from(comments)
-    .where(and(eq(comments.workId, work.id), isNull(comments.episodeId)))
-    .orderBy(asc(comments.createdAt));
+    .where(and(eq(comments.workId, work.id), isNull(comments.episodeId)));
 
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
@@ -84,6 +81,23 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           <p className="text-gray-500 text-sm mt-1">{work.description}</p>
         )}
       </div>
+
+      {/* 作品全体の感想へのリンク */}
+      <Link
+        href={`/works/${slug}/reviews`}
+        className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 hover:bg-amber-100 transition-colors"
+      >
+        <div>
+          <p className="text-sm font-semibold text-amber-800">作品全体の感想・レビュー</p>
+          <p className="text-xs text-amber-600 mt-0.5">完読・完走済みの方の感想まとめ（ネタバレ注意）</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {Number(workCommentCount) > 0 && (
+            <span className="text-sm font-bold text-amber-700">{workCommentCount}件</span>
+          )}
+          <span className="text-amber-600 text-lg">→</span>
+        </div>
+      </Link>
 
       <StreamingBanner platform={work.platform} />
 
@@ -160,34 +174,6 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           )}
         </section>
       )}
-
-      {/* 作品全体の感想 */}
-      <section className="space-y-4 border-t border-gray-100 pt-6">
-        <h2 className="text-lg font-semibold">作品全体の感想</h2>
-        {workComments.length === 0 ? (
-          <p className="text-center text-gray-400 py-4 text-sm">
-            まだ全体感想がありません。読了・視聴済みの方はぜひ投稿を！
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {workComments.map((comment) => (
-              <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
-                    <span className="text-xs text-gray-400">
-                      {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
-                    </span>
-                  </div>
-                  <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
-                </div>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        <WorkCommentForm slug={slug} />
-      </section>
     </div>
   );
 }
