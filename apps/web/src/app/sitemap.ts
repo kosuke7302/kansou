@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export const revalidate = 86400; // 24時間キャッシュ
 
-const BASE_URL = "https://kansou-log.com";
+const BASE_URL = "https://www.kansou-log.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [allWorks, allEpisodes] = await Promise.all([

@@ -7,7 +7,7 @@ import { eq, asc, and, isNull } from "drizzle-orm";
 import { WorkCommentForm } from "@/app/_components/work-comment-form";
 import { LikeButton } from "@/app/_components/like-button";
 
-const BASE_URL = "https://kansou-log.com";
+const BASE_URL = "https://www.kansou-log.com";
 
 type Params = Promise<{ slug: string }>;
 

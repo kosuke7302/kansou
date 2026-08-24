@@ -8,7 +8,7 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const BASE_URL = "https://kansou-log.com";
+const BASE_URL = "https://www.kansou-log.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

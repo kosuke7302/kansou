@@ -9,7 +9,7 @@ import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { LikeButton } from "@/app/_components/like-button";
 
-const BASE_URL = "https://kansou-log.com";
+const BASE_URL = "https://www.kansou-log.com";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
