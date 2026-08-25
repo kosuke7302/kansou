@@ -96,7 +96,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 お問い合わせ
               </Link>
             </nav>
-            <p className="text-center text-xs text-gray-400">© 2025 感想ログ</p>
+            <p className="text-center text-xs text-gray-400">© {new Date().getFullYear()} 感想ログ</p>
           </div>
         </footer>
       </body>
