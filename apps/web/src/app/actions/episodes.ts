@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { episodes } from "@kansou/db";
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 async function checkAuth() {
@@ -30,4 +30,20 @@ export async function deleteEpisode(
   await db.delete(episodes).where(eq(episodes.id, episodeId));
   revalidatePath(`/works/${workSlug}`);
   return {};
+}
+
+export async function deleteEpisodesAbove(
+  workId: number,
+  threshold: number,
+  field: "episode" | "volume",
+  workSlug: string,
+): Promise<{ error?: string; count?: number }> {
+  if (!(await checkAuth())) return { error: "Unauthorized" };
+  const column = field === "volume" ? episodes.volumeNumber : episodes.episodeNumber;
+  const deleted = await db
+    .delete(episodes)
+    .where(and(eq(episodes.workId, workId), gt(column, threshold)))
+    .returning({ id: episodes.id });
+  revalidatePath(`/works/${workSlug}`);
+  return { count: deleted.length };
 }

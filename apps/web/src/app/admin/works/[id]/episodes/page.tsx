@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition, useCallback } from "react";
 import Link from "next/link";
-import { updateEpisodeTitle, deleteEpisode } from "@/app/actions/episodes";
+import { updateEpisodeTitle, deleteEpisode, deleteEpisodesAbove } from "@/app/actions/episodes";
 
 type Episode = {
   id: number;
@@ -110,6 +110,8 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
   const [q, setQ] = useState("");
   const [kind, setKind] = useState<"all" | "volume" | "chapter">("all");
   const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [bulkThreshold, setBulkThreshold] = useState("");
+  const [isBulkDeleting, startBulkDeleteTransition] = useTransition();
 
   useEffect(() => {
     params.then(({ id }) => setWorkId(id));
@@ -144,6 +146,25 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
   }
 
   const isManga = data?.workType === "manga";
+  const bulkField: "episode" | "volume" | null = !isManga
+    ? "episode"
+    : kind === "volume" ? "volume" : kind === "chapter" ? "episode" : null;
+  const bulkFieldLabel = bulkField === "volume" ? "巻" : "話";
+
+  function handleBulkDelete() {
+    if (!bulkField || !bulkThreshold || !workId) return;
+    const threshold = Number(bulkThreshold);
+    if (!confirm(`第${threshold}${bulkFieldLabel}より後ろの${bulkFieldLabel}を全て削除しますか？紐づくコメントも全て削除され、元に戻せません。`)) return;
+    startBulkDeleteTransition(async () => {
+      const res = await deleteEpisodesAbove(Number(workId), threshold, bulkField, workSlug);
+      if (!res.error) {
+        alert(`${res.count ?? 0}件削除しました`);
+        setBulkThreshold("");
+        setPage(1);
+        fetchEpisodes();
+      }
+    });
+  }
 
   return (
     <div className="space-y-5">
@@ -176,6 +197,34 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
             placeholder="番号・タイトルで絞り込み..."
             className="flex-1 min-w-[180px] border border-gray-200 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
           />
+        </div>
+
+        {/* 一括削除 */}
+        <div className="flex items-center gap-2 flex-wrap border-t border-gray-100 pt-3">
+          <span className="text-xs text-gray-500 shrink-0">一括削除:</span>
+          {bulkField ? (
+            <>
+              <span className="text-xs text-gray-500">第</span>
+              <input
+                type="number"
+                value={bulkThreshold}
+                onChange={e => setBulkThreshold(e.target.value)}
+                placeholder="500"
+                className="w-20 border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-red-300"
+                disabled={isBulkDeleting}
+              />
+              <span className="text-xs text-gray-500">{bulkFieldLabel}より後ろを削除</span>
+              <button
+                onClick={handleBulkDelete}
+                disabled={!bulkThreshold || isBulkDeleting}
+                className="shrink-0 text-xs text-red-600 border border-red-200 rounded px-3 py-1 hover:bg-red-500 hover:text-white disabled:opacity-40"
+              >
+                {isBulkDeleting ? "削除中..." : "一括削除"}
+              </button>
+            </>
+          ) : (
+            <span className="text-xs text-gray-400">「巻」または「話」を選択すると一括削除できます</span>
+          )}
         </div>
 
         {/* カウント */}
