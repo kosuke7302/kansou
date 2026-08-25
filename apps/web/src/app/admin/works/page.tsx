@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { works, episodes } from "@kansou/db";
 import { eq, count } from "drizzle-orm";
+import { DeleteWorkButton } from "./_components/delete-work-button";
 
 const TYPE_LABELS: Record<string, string> = {
   manga: "漫画", anime: "アニメ", drama: "ドラマ", movie: "映画",
@@ -75,9 +76,12 @@ export default async function AdminWorksPage() {
                   {{ netflix: "Netflix", amazon_prime: "Prime", disney_plus: "Disney+", hulu: "Hulu", u_next: "U-NEXT", d_anime: "dアニメ", abema: "ABEMA", lemino: "Lemino", fod: "FOD" }[row.platform ?? ""] ?? ""}
                 </td>
                 <td className="px-4 py-2.5 text-right">
-                  <Link href={`/admin/works/${row.id}`} className="text-xs text-indigo-500 hover:underline">
-                    編集
-                  </Link>
+                  <div className="flex items-center justify-end gap-2">
+                    <Link href={`/admin/works/${row.id}`} className="text-xs text-indigo-500 hover:underline">
+                      編集
+                    </Link>
+                    <DeleteWorkButton workId={row.id} title={row.title} />
+                  </div>
                 </td>
               </tr>
             ))}

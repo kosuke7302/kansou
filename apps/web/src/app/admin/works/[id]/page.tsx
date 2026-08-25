@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { updateWork, type AddWorkState } from "@/app/actions/admin";
 import Link from "next/link";
+import { DeleteWorkButton } from "../_components/delete-work-button";
 
 const initialState: AddWorkState = {};
 
@@ -208,6 +209,8 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
             >
               作品ページを確認 →
             </Link>
+            <div className="flex-1" />
+            <DeleteWorkButton workId={work.id} title={work.title} redirectTo="/admin/works" />
           </div>
         </form>
       </div>

@@ -153,6 +153,23 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
   return { success: "更新しました" };
 }
 
+export async function deleteWork(workId: number): Promise<{ error?: string }> {
+  const jar = await cookies();
+  if (jar.get("admin_session")?.value !== process.env.ADMIN_PASSWORD) {
+    return { error: "Unauthorized" };
+  }
+
+  const [work] = await db.select().from(works).where(eq(works.id, workId)).limit(1);
+  if (!work) return { error: "作品が見つかりません" };
+
+  await db.delete(works).where(eq(works.id, workId));
+
+  revalidatePath(`/works/${work.slug}`);
+  revalidatePath("/admin/works");
+  revalidatePath("/");
+  return {};
+}
+
 export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Promise<AddWorkState> {
   const text = formData.get("works")?.toString() ?? "";
   const lines = text.trim().split("\n").map(l => l.trim()).filter(Boolean);
