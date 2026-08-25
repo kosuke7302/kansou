@@ -149,7 +149,7 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
     <div className="space-y-5">
       <div className="flex items-center gap-3">
         <Link href={`/admin/works/${workId}`} className="text-sm text-gray-400 hover:text-gray-600">← 編集に戻る</Link>
-        <h1 className="text-xl font-bold">{workTitle} — サブタイトル編集</h1>
+        <h1 className="text-xl font-bold">{workTitle} — 話数の編集・削除</h1>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">

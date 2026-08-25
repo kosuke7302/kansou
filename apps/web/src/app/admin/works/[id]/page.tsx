@@ -199,7 +199,7 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
               href={`/admin/works/${work.id}/episodes`}
               className="text-sm text-gray-500 border border-gray-200 rounded-lg px-4 py-2 hover:border-indigo-300 hover:text-indigo-600 transition-colors"
             >
-              サブタイトルを編集
+              話数を編集・削除
             </Link>
             <Link
               href={`/works/${work.slug}`}
