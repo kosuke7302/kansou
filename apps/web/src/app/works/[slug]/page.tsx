@@ -5,6 +5,17 @@ import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
 import { eq, asc, count, isNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
+import { PaginationNav } from "@/app/_components/pagination-nav";
+
+const PAGE_SIZE = 200;
+
+function buildHref(slug: string, params: { epPage?: number; volPage?: number }) {
+  const usp = new URLSearchParams();
+  if (params.epPage && params.epPage > 1) usp.set("epPage", String(params.epPage));
+  if (params.volPage && params.volPage > 1) usp.set("volPage", String(params.volPage));
+  const qs = usp.toString();
+  return `/works/${slug}${qs ? `?${qs}` : ""}`;
+}
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -34,8 +45,17 @@ export async function generateMetadata({ params }: PageProps<"/works/[slug]">): 
   };
 }
 
-export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
+export default async function WorkPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ epPage?: string; volPage?: string }>;
+}) {
   const { slug } = await params;
+  const { epPage: epPageRaw, volPage: volPageRaw } = await searchParams;
+  const epPage = Math.max(1, Number(epPageRaw) || 1);
+  const volPage = Math.max(1, Number(volPageRaw) || 1);
 
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
@@ -66,6 +86,11 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
 
   const volumes = epsWithCounts.filter((ep) => ep.episodeNumber === null);
   const episodeList = epsWithCounts.filter((ep) => ep.episodeNumber !== null);
+
+  const volTotalPages = Math.max(1, Math.ceil(volumes.length / PAGE_SIZE));
+  const epTotalPages = Math.max(1, Math.ceil(episodeList.length / PAGE_SIZE));
+  const pagedVolumes = volumes.slice((volPage - 1) * PAGE_SIZE, volPage * PAGE_SIZE);
+  const pagedEpisodes = episodeList.slice((epPage - 1) * PAGE_SIZE, epPage * PAGE_SIZE);
 
   return (
     <div className="space-y-6">
@@ -108,20 +133,27 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
             {volumes.length === 0 ? (
               <p className="text-gray-400 text-sm">データがありません</p>
             ) : (
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {volumes.map((vol) => (
-                  <Link
-                    key={vol.id}
-                    href={`/works/${slug}/volumes/${vol.volumeNumber}`}
-                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>第{vol.volumeNumber}巻</span>
-                    {Number(vol.commentCount) > 0 && (
-                      <span className="text-xs text-indigo-500 font-medium">💬{vol.commentCount}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                  {pagedVolumes.map((vol) => (
+                    <Link
+                      key={vol.id}
+                      href={`/works/${slug}/volumes/${vol.volumeNumber}`}
+                      className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                    >
+                      <span>第{vol.volumeNumber}巻</span>
+                      {Number(vol.commentCount) > 0 && (
+                        <span className="text-xs text-indigo-500 font-medium">💬{vol.commentCount}</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+                <PaginationNav
+                  page={volPage}
+                  totalPages={volTotalPages}
+                  hrefFor={(p) => buildHref(slug, { epPage, volPage: p })}
+                />
+              </>
             )}
           </section>
 
@@ -130,21 +162,28 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
             {episodeList.length === 0 ? (
               <p className="text-gray-400 text-sm">データがありません</p>
             ) : (
-              <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
-                {episodeList.map((ep) => (
-                  <Link
-                    key={ep.id}
-                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
-                    title={ep.title ?? undefined}
-                    className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>{ep.episodeNumber}話</span>
-                    {Number(ep.commentCount) > 0 && (
-                      <span className="text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+                  {pagedEpisodes.map((ep) => (
+                    <Link
+                      key={ep.id}
+                      href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                      title={ep.title ?? undefined}
+                      className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                    >
+                      <span>{ep.episodeNumber}話</span>
+                      {Number(ep.commentCount) > 0 && (
+                        <span className="text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+                <PaginationNav
+                  page={epPage}
+                  totalPages={epTotalPages}
+                  hrefFor={(p) => buildHref(slug, { epPage: p, volPage })}
+                />
+              </>
             )}
           </section>
         </div>
@@ -156,21 +195,24 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           {episodeList.length === 0 ? (
             <p className="text-gray-400 text-sm">データがありません</p>
           ) : (
-            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-              {episodeList.map((ep) => (
-                <Link
-                  key={ep.id}
-                  href={`/works/${slug}/episodes/${ep.episodeNumber}`}
-                  title={ep.title ?? undefined}
-                  className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                >
-                  <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
-                  {Number(ep.commentCount) > 0 && (
-                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                  )}
-                </Link>
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {pagedEpisodes.map((ep) => (
+                  <Link
+                    key={ep.id}
+                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                    title={ep.title ?? undefined}
+                    className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  >
+                    <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
+                    {Number(ep.commentCount) > 0 && (
+                      <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+              <PaginationNav page={epPage} totalPages={epTotalPages} hrefFor={(p) => buildHref(slug, { epPage: p })} />
+            </>
           )}
         </section>
       )}

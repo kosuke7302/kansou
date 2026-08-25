@@ -9,6 +9,8 @@ import { LikeButton } from "@/app/_components/like-button";
 
 const BASE_URL = "https://www.kansou-log.com";
 
+export const revalidate = 60;
+
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {

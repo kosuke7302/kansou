@@ -92,18 +92,16 @@ function WorkCard({ work }: { work: Work }) {
 }
 
 export function WorksFilter({ works }: { works: Work[] }) {
-  const [query, setQuery] = useState("");
   const [genre, setGenre] = useState<GenreKey>("all");
   const [platform, setPlatform] = useState<Platform | "all">("all");
   const [page, setPage] = useState(1);
 
-  const isFiltering = query.trim() !== "" || genre !== "all" || platform !== "all";
+  const isFiltering = genre !== "all" || platform !== "all";
 
   const filtered = works.filter((w) => {
     const matchesGenre = genre === "all" || w.type === genre;
     const matchesPlatform = platform === "all" || w.platform === platform;
-    const matchesQuery = w.title.toLowerCase().includes(query.toLowerCase());
-    return matchesGenre && matchesPlatform && matchesQuery;
+    return matchesGenre && matchesPlatform;
   });
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -133,25 +131,8 @@ export function WorksFilter({ works }: { works: Work[] }) {
     setPage(1);
   }
 
-  function handleQueryChange(value: string) {
-    setQuery(value);
-    setPage(1);
-  }
-
   return (
     <div className="space-y-5">
-      {/* 検索バー */}
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => handleQueryChange(e.target.value)}
-          placeholder="作品タイトルで検索..."
-          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
-        />
-      </div>
-
       {/* ジャンルタブ */}
       <div className="flex gap-2 flex-wrap">
         {GENRE_TABS.map((tab) => (

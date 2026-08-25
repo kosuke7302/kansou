@@ -11,6 +11,8 @@ import { LikeButton } from "@/app/_components/like-button";
 
 const BASE_URL = "https://www.kansou-log.com";
 
+export const revalidate = 60;
+
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
 };
