@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition, useCallback } from "react";
 import Link from "next/link";
-import { updateEpisodeTitle } from "@/app/actions/episodes";
+import { updateEpisodeTitle, deleteEpisode } from "@/app/actions/episodes";
 
 type Episode = {
   id: number;
@@ -23,14 +23,17 @@ function EpisodeRow({
   ep,
   workSlug,
   onSaved,
+  onDeleted,
 }: {
   ep: Episode;
   workSlug: string;
   onSaved: (id: number, title: string | null) => void;
+  onDeleted: (id: number) => void;
 }) {
   const [value, setValue] = useState(ep.title ?? "");
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
 
   const label = ep.volumeNumber != null ? `第${ep.volumeNumber}巻` : `第${ep.episodeNumber}話`;
 
@@ -46,6 +49,14 @@ function EpisodeRow({
     });
   }
 
+  function handleDelete() {
+    if (!confirm(`${label}を削除しますか？紐づくコメントも全て削除され、元に戻せません。`)) return;
+    startDeleteTransition(async () => {
+      const res = await deleteEpisode(ep.id, workSlug);
+      if (!res.error) onDeleted(ep.id);
+    });
+  }
+
   const dirty = value !== (ep.title ?? "");
 
   return (
@@ -56,13 +67,13 @@ function EpisodeRow({
         onChange={e => setValue(e.target.value)}
         placeholder="サブタイトルなし"
         className="flex-1 border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-300"
-        disabled={isPending}
+        disabled={isPending || isDeleting}
         onKeyDown={e => { if (e.key === "Enter" && dirty) save(value || null); }}
       />
       {dirty && (
         <button
           onClick={() => save(value || null)}
-          disabled={isPending}
+          disabled={isPending || isDeleting}
           className="shrink-0 bg-indigo-600 text-white text-xs px-3 py-1 rounded hover:bg-indigo-700 disabled:opacity-50"
         >
           保存
@@ -72,12 +83,19 @@ function EpisodeRow({
       {ep.title && !dirty && (
         <button
           onClick={() => save(null)}
-          disabled={isPending}
+          disabled={isPending || isDeleting}
           className="shrink-0 text-xs text-red-400 hover:text-red-600 disabled:opacity-50"
         >
           クリア
         </button>
       )}
+      <button
+        onClick={handleDelete}
+        disabled={isPending || isDeleting}
+        className="shrink-0 text-xs text-red-500 hover:text-white hover:bg-red-500 border border-red-200 rounded px-2 py-1 disabled:opacity-50"
+      >
+        {isDeleting ? "削除中..." : "削除"}
+      </button>
     </div>
   );
 }
@@ -118,6 +136,11 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
 
   function handleSaved(id: number, title: string | null) {
     setEpisodes(prev => prev.map(e => e.id === id ? { ...e, title } : e));
+  }
+
+  function handleDeleted(id: number) {
+    setEpisodes(prev => prev.filter(e => e.id !== id));
+    setData(prev => prev ? { ...prev, total: prev.total - 1 } : prev);
   }
 
   const isManga = data?.workType === "manga";
@@ -169,7 +192,7 @@ export default function EpisodesPage({ params }: { params: Promise<{ id: string 
         ) : (
           <div>
             {episodes.map(ep => (
-              <EpisodeRow key={ep.id} ep={ep} workSlug={workSlug} onSaved={handleSaved} />
+              <EpisodeRow key={ep.id} ep={ep} workSlug={workSlug} onSaved={handleSaved} onDeleted={handleDeleted} />
             ))}
           </div>
         )}

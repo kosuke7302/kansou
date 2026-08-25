@@ -21,3 +21,13 @@ export async function updateEpisodeTitle(
   revalidatePath(`/works/${workSlug}`);
   return {};
 }
+
+export async function deleteEpisode(
+  episodeId: number,
+  workSlug: string,
+): Promise<{ error?: string }> {
+  if (!(await checkAuth())) return { error: "Unauthorized" };
+  await db.delete(episodes).where(eq(episodes.id, episodeId));
+  revalidatePath(`/works/${workSlug}`);
+  return {};
+}
