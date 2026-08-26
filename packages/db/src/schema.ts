@@ -54,6 +54,12 @@ export const favorites = pgTable("favorites", {
   uniqueIndex("favorites_user_work_idx").on(t.userId, t.workId),
 ]);
 
+export const userProfiles = pgTable("user_profiles", {
+  userId: text("user_id").primaryKey(),
+  nickname: varchar("nickname", { length: 100 }),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const contactMessages = pgTable("contact_messages", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
@@ -71,3 +77,5 @@ export type NewComment = typeof comments.$inferInsert;
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type Favorite = typeof favorites.$inferSelect;
 export type NewFavorite = typeof favorites.$inferInsert;
+export type UserProfile = typeof userProfiles.$inferSelect;
+export type NewUserProfile = typeof userProfiles.$inferInsert;

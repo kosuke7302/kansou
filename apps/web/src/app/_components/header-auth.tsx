@@ -14,7 +14,8 @@ export function HeaderAuth() {
     return (
       <button
         onClick={() => signIn("google")}
-        className="shrink-0 text-sm text-gray-500 hover:text-indigo-600 whitespace-nowrap"
+        title="ログインすると、お気に入り登録・コメント履歴の確認・ニックネームの保存ができます"
+        className="shrink-0 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-full whitespace-nowrap transition-colors"
       >
         ログイン
       </button>
@@ -29,10 +30,14 @@ export function HeaderAuth() {
       <Link href="/my-comments" className="text-xs text-gray-500 hover:text-indigo-600 whitespace-nowrap">
         マイコメント
       </Link>
-      {session.user.image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={session.user.image} alt="" className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
-      )}
+      <Link href="/account" title="アカウント設定">
+        {session.user.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={session.user.image} alt="" className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
+        ) : (
+          <span className="text-xs text-gray-500 hover:text-indigo-600">設定</span>
+        )}
+      </Link>
       <button
         onClick={() => signOut()}
         className="text-xs text-gray-400 hover:text-gray-600 whitespace-nowrap"

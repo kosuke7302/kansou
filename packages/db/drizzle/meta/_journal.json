@@ -64,6 +64,13 @@
       "when": 1787746056856,
       "tag": "0008_open_barracuda",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1787747418957,
+      "tag": "0009_naive_joystick",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { postComment, type CommentActionState } from "@/app/actions/comments";
 
 const NICKNAME_KEY = "kansou_nickname";
@@ -15,7 +15,7 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
@@ -79,6 +79,15 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
         >
           {pending ? "投稿中..." : "投稿する"}
         </button>
+
+        {status !== "authenticated" && status !== "loading" && (
+          <p className="text-xs text-gray-400">
+            <button type="button" onClick={() => signIn("google")} className="text-indigo-500 hover:underline">
+              ログイン
+            </button>
+            すると、投稿した感想を後から見返せます
+          </p>
+        )}
       </form>
     </section>
   );
