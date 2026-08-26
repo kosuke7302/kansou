@@ -1,13 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export function HeaderAuth() {
   const { data: session, status } = useSession();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   if (status === "loading") {
-    return <div className="w-20 h-8 shrink-0" />;
+    return <div className="w-8 h-8 shrink-0" />;
   }
 
   if (!session?.user) {
@@ -23,27 +25,64 @@ export function HeaderAuth() {
   }
 
   return (
-    <div className="flex items-center gap-3 shrink-0">
-      <Link href="/favorites" className="text-xs text-gray-500 hover:text-indigo-600 whitespace-nowrap">
-        お気に入り
-      </Link>
-      <Link href="/my-comments" className="text-xs text-gray-500 hover:text-indigo-600 whitespace-nowrap">
-        マイコメント
-      </Link>
-      <Link href="/account" title="アカウント設定">
+    <div className="relative shrink-0">
+      <button
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-label="アカウントメニュー"
+        className="block"
+      >
         {session.user.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={session.user.image} alt="" className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
+          <img
+            src={session.user.image}
+            alt=""
+            className="w-8 h-8 rounded-full"
+            referrerPolicy="no-referrer"
+          />
         ) : (
-          <span className="text-xs text-gray-500 hover:text-indigo-600">設定</span>
+          <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-medium">
+            {session.user.name?.[0] ?? "?"}
+          </div>
         )}
-      </Link>
-      <button
-        onClick={() => signOut()}
-        className="text-xs text-gray-400 hover:text-gray-600 whitespace-nowrap"
-      >
-        ログアウト
       </button>
+
+      {menuOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+          <div className="absolute right-0 top-full mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20">
+            <Link
+              href="/favorites"
+              onClick={() => setMenuOpen(false)}
+              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              お気に入り
+            </Link>
+            <Link
+              href="/my-comments"
+              onClick={() => setMenuOpen(false)}
+              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              マイコメント
+            </Link>
+            <Link
+              href="/account"
+              onClick={() => setMenuOpen(false)}
+              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              アカウント設定
+            </Link>
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                signOut();
+              }}
+              className="block w-full text-left px-4 py-2.5 text-sm text-gray-400 hover:bg-gray-50 border-t border-gray-100"
+            >
+              ログアウト
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
