@@ -91,6 +91,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="bg-white border-t border-gray-200 mt-auto">
           <div className="max-w-4xl mx-auto px-4 py-5">
             <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-3">
+              <Link href="/request" className="text-xs text-gray-500 hover:text-indigo-500">
+                作品をリクエスト
+              </Link>
               <Link href="/privacy-policy" className="text-xs text-gray-500 hover:text-indigo-500">
                 プライバシーポリシー
               </Link>

@@ -71,6 +71,13 @@
       "when": 1787747418957,
       "tag": "0009_naive_joystick",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1787749744258,
+      "tag": "0010_crazy_whistler",
+      "breakpoints": true
     }
   ]
 }

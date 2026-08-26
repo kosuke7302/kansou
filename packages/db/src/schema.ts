@@ -7,6 +7,13 @@ export const contentTypeEnum = pgEnum("content_type", [
   "movie",
 ]);
 
+export const requestStatusEnum = pgEnum("request_status", [
+  "pending",
+  "in_progress",
+  "added",
+  "rejected",
+]);
+
 export const works = pgTable("works", {
   id: serial("id").primaryKey(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
@@ -60,6 +67,17 @@ export const userProfiles = pgTable("user_profiles", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const workRequests = pgTable("work_requests", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  type: contentTypeEnum("type"),
+  note: text("note"),
+  requesterName: varchar("requester_name", { length: 100 }),
+  status: requestStatusEnum("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const contactMessages = pgTable("contact_messages", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
@@ -79,3 +97,5 @@ export type Favorite = typeof favorites.$inferSelect;
 export type NewFavorite = typeof favorites.$inferInsert;
 export type UserProfile = typeof userProfiles.$inferSelect;
 export type NewUserProfile = typeof userProfiles.$inferInsert;
+export type WorkRequest = typeof workRequests.$inferSelect;
+export type NewWorkRequest = typeof workRequests.$inferInsert;

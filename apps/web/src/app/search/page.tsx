@@ -107,7 +107,15 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           ))}
         </div>
       ) : query ? (
-        <p className="text-center text-gray-400 py-12">「{query}」に一致する作品が見つかりませんでした</p>
+        <div className="text-center py-12 space-y-3">
+          <p className="text-gray-400">「{query}」に一致する作品が見つかりませんでした</p>
+          <Link
+            href={`/request?title=${encodeURIComponent(query)}`}
+            className="inline-block text-sm text-indigo-600 border border-indigo-200 rounded-lg px-4 py-2 hover:bg-indigo-50 transition-colors"
+          >
+            この作品をリクエストする →
+          </Link>
+        </div>
       ) : (
         <p className="text-center text-gray-400 py-12">キーワードを入力して検索してください</p>
       )}

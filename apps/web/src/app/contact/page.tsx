@@ -14,7 +14,10 @@ export default function ContactPage() {
         <Link href="/" className="text-sm text-indigo-500 hover:underline">← トップへ戻る</Link>
         <h1 className="text-2xl font-bold mt-3">お問い合わせ</h1>
         <p className="text-sm text-gray-500 mt-1">
-          不適切なコンテンツの報告・掲載作品のリクエスト・その他のご意見はこちらからお送りください。
+          不適切なコンテンツの報告・その他のご意見はこちらからお送りください。
+          掲載してほしい作品のリクエストは
+          <Link href="/request" className="text-indigo-500 hover:underline">こちら</Link>
+          からどうぞ。
         </p>
       </div>
 
