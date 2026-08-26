@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { comments, episodes, works } from "@kansou/db";
 import { eq, and, isNull, sql } from "drizzle-orm";
+import { auth } from "@/auth";
 
 export type CommentActionState = { error?: string; success?: boolean };
 
@@ -67,7 +68,13 @@ export async function postComment(
     revalidatePath(`/works/${slug}/episodes/${episodeNumber}`);
   }
 
-  await db.insert(comments).values({ episodeId: episode.id, body: body.trim(), authorName });
+  const session = await auth();
+  await db.insert(comments).values({
+    episodeId: episode.id,
+    body: body.trim(),
+    authorName,
+    userId: session?.user?.id ?? null,
+  });
   revalidatePath("/");
   return { success: true };
 }
@@ -95,7 +102,13 @@ export async function postWorkComment(
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return { error: "作品が見つかりません" };
 
-  await db.insert(comments).values({ workId: work.id, body: body.trim(), authorName });
+  const session = await auth();
+  await db.insert(comments).values({
+    workId: work.id,
+    body: body.trim(),
+    authorName,
+    userId: session?.user?.id ?? null,
+  });
   revalidatePath(`/works/${slug}`);
   revalidatePath("/");
   return { success: true };

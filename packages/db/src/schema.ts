@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, integer, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, integer, timestamp, pgEnum, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const contentTypeEnum = pgEnum("content_type", [
   "manga",
@@ -36,11 +36,23 @@ export const comments = pgTable("comments", {
     .references(() => episodes.id, { onDelete: "cascade" }),
   workId: integer("work_id")
     .references(() => works.id, { onDelete: "cascade" }),
+  userId: text("user_id"), // Googleアカウントの安定ID（account.providerAccountId）。匿名投稿はnull
   body: text("body").notNull(),
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),
   likeCount: integer("like_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const favorites = pgTable("favorites", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  workId: integer("work_id")
+    .references(() => works.id, { onDelete: "cascade" })
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("favorites_user_work_idx").on(t.userId, t.workId),
+]);
 
 export const contactMessages = pgTable("contact_messages", {
   id: serial("id").primaryKey(),
@@ -57,3 +69,5 @@ export type NewEpisode = typeof episodes.$inferInsert;
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
 export type ContactMessage = typeof contactMessages.$inferSelect;
+export type Favorite = typeof favorites.$inferSelect;
+export type NewFavorite = typeof favorites.$inferInsert;

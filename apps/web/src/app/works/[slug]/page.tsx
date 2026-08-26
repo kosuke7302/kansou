@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments } from "@kansou/db";
+import { works, episodes, comments, favorites } from "@kansou/db";
 import { eq, asc, count, isNull, isNotNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { PaginationNav } from "@/app/_components/pagination-nav";
+import { FavoriteButton } from "@/app/_components/favorite-button";
+import { auth } from "@/auth";
 
 const PAGE_SIZE = 200;
 
@@ -72,6 +74,9 @@ export default async function WorkPage({
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
+  const session = await auth();
+  const userId = session?.user?.id;
+
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
   const tab: "episode" | "volume" = isManga && tabRaw === "volume" ? "volume" : "episode";
@@ -110,6 +115,7 @@ export default async function WorkPage({
     [{ volumeTotal }],
     pagedEpisodes,
     pagedVolumes,
+    favoriteRows,
   ] = await Promise.all([
     db.select({ workCommentCount: count(comments.id) }).from(comments)
       .where(and(eq(comments.workId, work.id), isNull(comments.episodeId))),
@@ -121,7 +127,12 @@ export default async function WorkPage({
       : Promise.resolve([{ volumeTotal: 0 }]),
     tab === "episode" ? pagedEpisodesQuery : Promise.resolve([] as EpisodeRow[]),
     isManga && tab === "volume" ? pagedVolumesQuery : Promise.resolve([] as EpisodeRow[]),
+    userId
+      ? db.select({ id: favorites.id }).from(favorites)
+          .where(and(eq(favorites.userId, userId), eq(favorites.workId, work.id))).limit(1)
+      : Promise.resolve([]),
   ]);
+  const isFavorited = favoriteRows.length > 0;
 
   const epTotalPages = Math.max(1, Math.ceil(Number(episodeTotal) / PAGE_SIZE));
   const volTotalPages = Math.max(1, Math.ceil(Number(volumeTotal) / PAGE_SIZE));
@@ -130,11 +141,12 @@ export default async function WorkPage({
     <div className="space-y-6">
       <div>
         <Link href="/" className="text-sm text-indigo-500 hover:underline">← 作品一覧</Link>
-        <div className="flex items-center gap-3 mt-2">
+        <div className="flex items-center gap-3 mt-2 flex-wrap">
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
             {TYPE_LABELS[work.type]}
           </span>
           <h1 className="text-2xl font-bold">{work.title}</h1>
+          <FavoriteButton workId={work.id} slug={slug} initialFavorited={isFavorited} isLoggedIn={!!userId} />
         </div>
         {work.description && (
           <p className="text-gray-500 text-sm mt-1">{work.description}</p>

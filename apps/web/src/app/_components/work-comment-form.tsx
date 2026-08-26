@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 import { postWorkComment, type CommentActionState } from "@/app/actions/comments";
 
 const NICKNAME_KEY = "kansou_nickname";
@@ -10,11 +11,13 @@ export function WorkCommentForm({ slug }: { slug: string }) {
   const [state, action, pending] = useActionState(postWorkComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
     if (saved) setNickname(saved);
-  }, []);
+    else if (session?.user?.name) setNickname(session.user.name);
+  }, [session?.user?.name]);
 
   useEffect(() => {
     if (state.success && textareaRef.current) {
