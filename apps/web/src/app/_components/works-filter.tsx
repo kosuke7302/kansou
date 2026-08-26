@@ -184,6 +184,15 @@ export function WorksFilter({ works }: { works: Work[] }) {
         )}
       </div>
 
+      {/* 作品リクエスト導線 */}
+      <Link
+        href="/request"
+        className="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-2.5 hover:bg-indigo-100 transition-colors"
+      >
+        <span className="text-sm text-indigo-700">お探しの作品がない場合はリクエストできます</span>
+        <span className="text-indigo-500 text-sm shrink-0 ml-2">→</span>
+      </Link>
+
       {/* 話題の作品（絞り込みなし時のみ） */}
       {!isFiltering && (
         <section>
