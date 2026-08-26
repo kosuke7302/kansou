@@ -71,7 +71,7 @@ function WorkCard({ work }: { work: Work }) {
   return (
     <Link
       href={`/works/${work.slug}`}
-      className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+      className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
     >
       <div className="flex items-center gap-2 min-w-0">
         <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
@@ -82,7 +82,7 @@ function WorkCard({ work }: { work: Work }) {
             {PLATFORM_META[work.platform].label}
           </span>
         )}
-        <span className="font-medium truncate">{work.title}</span>
+        <span className="font-medium truncate min-w-0">{work.title}</span>
       </div>
       <span className="shrink-0 text-sm text-gray-400 ml-3">
         💬 {work.commentCount.toLocaleString()}
@@ -190,7 +190,7 @@ export function WorksFilter({ works }: { works: Work[] }) {
           <h2 className="text-base font-semibold mb-3">{topLabel}</h2>
           <div className="grid gap-2">
             {topList.map((work, i) => (
-              <div key={work.slug} className="flex items-center gap-3">
+              <div key={work.slug} className="flex items-center gap-3 min-w-0">
                 <span className={`w-6 text-center text-sm font-bold shrink-0 ${i < 3 ? "text-indigo-500" : "text-gray-400"}`}>
                   {i + 1}
                 </span>

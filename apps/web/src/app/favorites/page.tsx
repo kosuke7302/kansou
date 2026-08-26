@@ -56,12 +56,12 @@ export default async function FavoritesPage() {
             <Link
               key={work.slug}
               href={`/works/${work.slug}`}
-              className="flex items-center gap-3 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+              className="flex items-center gap-3 min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
             >
               <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
                 {TYPE_LABELS[work.type]}
               </span>
-              <span className="font-medium truncate">{work.title}</span>
+              <span className="font-medium truncate min-w-0">{work.title}</span>
             </Link>
           ))}
         </div>
