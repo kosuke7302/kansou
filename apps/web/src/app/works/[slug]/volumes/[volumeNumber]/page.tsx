@@ -8,7 +8,7 @@ import { eq, and, isNull, asc } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
-import { LikeButton } from "@/app/_components/like-button";
+import { CommentThread } from "@/app/_components/comment-thread";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -118,20 +118,7 @@ export default async function VolumePage({ params }: { params: Params }) {
         {commentList.length === 0 ? (
           <p className="text-center text-gray-400 py-8">まだ感想がありません。最初の一言を投稿しましょう！</p>
         ) : (
-          commentList.map((comment) => (
-            <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
-                  <span className="text-xs text-gray-400">
-                    {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
-                  </span>
-                </div>
-                <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
-              </div>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
-            </div>
-          ))
+          <CommentThread slug={slug} volumeNumber={volNum} comments={commentList} />
         )}
       </section>
 

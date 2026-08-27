@@ -78,6 +78,13 @@
       "when": 1787749744258,
       "tag": "0010_crazy_whistler",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1787829724515,
+      "tag": "0011_cultured_pet_avengers",
+      "breakpoints": true
     }
   ]
 }

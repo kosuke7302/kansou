@@ -17,6 +17,7 @@ export async function postComment(
   const episodeNumber = formData.get("episodeNumber");
   const volumeNumber = formData.get("volumeNumber");
   const authorNameRaw = formData.get("authorName");
+  const parentIdRaw = formData.get("parentId");
 
   if (
     typeof body !== "string" ||
@@ -68,9 +69,21 @@ export async function postComment(
     revalidatePath(`/works/${slug}/episodes/${episodeNumber}`);
   }
 
+  const parentId =
+    typeof parentIdRaw === "string" && parentIdRaw.trim() ? Number(parentIdRaw) : null;
+  if (parentId !== null) {
+    const [parent] = await db
+      .select({ id: comments.id })
+      .from(comments)
+      .where(and(eq(comments.id, parentId), eq(comments.episodeId, episode.id)))
+      .limit(1);
+    if (!parent) return { error: "返信先のコメントが見つかりません" };
+  }
+
   const session = await auth();
   await db.insert(comments).values({
     episodeId: episode.id,
+    parentId,
     body: body.trim(),
     authorName,
     userId: session?.user?.id ?? null,
@@ -86,6 +99,7 @@ export async function postWorkComment(
   const body = formData.get("body");
   const slug = formData.get("slug");
   const authorNameRaw = formData.get("authorName");
+  const parentIdRaw = formData.get("parentId");
 
   if (typeof body !== "string" || typeof slug !== "string" || body.trim().length === 0) {
     return { error: "感想を入力してください" };
@@ -102,9 +116,21 @@ export async function postWorkComment(
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return { error: "作品が見つかりません" };
 
+  const parentId =
+    typeof parentIdRaw === "string" && parentIdRaw.trim() ? Number(parentIdRaw) : null;
+  if (parentId !== null) {
+    const [parent] = await db
+      .select({ id: comments.id })
+      .from(comments)
+      .where(and(eq(comments.id, parentId), eq(comments.workId, work.id)))
+      .limit(1);
+    if (!parent) return { error: "返信先のコメントが見つかりません" };
+  }
+
   const session = await auth();
   await db.insert(comments).values({
     workId: work.id,
+    parentId,
     body: body.trim(),
     authorName,
     userId: session?.user?.id ?? null,

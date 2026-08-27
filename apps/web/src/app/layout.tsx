@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import Link from "next/link";
 import { SessionProvider } from "next-auth/react";
@@ -11,6 +11,10 @@ const geistSans = Geist({
 });
 
 const BASE_URL = "https://www.kansou-log.com";
+
+export const viewport: Viewport = {
+  colorScheme: "light",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

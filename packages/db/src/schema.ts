@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, integer, timestamp, pgEnum, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, integer, timestamp, pgEnum, uniqueIndex, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const contentTypeEnum = pgEnum("content_type", [
   "manga",
@@ -43,6 +43,8 @@ export const comments = pgTable("comments", {
     .references(() => episodes.id, { onDelete: "cascade" }),
   workId: integer("work_id")
     .references(() => works.id, { onDelete: "cascade" }),
+  parentId: integer("parent_id")
+    .references((): AnyPgColumn => comments.id, { onDelete: "cascade" }),
   userId: text("user_id"), // Googleアカウントの安定ID（account.providerAccountId）。匿名投稿はnull
   body: text("body").notNull(),
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { works, comments } from "@kansou/db";
 import { eq, asc, and, isNull } from "drizzle-orm";
 import { WorkCommentForm } from "@/app/_components/work-comment-form";
-import { LikeButton } from "@/app/_components/like-button";
+import { CommentThread } from "@/app/_components/comment-thread";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -60,20 +60,7 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
             まだ全体感想がありません。読了・完走済みの方はぜひ投稿を！
           </p>
         ) : (
-          commentList.map((comment) => (
-            <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
-                  <span className="text-xs text-gray-400">
-                    {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
-                  </span>
-                </div>
-                <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
-              </div>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
-            </div>
-          ))
+          <CommentThread slug={slug} comments={commentList} />
         )}
       </section>
 
