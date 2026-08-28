@@ -14,6 +14,14 @@ export const requestStatusEnum = pgEnum("request_status", [
   "rejected",
 ]);
 
+export const reactionTypeEnum = pgEnum("reaction_type", [
+  "cry",
+  "laugh",
+  "shock",
+  "hype",
+  "angry",
+]);
+
 export const works = pgTable("works", {
   id: serial("id").primaryKey(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
@@ -63,6 +71,17 @@ export const favorites = pgTable("favorites", {
   uniqueIndex("favorites_user_work_idx").on(t.userId, t.workId),
 ]);
 
+export const episodeReactions = pgTable("episode_reactions", {
+  id: serial("id").primaryKey(),
+  episodeId: integer("episode_id")
+    .references(() => episodes.id, { onDelete: "cascade" })
+    .notNull(),
+  type: reactionTypeEnum("type").notNull(),
+  count: integer("count").default(0).notNull(),
+}, (t) => [
+  uniqueIndex("episode_reactions_episode_type_idx").on(t.episodeId, t.type),
+]);
+
 export const userProfiles = pgTable("user_profiles", {
   userId: text("user_id").primaryKey(),
   nickname: varchar("nickname", { length: 100 }),
@@ -101,3 +120,5 @@ export type UserProfile = typeof userProfiles.$inferSelect;
 export type NewUserProfile = typeof userProfiles.$inferInsert;
 export type WorkRequest = typeof workRequests.$inferSelect;
 export type NewWorkRequest = typeof workRequests.$inferInsert;
+export type EpisodeReaction = typeof episodeReactions.$inferSelect;
+export type NewEpisodeReaction = typeof episodeReactions.$inferInsert;

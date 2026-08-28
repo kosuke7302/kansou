@@ -17,6 +17,8 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { data: session, status } = useSession();
 
+  const spoilerLabel = episodeNumber !== undefined ? `第${episodeNumber}話` : `第${volumeNumber}巻`;
+
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
     if (saved) setNickname(saved);
@@ -36,7 +38,10 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
 
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-4">
-      <h2 className="text-sm font-semibold mb-3">感想を投稿する</h2>
+      <h2 className="text-sm font-semibold">💬 今回の感想を一言</h2>
+      <p className="text-xs text-gray-400 mt-0.5 mb-3">
+        「○○最高」「ここ意味わからん」だけでもOK！
+      </p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
         {episodeNumber !== undefined && (
@@ -65,7 +70,7 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
         <textarea
           ref={textareaRef}
           name="body"
-          placeholder="感想を書いてください（ネタバレ注意）"
+          placeholder="感想を書く..."
           rows={4}
           maxLength={1000}
           required
@@ -80,14 +85,18 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
           {pending ? "投稿中..." : "投稿する"}
         </button>
 
-        {status !== "authenticated" && status !== "loading" && (
-          <p className="text-xs text-gray-400">
-            <button type="button" onClick={() => signIn("google")} className="text-indigo-500 hover:underline">
-              ログイン
-            </button>
-            すると、投稿した感想を後から見返せます
-          </p>
-        )}
+        <div className="text-xs text-gray-400 space-y-0.5">
+          <p>※ {spoilerLabel}までのネタバレOK</p>
+          <p>※ 匿名で投稿できます</p>
+          {status !== "authenticated" && status !== "loading" && (
+            <p>
+              <button type="button" onClick={() => signIn("google")} className="text-indigo-500 hover:underline">
+                ログイン
+              </button>
+              すると、投稿した感想を後から見返せます
+            </p>
+          )}
+        </div>
       </form>
     </section>
   );

@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments } from "@kansou/db";
+import { works, episodes, comments, episodeReactions } from "@kansou/db";
 import { eq, and, isNull, asc } from "drizzle-orm";
 
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
+import { EpisodeReactions } from "@/app/_components/episode-reactions";
+import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -58,6 +60,14 @@ export default async function VolumePage({ params }: { params: Params }) {
     .from(comments)
     .where(eq(comments.episodeId, volume.id))
     .orderBy(asc(comments.createdAt));
+
+  const reactionRows = await db
+    .select({ type: episodeReactions.type, count: episodeReactions.count })
+    .from(episodeReactions)
+    .where(eq(episodeReactions.episodeId, volume.id));
+  const reactionCounts = Object.fromEntries(
+    REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
+  ) as Record<ReactionType, number>;
 
   const shareTitle = `${work.title} 第${volNum}巻 感想`;
   const pageUrl = `${BASE_URL}/works/${slug}/volumes/${volNum}`;
@@ -114,7 +124,14 @@ export default async function VolumePage({ params }: { params: Params }) {
         </div>
       </div>
 
+      <EpisodeReactions
+        episodeId={volume.id}
+        episodeLabel={`第${volNum}巻`}
+        initialCounts={reactionCounts}
+      />
+
       <section className="space-y-3">
+        <h2 className="text-sm font-semibold">みんなの感想</h2>
         {commentList.length === 0 ? (
           <p className="text-center text-gray-400 py-8">まだ感想がありません。最初の一言を投稿しましょう！</p>
         ) : (
