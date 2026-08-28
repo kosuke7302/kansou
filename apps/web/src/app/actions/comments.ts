@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { comments, episodes, works } from "@kansou/db";
@@ -145,4 +146,24 @@ export async function likeComment(commentId: number): Promise<void> {
     .update(comments)
     .set({ likeCount: sql`${comments.likeCount} + 1` })
     .where(eq(comments.id, commentId));
+}
+
+export async function unlikeComment(commentId: number): Promise<void> {
+  await db
+    .update(comments)
+    .set({ likeCount: sql`GREATEST(${comments.likeCount} - 1, 0)` })
+    .where(eq(comments.id, commentId));
+}
+
+async function checkAdminAuth() {
+  const jar = await cookies();
+  return jar.get("admin_session")?.value === process.env.ADMIN_PASSWORD;
+}
+
+export async function deleteComment(commentId: number): Promise<{ error?: string }> {
+  if (!(await checkAdminAuth())) return { error: "Unauthorized" };
+  await db.delete(comments).where(eq(comments.id, commentId));
+  revalidatePath("/admin/comments");
+  revalidatePath("/");
+  return {};
 }
