@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { works, episodes, comments, favorites } from "@kansou/db";
-import { eq, asc, count, isNull, isNotNull, and } from "drizzle-orm";
+import { eq, asc, count, countDistinct, isNull, isNotNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { PaginationNav } from "@/app/_components/pagination-nav";
 import { FavoriteButton } from "@/app/_components/favorite-button";
@@ -19,9 +19,11 @@ type EpisodeRow = {
   commentCount: number;
 };
 
+type Tab = "episode" | "volume" | "commented";
+
 function buildHref(
   slug: string,
-  params: { epPage?: number; volPage?: number; tab?: "episode" | "volume" }
+  params: { epPage?: number; volPage?: number; tab?: Tab }
 ) {
   const usp = new URLSearchParams();
   if (params.tab && params.tab !== "episode") usp.set("tab", params.tab);
@@ -79,7 +81,8 @@ export default async function WorkPage({
 
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
-  const tab: "episode" | "volume" = isManga && tabRaw === "volume" ? "volume" : "episode";
+  const tab: Tab =
+    tabRaw === "commented" ? "commented" : isManga && tabRaw === "volume" ? "volume" : "episode";
 
   const episodeCols = {
     id: episodes.id,
@@ -109,12 +112,23 @@ export default async function WorkPage({
     .limit(PAGE_SIZE)
     .offset((volPage - 1) * PAGE_SIZE);
 
+  const commentedQuery = db
+    .select(episodeCols)
+    .from(episodes)
+    .innerJoin(comments, eq(comments.episodeId, episodes.id))
+    .where(eq(episodes.workId, work.id))
+    .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
+    .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber))
+    .limit(PAGE_SIZE);
+
   const [
     [{ workCommentCount }],
     [{ episodeTotal }],
     [{ volumeTotal }],
+    [{ commentedTotal }],
     pagedEpisodes,
     pagedVolumes,
+    commentedEpisodes,
     favoriteRows,
   ] = await Promise.all([
     db.select({ workCommentCount: count(comments.id) }).from(comments)
@@ -125,8 +139,12 @@ export default async function WorkPage({
       ? db.select({ volumeTotal: count() }).from(episodes)
           .where(and(eq(episodes.workId, work.id), isNull(episodes.episodeNumber)))
       : Promise.resolve([{ volumeTotal: 0 }]),
+    db.select({ commentedTotal: countDistinct(episodes.id) }).from(episodes)
+      .innerJoin(comments, eq(comments.episodeId, episodes.id))
+      .where(eq(episodes.workId, work.id)),
     tab === "episode" ? pagedEpisodesQuery : Promise.resolve([] as EpisodeRow[]),
     isManga && tab === "volume" ? pagedVolumesQuery : Promise.resolve([] as EpisodeRow[]),
+    tab === "commented" ? commentedQuery : Promise.resolve([] as EpisodeRow[]),
     userId
       ? db.select({ id: favorites.id }).from(favorites)
           .where(and(eq(favorites.userId, userId), eq(favorites.workId, work.id))).limit(1)
@@ -174,8 +192,8 @@ export default async function WorkPage({
 
       {isManga ? (
         <section>
-          {/* 話／巻タブ */}
-          <div className="flex gap-2 mb-3">
+          {/* 話／巻／コメントありタブ */}
+          <div className="flex gap-2 mb-3 flex-wrap">
             <Link
               href={buildHref(slug, { tab: "episode", epPage, volPage })}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -192,9 +210,39 @@ export default async function WorkPage({
             >
               巻（{volumeTotal}）
             </Link>
+            <Link
+              href={buildHref(slug, { tab: "commented", epPage, volPage })}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              }`}
+            >
+              💬コメントあり（{commentedTotal}）
+            </Link>
           </div>
 
-          {tab === "volume" ? (
+          {tab === "commented" ? (
+            commentedEpisodes.length === 0 ? (
+              <p className="text-gray-400 text-sm">まだコメントがありません</p>
+            ) : (
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {commentedEpisodes.map((ep) => (
+                  <Link
+                    key={ep.id}
+                    href={
+                      ep.volumeNumber != null
+                        ? `/works/${slug}/volumes/${ep.volumeNumber}`
+                        : `/works/${slug}/episodes/${ep.episodeNumber}`
+                    }
+                    title={ep.title ?? undefined}
+                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  >
+                    <span>{ep.volumeNumber != null ? `第${ep.volumeNumber}巻` : `${ep.episodeNumber}話`}</span>
+                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                  </Link>
+                ))}
+              </div>
+            )
+          ) : tab === "volume" ? (
             pagedVolumes.length === 0 ? (
               <p className="text-gray-400 text-sm">データがありません</p>
             ) : (
@@ -249,10 +297,48 @@ export default async function WorkPage({
         </section>
       ) : (
         <section>
-          <h2 className="text-lg font-semibold mb-3">
-            {isMovie ? "作品" : "話数一覧"}
-          </h2>
-          {pagedEpisodes.length === 0 ? (
+          {isMovie ? (
+            <h2 className="text-lg font-semibold mb-3">作品</h2>
+          ) : (
+            <div className="flex gap-2 mb-3 flex-wrap">
+              <Link
+                href={buildHref(slug, { tab: "episode", epPage })}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  tab === "episode" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+                }`}
+              >
+                話数一覧（{episodeTotal}）
+              </Link>
+              <Link
+                href={buildHref(slug, { tab: "commented", epPage })}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+                }`}
+              >
+                💬コメントあり（{commentedTotal}）
+              </Link>
+            </div>
+          )}
+
+          {tab === "commented" && !isMovie ? (
+            commentedEpisodes.length === 0 ? (
+              <p className="text-gray-400 text-sm">まだコメントがありません</p>
+            ) : (
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {commentedEpisodes.map((ep) => (
+                  <Link
+                    key={ep.id}
+                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
+                    title={ep.title ?? undefined}
+                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  >
+                    <span>第{ep.episodeNumber}話</span>
+                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                  </Link>
+                ))}
+              </div>
+            )
+          ) : pagedEpisodes.length === 0 ? (
             <p className="text-gray-400 text-sm">データがありません</p>
           ) : (
             <>
