@@ -60,12 +60,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-6">
-      <section>
-        <h1 className="text-2xl font-bold mb-1">感想ログ</h1>
-        <p className="text-gray-500 text-sm">
-          アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるサイト
-        </p>
-      </section>
+      <h1 className="text-2xl font-bold">感想ログ</h1>
 
       <WorksFilter works={allWorks} />
     </div>

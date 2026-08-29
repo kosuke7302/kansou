@@ -89,7 +89,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
           <div className="bg-indigo-50 border-b border-indigo-100">
             <p className="max-w-4xl mx-auto px-4 py-1.5 text-center text-xs text-indigo-700">
-              感想ログは、アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるサイトです
+              アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるサイト
             </p>
           </div>
 
