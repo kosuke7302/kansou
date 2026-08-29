@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { works } from "@kansou/db";
 import { eq } from "drizzle-orm";
 
-export const runtime = "edge";
+export const revalidate = 86400;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -61,6 +61,7 @@ export default async function OgImage({ params }: Props) {
         </div>
         <div
           style={{
+            display: "flex",
             fontSize: 36,
             color: "rgba(255,255,255,0.85)",
             fontWeight: 600,
