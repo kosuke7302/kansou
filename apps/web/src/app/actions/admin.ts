@@ -41,7 +41,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
   const title = formData.get("title")?.toString().trim() ?? "";
   const slugRaw = formData.get("slug")?.toString().trim() ?? "";
   const type = formData.get("type")?.toString() as "manga" | "anime" | "drama" | "movie";
-  const platform = formData.get("platform")?.toString() || null;
+  const platforms = formData.getAll("platforms").map(p => p.toString()).filter(Boolean);
   const description = formData.get("description")?.toString().trim() || null;
   const keywords = formData.get("keywords")?.toString().trim() || null;
   const episodeCount = Number(formData.get("episodeCount") ?? 0);
@@ -59,7 +59,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
 
   const [work] = await db
     .insert(works)
-    .values({ slug, title, type, platform: platform || null, description, keywords })
+    .values({ slug, title, type, platforms: platforms.length > 0 ? platforms : null, description, keywords })
     .returning();
 
   if (type === "manga") {
@@ -93,7 +93,7 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
   if (!id) return { error: "作品IDが不正です" };
 
   const title = formData.get("title")?.toString().trim() ?? "";
-  const platform = formData.get("platform")?.toString() || null;
+  const platforms = formData.getAll("platforms").map(p => p.toString()).filter(Boolean);
   const description = formData.get("description")?.toString().trim() || null;
   const keywords = formData.get("keywords")?.toString().trim() || null;
   const addEpisodes = Number(formData.get("addEpisodes") ?? 0);
@@ -107,7 +107,7 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
 
   await db
     .update(works)
-    .set({ title, platform: platform || null, description, keywords })
+    .set({ title, platforms: platforms.length > 0 ? platforms : null, description, keywords })
     .where(eq(works.id, id));
 
   // 話数追加（アニメ・ドラマ）
@@ -181,7 +181,8 @@ export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Pro
   for (const line of lines) {
     const parts = line.split(",").map(p => p.trim());
     if (parts.length < 3) { errors.push(`形式エラー: ${line}`); continue; }
-    const [title, type, countStr, slugInput, platform] = parts;
+    const [title, type, countStr, slugInput, platformStr] = parts;
+    const platforms = platformStr ? platformStr.split("|").map(p => p.trim()).filter(Boolean) : [];
     if (!["manga", "anime", "drama", "movie"].includes(type)) {
       errors.push(`ジャンル不正 (${type}): ${title}`); continue;
     }
@@ -195,7 +196,7 @@ export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Pro
 
     const [work] = await db
       .insert(works)
-      .values({ slug, title, type: type as "manga" | "anime" | "drama" | "movie", platform: platform || null })
+      .values({ slug, title, type: type as "manga" | "anime" | "drama" | "movie", platforms: platforms.length > 0 ? platforms : null })
       .returning();
 
     if (type === "manga") {

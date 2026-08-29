@@ -42,7 +42,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           slug: works.slug,
           title: works.title,
           type: works.type,
-          platform: works.platform,
+          platforms: works.platforms,
           description: works.description,
         })
         .from(works)
@@ -93,9 +93,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
                     {TYPE_LABELS[work.type]}
                   </span>
-                  {work.platform && (
-                    <span className="text-xs text-gray-400">{PLATFORM_LABELS[work.platform] ?? work.platform}</span>
-                  )}
+                  {(work.platforms ?? []).map((p) => (
+                    <span key={p} className="text-xs text-gray-400">{PLATFORM_LABELS[p] ?? p}</span>
+                  ))}
                 </div>
                 <p className="font-medium text-sm">{work.title}</p>
                 {work.description && (

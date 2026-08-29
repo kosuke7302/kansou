@@ -10,7 +10,7 @@ export type Work = {
   slug: string;
   title: string;
   type: ContentType;
-  platform: Platform | null;
+  platforms: Platform[] | null;
   episodeCount: number;
   commentCount: number;
   recentCommentCount: number;
@@ -77,11 +77,13 @@ function WorkCard({ work }: { work: Work }) {
         <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
           {TYPE_LABELS[work.type]}
         </span>
-        {work.platform && PLATFORM_META[work.platform] && (
-          <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${PLATFORM_META[work.platform].badge}`}>
-            {PLATFORM_META[work.platform].label}
-          </span>
-        )}
+        {(work.platforms ?? []).map((p) => (
+          PLATFORM_META[p] && (
+            <span key={p} className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${PLATFORM_META[p].badge}`}>
+              {PLATFORM_META[p].label}
+            </span>
+          )
+        ))}
         <span className="font-medium truncate min-w-0">{work.title}</span>
       </div>
       <span className="shrink-0 text-sm text-gray-400 ml-3">
@@ -101,7 +103,7 @@ export function WorksFilter({ works }: { works: Work[] }) {
 
   const filtered = works.filter((w) => {
     const matchesGenre = genre === "all" || w.type === genre;
-    const matchesPlatform = platform === "all" || w.platform === platform;
+    const matchesPlatform = platform === "all" || (w.platforms ?? []).includes(platform);
     return matchesGenre && matchesPlatform;
   });
 

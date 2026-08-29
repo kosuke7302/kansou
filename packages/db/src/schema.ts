@@ -27,7 +27,7 @@ export const works = pgTable("works", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: varchar("title", { length: 255 }).notNull(),
   type: contentTypeEnum("type").notNull(),
-  platform: varchar("platform", { length: 50 }), // "netflix" | "amazon_prime" | "disney_plus"
+  platforms: varchar("platforms", { length: 50 }).array(), // ["netflix", "amazon_prime", ...]
   description: text("description"),
   keywords: text("keywords"), // 検索用キーワード（スペース区切り）
   thumbnailUrl: varchar("thumbnail_url", { length: 512 }),

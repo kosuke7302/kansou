@@ -188,7 +188,7 @@ export default async function WorkPage({
         </div>
       </Link>
 
-      <StreamingBanner platform={work.platform} />
+      <StreamingBanner platforms={work.platforms} />
 
       {isManga ? (
         <section>

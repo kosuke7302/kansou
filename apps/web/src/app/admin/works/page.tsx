@@ -16,10 +16,10 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default async function AdminWorksPage() {
   const rows = await db
-    .select({ id: works.id, title: works.title, slug: works.slug, type: works.type, platform: works.platform, episodeCount: count(episodes.id) })
+    .select({ id: works.id, title: works.title, slug: works.slug, type: works.type, platforms: works.platforms, episodeCount: count(episodes.id) })
     .from(works)
     .leftJoin(episodes, eq(episodes.workId, works.id))
-    .groupBy(works.id, works.title, works.slug, works.type, works.platform)
+    .groupBy(works.id, works.title, works.slug, works.type, works.platforms)
     .orderBy(works.type, works.title);
 
   const counts = rows.reduce((acc, r) => {
@@ -73,7 +73,10 @@ export default async function AdminWorksPage() {
                 </td>
                 <td className="px-4 py-2.5 text-right text-gray-500">{row.episodeCount}</td>
                 <td className="px-4 py-2.5 text-xs text-gray-400">
-                  {{ netflix: "Netflix", amazon_prime: "Prime", disney_plus: "Disney+", hulu: "Hulu", u_next: "U-NEXT", d_anime: "dアニメ", abema: "ABEMA", lemino: "Lemino", fod: "FOD" }[row.platform ?? ""] ?? ""}
+                  {(row.platforms ?? [])
+                    .map((p) => ({ netflix: "Netflix", amazon_prime: "Prime", disney_plus: "Disney+", hulu: "Hulu", u_next: "U-NEXT", d_anime: "dアニメ", abema: "ABEMA", lemino: "Lemino", fod: "FOD" } as Record<string, string>)[p ?? ""] ?? "")
+                    .filter(Boolean)
+                    .join(", ")}
                 </td>
                 <td className="px-4 py-2.5 text-right">
                   <div className="flex items-center justify-end gap-2">

@@ -12,12 +12,12 @@ async function getWorks(): Promise<Work[]> {
       slug: works.slug,
       title: works.title,
       type: works.type,
-      platform: works.platform,
+      platforms: works.platforms,
       episodeCount: count(episodes.id),
     })
     .from(works)
     .leftJoin(episodes, eq(episodes.workId, works.id))
-    .groupBy(works.id, works.slug, works.title, works.type, works.platform);
+    .groupBy(works.id, works.slug, works.title, works.type, works.platforms);
 
   // 総コメント数
   const commentCountRows = await db
@@ -48,7 +48,7 @@ async function getWorks(): Promise<Work[]> {
     slug: w.slug,
     title: w.title,
     type: w.type,
-    platform: (w.platform as import("./_components/works-filter").Platform | null) ?? null,
+    platforms: (w.platforms as import("./_components/works-filter").Platform[] | null) ?? null,
     episodeCount: Number(w.episodeCount),
     commentCount: commentMap.get(w.id) ?? 0,
     recentCommentCount: recentMap.get(w.id) ?? 0,

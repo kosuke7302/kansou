@@ -9,6 +9,18 @@ function toSlug(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+const PLATFORM_OPTIONS = [
+  { value: "netflix", label: "Netflix" },
+  { value: "amazon_prime", label: "Amazon Prime Video" },
+  { value: "disney_plus", label: "Disney+" },
+  { value: "hulu", label: "Hulu" },
+  { value: "u_next", label: "U-NEXT" },
+  { value: "d_anime", label: "dアニメストア" },
+  { value: "abema", label: "ABEMA" },
+  { value: "lemino", label: "Lemino" },
+  { value: "fod", label: "FOD Premium" },
+];
+
 export default function NewWorkPage() {
   const [tab, setTab] = useState<"single" | "bulk">("single");
   const [singleState, singleAction, singlePending] = useActionState(addWork, initialState);
@@ -137,24 +149,16 @@ export default function NewWorkPage() {
                 </>
               )}
 
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">配信プラットフォーム</label>
-                <select
-                  name="platform"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                  disabled={singlePending}
-                >
-                  <option value="">なし</option>
-                  <option value="netflix">Netflix</option>
-                  <option value="amazon_prime">Amazon Prime Video</option>
-                  <option value="disney_plus">Disney+</option>
-                  <option value="hulu">Hulu</option>
-                  <option value="u_next">U-NEXT</option>
-                  <option value="d_anime">dアニメストア</option>
-                  <option value="abema">ABEMA</option>
-                  <option value="lemino">Lemino</option>
-                  <option value="fod">FOD Premium</option>
-                </select>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-600 mb-1">配信プラットフォーム（複数選択可）</label>
+                <div className="flex flex-wrap gap-3">
+                  {PLATFORM_OPTIONS.map((p) => (
+                    <label key={p.value} className="flex items-center gap-1.5 text-sm">
+                      <input type="checkbox" name="platforms" value={p.value} disabled={singlePending} />
+                      {p.label}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="col-span-2">
@@ -183,7 +187,7 @@ export default function NewWorkPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <p className="text-sm text-gray-500 mb-4">
             1行1作品でカンマ区切りで入力してください。<br />
-            形式: <code className="bg-gray-100 px-1 rounded">タイトル,ジャンル,話数(漫画は巻数),スラグ[,プラットフォーム]</code><br />
+            形式: <code className="bg-gray-100 px-1 rounded">タイトル,ジャンル,話数(漫画は巻数),スラグ[,プラットフォーム1|プラットフォーム2...]</code><br />
             ジャンル: <code className="bg-gray-100 px-1 rounded">anime</code> /
             <code className="bg-gray-100 px-1 rounded ml-1">manga</code> /
             <code className="bg-gray-100 px-1 rounded ml-1">drama</code> /
