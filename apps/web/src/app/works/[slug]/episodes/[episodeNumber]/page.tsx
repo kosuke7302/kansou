@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments, episodeReactions } from "@kansou/db";
-import { eq, and, asc } from "drizzle-orm";
+import { works, episodes, comments, episodeReactions, episodeRatings } from "@kansou/db";
+import { eq, and, asc, avg, count } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeReactions } from "@/app/_components/episode-reactions";
+import { EpisodeRating } from "@/app/_components/episode-rating";
 import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
+import { auth } from "@/auth";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -83,6 +85,20 @@ export default async function EpisodePage({
     REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
   ) as Record<ReactionType, number>;
 
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const [[{ averageRating, ratingCount }], myRatingRows] = await Promise.all([
+    db.select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
+      .from(episodeRatings)
+      .where(eq(episodeRatings.episodeId, episode.id)),
+    userId
+      ? db.select({ rating: episodeRatings.rating }).from(episodeRatings)
+          .where(and(eq(episodeRatings.episodeId, episode.id), eq(episodeRatings.userId, userId))).limit(1)
+      : Promise.resolve([]),
+  ]);
+  const myRating = myRatingRows[0]?.rating ?? null;
+
   const label = work.type === "movie" ? "本編" : `第${epNum}話`;
   const pageUrl = `${BASE_URL}/works/${slug}/episodes/${epNum}`;
   const shareTitle = `${work.title} ${label} 感想`;
@@ -144,11 +160,20 @@ export default async function EpisodePage({
         </div>
 
         {work.type !== "movie" && (
-          <EpisodeReactions
-            episodeId={episode.id}
-            episodeLabel={label}
-            initialCounts={reactionCounts}
-          />
+          <>
+            <EpisodeRating
+              episodeId={episode.id}
+              averageRating={Number(averageRating) || 0}
+              ratingCount={Number(ratingCount)}
+              myRating={myRating}
+              isLoggedIn={!!userId}
+            />
+            <EpisodeReactions
+              episodeId={episode.id}
+              episodeLabel={label}
+              initialCounts={reactionCounts}
+            />
+          </>
         )}
 
         <section className="space-y-3">

@@ -82,6 +82,19 @@ export const episodeReactions = pgTable("episode_reactions", {
   uniqueIndex("episode_reactions_episode_type_idx").on(t.episodeId, t.type),
 ]);
 
+export const episodeRatings = pgTable("episode_ratings", {
+  id: serial("id").primaryKey(),
+  episodeId: integer("episode_id")
+    .references(() => episodes.id, { onDelete: "cascade" })
+    .notNull(),
+  userId: text("user_id").notNull(),
+  rating: integer("rating").notNull(), // 1〜5
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("episode_ratings_episode_user_idx").on(t.episodeId, t.userId),
+]);
+
 export const userProfiles = pgTable("user_profiles", {
   userId: text("user_id").primaryKey(),
   nickname: varchar("nickname", { length: 100 }),
@@ -122,3 +135,5 @@ export type WorkRequest = typeof workRequests.$inferSelect;
 export type NewWorkRequest = typeof workRequests.$inferInsert;
 export type EpisodeReaction = typeof episodeReactions.$inferSelect;
 export type NewEpisodeReaction = typeof episodeReactions.$inferInsert;
+export type EpisodeRating = typeof episodeRatings.$inferSelect;
+export type NewEpisodeRating = typeof episodeRatings.$inferInsert;
