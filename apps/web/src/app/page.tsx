@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
-import { works, comments, episodes } from "@kansou/db";
-import { eq, count, gte } from "drizzle-orm";
+import { works, comments, episodes, workRequests } from "@kansou/db";
+import { eq, count, gte, desc } from "drizzle-orm";
 import { WorksFilter, type Work } from "./_components/works-filter";
 
 export const revalidate = 60;
@@ -55,14 +55,24 @@ async function getWorks(): Promise<Work[]> {
   }));
 }
 
+async function getAddedRequests() {
+  const rows = await db
+    .select({ id: workRequests.id, title: workRequests.title, type: workRequests.type })
+    .from(workRequests)
+    .where(eq(workRequests.status, "added"))
+    .orderBy(desc(workRequests.updatedAt))
+    .limit(10);
+  return rows;
+}
+
 export default async function HomePage() {
-  const allWorks = await getWorks();
+  const [allWorks, addedRequests] = await Promise.all([getWorks(), getAddedRequests()]);
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">感想ログ</h1>
 
-      <WorksFilter works={allWorks} />
+      <WorksFilter works={allWorks} addedRequests={addedRequests} />
     </div>
   );
 }

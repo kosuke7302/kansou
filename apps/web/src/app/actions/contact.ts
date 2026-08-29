@@ -1,5 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { contactMessages } from "@kansou/db";
 
@@ -30,4 +33,14 @@ export async function submitContact(
   });
 
   return { success: true };
+}
+
+export async function deleteContactMessage(id: number): Promise<{ error?: string }> {
+  const jar = await cookies();
+  if (jar.get("admin_session")?.value !== process.env.ADMIN_PASSWORD) {
+    return { error: "Unauthorized" };
+  }
+  await db.delete(contactMessages).where(eq(contactMessages.id, id));
+  revalidatePath("/admin/contact");
+  return {};
 }

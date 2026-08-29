@@ -16,6 +16,12 @@ export type Work = {
   recentCommentCount: number;
 };
 
+export type AddedRequest = {
+  id: number;
+  title: string;
+  type: ContentType | null;
+};
+
 const TYPE_STYLES: Record<ContentType, string> = {
   anime: "bg-purple-100 text-purple-700",
   manga: "bg-blue-100 text-blue-700",
@@ -93,7 +99,7 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
-export function WorksFilter({ works }: { works: Work[] }) {
+export function WorksFilter({ works, addedRequests = [] }: { works: Work[]; addedRequests?: AddedRequest[] }) {
   const [genre, setGenre] = useState<GenreKey>("all");
   const [platform, setPlatform] = useState<Platform | "all">("all");
   const [page, setPage] = useState(1);
@@ -194,6 +200,35 @@ export function WorksFilter({ works }: { works: Work[] }) {
         <span className="text-sm text-indigo-700">お探しの作品がない場合はリクエストできます</span>
         <span className="text-indigo-500 text-sm shrink-0 ml-2">→</span>
       </Link>
+
+      {/* リクエストで追加された作品（絞り込みなし時のみ） */}
+      {!isFiltering && addedRequests.length > 0 && (
+        <section>
+          <h2 className="text-base font-semibold mb-3">✅ リクエストで追加された作品</h2>
+          <div className="grid gap-2">
+            {addedRequests.map((r) => (
+              <Link
+                key={r.id}
+                href={`/search?q=${encodeURIComponent(r.title)}`}
+                className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  {r.type && (
+                    <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[r.type]}`}>
+                      {TYPE_LABELS[r.type]}
+                    </span>
+                  )}
+                  <span className="font-medium truncate min-w-0">{r.title}</span>
+                </div>
+                <span className="shrink-0 text-xs text-indigo-400 ml-3">見る →</span>
+              </Link>
+            ))}
+          </div>
+          <Link href="/requests" className="inline-block text-xs text-indigo-500 hover:underline mt-2">
+            すべて見る →
+          </Link>
+        </section>
+      )}
 
       {/* 話題の作品（絞り込みなし時のみ） */}
       {!isFiltering && (
