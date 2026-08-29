@@ -58,6 +58,30 @@ const PLATFORM_INFO: Record<string, {
     serviceUrl: "https://fod.fujitv.co.jp/",
     affiliateEnv: "AFFILIATE_URL_FOD",
   },
+  tver: {
+    label: "TVer",
+    bgColor: "bg-amber-500",
+    serviceUrl: "https://tver.jp/",
+    affiliateEnv: "AFFILIATE_URL_TVER",
+  },
+  dmm_tv: {
+    label: "DMM TV",
+    bgColor: "bg-neutral-800",
+    serviceUrl: "https://tv.dmm.com/vod/",
+    affiliateEnv: "AFFILIATE_URL_DMM_TV",
+  },
+  telasa: {
+    label: "TELASA",
+    bgColor: "bg-cyan-600",
+    serviceUrl: "https://www.telasa.jp/",
+    affiliateEnv: "AFFILIATE_URL_TELASA",
+  },
+  anime_times: {
+    label: "アニメタイムズ",
+    bgColor: "bg-violet-600",
+    serviceUrl: "https://anime-times.jp/",
+    affiliateEnv: "AFFILIATE_URL_ANIME_TIMES",
+  },
 };
 
 export function StreamingBanner({ platforms }: { platforms: (string | null)[] | null }) {

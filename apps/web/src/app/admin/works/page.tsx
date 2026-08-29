@@ -17,6 +17,7 @@ const TYPE_COLORS: Record<string, string> = {
 const PLATFORM_LABELS: Record<string, string> = {
   netflix: "Netflix", amazon_prime: "Prime", disney_plus: "Disney+", hulu: "Hulu",
   u_next: "U-NEXT", d_anime: "dアニメ", abema: "ABEMA", lemino: "Lemino", fod: "FOD",
+  tver: "TVer", dmm_tv: "DMM TV", telasa: "TELASA", anime_times: "アニメタイムズ",
 };
 
 const GENRE_TABS = [

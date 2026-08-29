@@ -22,6 +22,10 @@ const PLATFORM_OPTIONS = [
   { value: "abema", label: "ABEMA" },
   { value: "lemino", label: "Lemino" },
   { value: "fod", label: "FOD Premium" },
+  { value: "tver", label: "TVer" },
+  { value: "dmm_tv", label: "DMM TV" },
+  { value: "telasa", label: "TELASA" },
+  { value: "anime_times", label: "アニメタイムズ" },
 ];
 
 type Work = {

@@ -23,6 +23,10 @@ const PLATFORM_LABELS: Record<string, string> = {
   abema: "ABEMA",
   lemino: "Lemino",
   fod: "FOD Premium",
+  tver: "TVer",
+  dmm_tv: "DMM TV",
+  telasa: "TELASA",
+  anime_times: "アニメタイムズ",
 };
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {

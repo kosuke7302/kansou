@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 export type ContentType = "anime" | "manga" | "drama" | "movie";
-export type Platform = "netflix" | "amazon_prime" | "disney_plus" | "hulu" | "u_next" | "d_anime" | "abema" | "lemino" | "fod";
+export type Platform = "netflix" | "amazon_prime" | "disney_plus" | "hulu" | "u_next" | "d_anime" | "abema" | "lemino" | "fod" | "tver" | "dmm_tv" | "telasa" | "anime_times";
 
 export type Work = {
   slug: string;
@@ -46,6 +46,10 @@ const PLATFORM_META: Record<Platform, { label: string; badge: string; activeBg: 
   abema:        { label: "ABEMA",       badge: "bg-teal-100 text-teal-700",     activeBg: "bg-teal-500 text-white" },
   lemino:       { label: "Lemino",      badge: "bg-indigo-100 text-indigo-800", activeBg: "bg-indigo-800 text-white" },
   fod:          { label: "FOD",         badge: "bg-rose-100 text-rose-700",     activeBg: "bg-rose-600 text-white" },
+  tver:         { label: "TVer",        badge: "bg-amber-100 text-amber-700",   activeBg: "bg-amber-500 text-white" },
+  dmm_tv:       { label: "DMM TV",      badge: "bg-neutral-200 text-neutral-800", activeBg: "bg-neutral-800 text-white" },
+  telasa:       { label: "TELASA",      badge: "bg-cyan-100 text-cyan-700",     activeBg: "bg-cyan-600 text-white" },
+  anime_times:  { label: "アニメタイムズ", badge: "bg-violet-100 text-violet-700", activeBg: "bg-violet-600 text-white" },
 };
 
 const GENRE_TABS = [
@@ -67,6 +71,10 @@ const PLATFORM_TABS: { key: Platform | "all"; label: string }[] = [
   { key: "abema",        label: "ABEMA" },
   { key: "lemino",       label: "Lemino" },
   { key: "fod",          label: "FOD" },
+  { key: "tver",         label: "TVer" },
+  { key: "dmm_tv",       label: "DMM TV" },
+  { key: "telasa",       label: "TELASA" },
+  { key: "anime_times",  label: "アニメタイムズ" },
 ];
 
 type GenreKey = (typeof GENRE_TABS)[number]["key"];
