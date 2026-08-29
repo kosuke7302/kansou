@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { updateWork, type AddWorkState } from "@/app/actions/admin";
 import Link from "next/link";
 import { DeleteWorkButton } from "../_components/delete-work-button";
+import { filmarksSearchUrl } from "@/lib/filmarks";
 
 const initialState: AddWorkState = {};
 
@@ -29,6 +30,7 @@ type Work = {
   slug: string;
   type: string;
   platforms: string[] | null;
+  platformsUpdatedAt: string | null;
   description: string | null;
   keywords: string | null;
   episodeCount: number;
@@ -98,7 +100,26 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
             </div>
 
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-gray-600 mb-1">配信プラットフォーム（複数選択可）</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-medium text-gray-600">
+                  配信プラットフォーム（複数選択可）
+                  {work.platformsUpdatedAt && (
+                    <span className="text-gray-400 font-normal ml-2">
+                      最終更新: {new Date(work.platformsUpdatedAt).toLocaleDateString("ja-JP")}
+                    </span>
+                  )}
+                </label>
+                {filmarksSearchUrl(work.type, work.title) && (
+                  <a
+                    href={filmarksSearchUrl(work.type, work.title)!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-indigo-500 hover:underline shrink-0"
+                  >
+                    Filmarksで配信状況を確認 →
+                  </a>
+                )}
+              </div>
               <div className="flex flex-wrap gap-3">
                 {PLATFORM_OPTIONS.map((p) => (
                   <label key={p.value} className="flex items-center gap-1.5 text-sm">

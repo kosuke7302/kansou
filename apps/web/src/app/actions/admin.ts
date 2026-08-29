@@ -37,6 +37,12 @@ function toSlug(raw: string) {
   return raw.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function platformsEqual(a: string[] | null, b: string[]): boolean {
+  const sortedA = [...(a ?? [])].sort();
+  const sortedB = [...b].sort();
+  return sortedA.length === sortedB.length && sortedA.every((v, i) => v === sortedB[i]);
+}
+
 export async function addWork(_prev: AddWorkState, formData: FormData): Promise<AddWorkState> {
   const title = formData.get("title")?.toString().trim() ?? "";
   const slugRaw = formData.get("slug")?.toString().trim() ?? "";
@@ -59,7 +65,12 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
 
   const [work] = await db
     .insert(works)
-    .values({ slug, title, type, platforms: platforms.length > 0 ? platforms : null, description, keywords })
+    .values({
+      slug, title, type,
+      platforms: platforms.length > 0 ? platforms : null,
+      platformsUpdatedAt: platforms.length > 0 ? new Date() : null,
+      description, keywords,
+    })
     .returning();
 
   if (type === "manga") {
@@ -105,9 +116,17 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
   const [work] = await db.select().from(works).where(eq(works.id, id)).limit(1);
   if (!work) return { error: "作品が見つかりません" };
 
+  const platformsChanged = !platformsEqual(work.platforms, platforms);
+
   await db
     .update(works)
-    .set({ title, platforms: platforms.length > 0 ? platforms : null, description, keywords })
+    .set({
+      title,
+      platforms: platforms.length > 0 ? platforms : null,
+      description,
+      keywords,
+      ...(platformsChanged ? { platformsUpdatedAt: platforms.length > 0 ? new Date() : null } : {}),
+    })
     .where(eq(works.id, id));
 
   // 話数追加（アニメ・ドラマ）
@@ -196,7 +215,11 @@ export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Pro
 
     const [work] = await db
       .insert(works)
-      .values({ slug, title, type: type as "manga" | "anime" | "drama" | "movie", platforms: platforms.length > 0 ? platforms : null })
+      .values({
+        slug, title, type: type as "manga" | "anime" | "drama" | "movie",
+        platforms: platforms.length > 0 ? platforms : null,
+        platformsUpdatedAt: platforms.length > 0 ? new Date() : null,
+      })
       .returning();
 
     if (type === "manga") {

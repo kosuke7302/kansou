@@ -28,6 +28,7 @@ export const works = pgTable("works", {
   title: varchar("title", { length: 255 }).notNull(),
   type: contentTypeEnum("type").notNull(),
   platforms: varchar("platforms", { length: 50 }).array(), // ["netflix", "amazon_prime", ...]
+  platformsUpdatedAt: timestamp("platforms_updated_at"), // 配信タグを最後に変更した日時（陳腐化チェック用）
   description: text("description"),
   keywords: text("keywords"), // 検索用キーワード（スペース区切り）
   thumbnailUrl: varchar("thumbnail_url", { length: 512 }),
