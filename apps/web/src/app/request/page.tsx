@@ -21,6 +21,9 @@ export default async function RequestPage({
         <p className="text-sm text-gray-500 mt-1">
           「感想ログに載っていない作品」があれば、こちらからリクエストしてください。追加を検討します。
         </p>
+        <Link href="/requests" className="inline-block text-sm text-indigo-500 hover:underline mt-2">
+          これまでに追加された作品を見る →
+        </Link>
       </div>
 
       <RequestForm defaultTitle={title ?? ""} />

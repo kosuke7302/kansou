@@ -104,6 +104,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/request" className="text-xs text-gray-500 hover:text-indigo-500">
                 作品をリクエスト
               </Link>
+              <Link href="/requests" className="text-xs text-gray-500 hover:text-indigo-500">
+                追加されたリクエスト
+              </Link>
               <Link href="/privacy-policy" className="text-xs text-gray-500 hover:text-indigo-500">
                 プライバシーポリシー
               </Link>
