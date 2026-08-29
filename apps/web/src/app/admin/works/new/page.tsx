@@ -174,6 +174,13 @@ export default function NewWorkPage() {
                   disabled={singlePending}
                 />
               </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center gap-1.5 text-sm">
+                  <input type="checkbox" name="fromRequest" disabled={singlePending} />
+                  ユーザーからのリクエストがきっかけで追加した作品
+                </label>
+              </div>
             </div>
 
             <button

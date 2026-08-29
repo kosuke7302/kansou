@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, integer, timestamp, pgEnum, uniqueIndex, type AnyPgColumn } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, integer, timestamp, boolean, pgEnum, uniqueIndex, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const contentTypeEnum = pgEnum("content_type", [
   "manga",
@@ -29,6 +29,7 @@ export const works = pgTable("works", {
   type: contentTypeEnum("type").notNull(),
   platforms: varchar("platforms", { length: 50 }).array(), // ["netflix", "amazon_prime", ...]
   platformsUpdatedAt: timestamp("platforms_updated_at"), // 配信タグを最後に変更した日時（陳腐化チェック用）
+  fromRequest: boolean("from_request").default(false).notNull(), // ユーザーリクエストがきっかけで追加した作品か
   description: text("description"),
   keywords: text("keywords"), // 検索用キーワード（スペース区切り）
   thumbnailUrl: varchar("thumbnail_url", { length: 512 }),

@@ -48,6 +48,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
   const slugRaw = formData.get("slug")?.toString().trim() ?? "";
   const type = formData.get("type")?.toString() as "manga" | "anime" | "drama" | "movie";
   const platforms = formData.getAll("platforms").map(p => p.toString()).filter(Boolean);
+  const fromRequest = formData.get("fromRequest") === "on";
   const description = formData.get("description")?.toString().trim() || null;
   const keywords = formData.get("keywords")?.toString().trim() || null;
   const episodeCount = Number(formData.get("episodeCount") ?? 0);
@@ -69,6 +70,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
       slug, title, type,
       platforms: platforms.length > 0 ? platforms : null,
       platformsUpdatedAt: platforms.length > 0 ? new Date() : null,
+      fromRequest,
       description, keywords,
     })
     .returning();
@@ -105,6 +107,7 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
 
   const title = formData.get("title")?.toString().trim() ?? "";
   const platforms = formData.getAll("platforms").map(p => p.toString()).filter(Boolean);
+  const fromRequest = formData.get("fromRequest") === "on";
   const description = formData.get("description")?.toString().trim() || null;
   const keywords = formData.get("keywords")?.toString().trim() || null;
   const addEpisodes = Number(formData.get("addEpisodes") ?? 0);
@@ -123,6 +126,7 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
     .set({
       title,
       platforms: platforms.length > 0 ? platforms : null,
+      fromRequest,
       description,
       keywords,
       ...(platformsChanged ? { platformsUpdatedAt: platforms.length > 0 ? new Date() : null } : {}),

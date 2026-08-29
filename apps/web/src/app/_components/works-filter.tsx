@@ -16,11 +16,11 @@ export type Work = {
   recentCommentCount: number;
 };
 
-export type AddedRequest = {
+export type RequestOriginWork = {
   id: number;
+  slug: string;
   title: string;
-  type: ContentType | null;
-  linkedSlug: string | null;
+  type: ContentType;
 };
 
 const TYPE_STYLES: Record<ContentType, string> = {
@@ -101,7 +101,7 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
-export function WorksFilter({ works, addedRequests = [] }: { works: Work[]; addedRequests?: AddedRequest[] }) {
+export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[]; requestOriginWorks?: RequestOriginWork[] }) {
   const [genre, setGenre] = useState<GenreKey>("all");
   const [platform, setPlatform] = useState<Platform | "all">("all");
   const [page, setPage] = useState(1);
@@ -204,23 +204,21 @@ export function WorksFilter({ works, addedRequests = [] }: { works: Work[]; adde
       </Link>
 
       {/* リクエストで追加された作品（絞り込みなし時のみ） */}
-      {!isFiltering && addedRequests.length > 0 && (
+      {!isFiltering && requestOriginWorks.length > 0 && (
         <section>
           <h2 className="text-base font-semibold mb-3">✅ リクエストで追加された作品</h2>
           <div className="grid gap-2">
-            {addedRequests.map((r) => (
+            {requestOriginWorks.map((w) => (
               <Link
-                key={r.id}
-                href={r.linkedSlug ? `/works/${r.linkedSlug}` : `/search?q=${encodeURIComponent(r.title)}`}
+                key={w.id}
+                href={`/works/${w.slug}`}
                 className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  {r.type && (
-                    <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[r.type]}`}>
-                      {TYPE_LABELS[r.type]}
-                    </span>
-                  )}
-                  <span className="font-medium truncate min-w-0">{r.title}</span>
+                  <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[w.type]}`}>
+                    {TYPE_LABELS[w.type]}
+                  </span>
+                  <span className="font-medium truncate min-w-0">{w.title}</span>
                 </div>
                 <span className="shrink-0 text-xs text-indigo-400 ml-3">見る →</span>
               </Link>

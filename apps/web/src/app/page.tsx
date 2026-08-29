@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { works, comments, episodes, workRequests } from "@kansou/db";
+import { works, comments, episodes } from "@kansou/db";
 import { eq, count, gte, desc } from "drizzle-orm";
 import { WorksFilter, type Work } from "./_components/works-filter";
 
@@ -55,30 +55,24 @@ async function getWorks(): Promise<Work[]> {
   }));
 }
 
-async function getAddedRequests() {
+async function getRequestOriginWorks() {
   const rows = await db
-    .select({
-      id: workRequests.id,
-      title: workRequests.title,
-      type: workRequests.type,
-      linkedSlug: works.slug,
-    })
-    .from(workRequests)
-    .leftJoin(works, eq(works.id, workRequests.linkedWorkId))
-    .where(eq(workRequests.status, "added"))
-    .orderBy(desc(workRequests.updatedAt))
+    .select({ id: works.id, slug: works.slug, title: works.title, type: works.type })
+    .from(works)
+    .where(eq(works.fromRequest, true))
+    .orderBy(desc(works.createdAt))
     .limit(10);
   return rows;
 }
 
 export default async function HomePage() {
-  const [allWorks, addedRequests] = await Promise.all([getWorks(), getAddedRequests()]);
+  const [allWorks, requestOriginWorks] = await Promise.all([getWorks(), getRequestOriginWorks()]);
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">感想ログ</h1>
 
-      <WorksFilter works={allWorks} addedRequests={addedRequests} />
+      <WorksFilter works={allWorks} requestOriginWorks={requestOriginWorks} />
     </div>
   );
 }

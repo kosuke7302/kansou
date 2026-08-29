@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { workRequests, works } from "@kansou/db";
+import { works } from "@kansou/db";
 import { eq, desc } from "drizzle-orm";
 
 export const revalidate = 300;
@@ -23,16 +23,10 @@ const TYPE_STYLES: Record<string, string> = {
 
 export default async function AddedRequestsPage() {
   const rows = await db
-    .select({
-      id: workRequests.id,
-      title: workRequests.title,
-      type: workRequests.type,
-      linkedSlug: works.slug,
-    })
-    .from(workRequests)
-    .leftJoin(works, eq(works.id, workRequests.linkedWorkId))
-    .where(eq(workRequests.status, "added"))
-    .orderBy(desc(workRequests.updatedAt));
+    .select({ id: works.id, slug: works.slug, title: works.title, type: works.type })
+    .from(works)
+    .where(eq(works.fromRequest, true))
+    .orderBy(desc(works.createdAt));
 
   return (
     <div className="space-y-6">
@@ -48,19 +42,17 @@ export default async function AddedRequestsPage() {
         <p className="text-center text-gray-400 py-12">まだ追加された作品はありません</p>
       ) : (
         <div className="grid gap-2">
-          {rows.map((r) => (
+          {rows.map((w) => (
             <Link
-              key={r.id}
-              href={r.linkedSlug ? `/works/${r.linkedSlug}` : `/search?q=${encodeURIComponent(r.title)}`}
+              key={w.id}
+              href={`/works/${w.slug}`}
               className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
             >
               <div className="flex items-center gap-2 min-w-0">
-                {r.type && (
-                  <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[r.type]}`}>
-                    {TYPE_LABELS[r.type]}
-                  </span>
-                )}
-                <span className="font-medium truncate min-w-0">{r.title}</span>
+                <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[w.type]}`}>
+                  {TYPE_LABELS[w.type]}
+                </span>
+                <span className="font-medium truncate min-w-0">{w.title}</span>
               </div>
               <span className="shrink-0 text-xs text-indigo-400 ml-3">見る →</span>
             </Link>

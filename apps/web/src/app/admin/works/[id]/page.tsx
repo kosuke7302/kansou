@@ -35,6 +35,7 @@ type Work = {
   type: string;
   platforms: string[] | null;
   platformsUpdatedAt: string | null;
+  fromRequest: boolean;
   description: string | null;
   keywords: string | null;
   episodeCount: number;
@@ -149,6 +150,13 @@ export default function EditWorkPage({ params }: { params: Promise<{ id: string 
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 disabled={pending}
               />
+            </div>
+
+            <div className="col-span-2">
+              <label className="flex items-center gap-1.5 text-sm">
+                <input type="checkbox" name="fromRequest" defaultChecked={work.fromRequest} disabled={pending} />
+                ユーザーからのリクエストがきっかけで追加した作品
+              </label>
             </div>
 
             <div className="col-span-2">

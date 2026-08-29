@@ -59,12 +59,13 @@ export default async function AdminWorksPage({
     .select({
       id: works.id, title: works.title, slug: works.slug, type: works.type,
       platforms: works.platforms, platformsUpdatedAt: works.platformsUpdatedAt,
+      fromRequest: works.fromRequest,
       episodeCount: count(episodes.id),
     })
     .from(works)
     .leftJoin(episodes, eq(episodes.workId, works.id))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .groupBy(works.id, works.title, works.slug, works.type, works.platforms, works.platformsUpdatedAt)
+    .groupBy(works.id, works.title, works.slug, works.type, works.platforms, works.platformsUpdatedAt, works.fromRequest)
     .orderBy(works.type, works.title);
 
   const allRows = await db
@@ -165,6 +166,11 @@ export default async function AdminWorksPage({
                     <Link href={`/works/${row.slug}`} target="_blank" className="hover:text-indigo-600">
                       {row.title}
                     </Link>
+                    {row.fromRequest && (
+                      <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-500">
+                        リクエスト由来
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-2.5 text-gray-400 font-mono text-xs">{row.slug}</td>
                   <td className="px-4 py-2.5">
