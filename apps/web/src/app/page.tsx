@@ -57,8 +57,14 @@ async function getWorks(): Promise<Work[]> {
 
 async function getAddedRequests() {
   const rows = await db
-    .select({ id: workRequests.id, title: workRequests.title, type: workRequests.type })
+    .select({
+      id: workRequests.id,
+      title: workRequests.title,
+      type: workRequests.type,
+      linkedSlug: works.slug,
+    })
     .from(workRequests)
+    .leftJoin(works, eq(works.id, workRequests.linkedWorkId))
     .where(eq(workRequests.status, "added"))
     .orderBy(desc(workRequests.updatedAt))
     .limit(10);

@@ -20,6 +20,7 @@ export type AddedRequest = {
   id: number;
   title: string;
   type: ContentType | null;
+  linkedSlug: string | null;
 };
 
 const TYPE_STYLES: Record<ContentType, string> = {
@@ -91,13 +92,6 @@ function WorkCard({ work }: { work: Work }) {
         <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
           {TYPE_LABELS[work.type]}
         </span>
-        {(work.platforms ?? []).map((p) => (
-          PLATFORM_META[p] && (
-            <span key={p} className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${PLATFORM_META[p].badge}`}>
-              {PLATFORM_META[p].label}
-            </span>
-          )
-        ))}
         <span className="font-medium truncate min-w-0">{work.title}</span>
       </div>
       <span className="shrink-0 text-sm text-gray-400 ml-3">
@@ -217,7 +211,7 @@ export function WorksFilter({ works, addedRequests = [] }: { works: Work[]; adde
             {addedRequests.map((r) => (
               <Link
                 key={r.id}
-                href={`/search?q=${encodeURIComponent(r.title)}`}
+                href={r.linkedSlug ? `/works/${r.linkedSlug}` : `/search?q=${encodeURIComponent(r.title)}`}
                 className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-2 min-w-0">

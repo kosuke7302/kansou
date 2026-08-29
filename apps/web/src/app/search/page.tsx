@@ -13,22 +13,6 @@ const TYPE_STYLES: Record<string, string> = {
   drama: "bg-green-100 text-green-700",
   movie: "bg-orange-100 text-orange-700",
 };
-const PLATFORM_LABELS: Record<string, string> = {
-  netflix: "Netflix",
-  amazon_prime: "Prime Video",
-  disney_plus: "Disney+",
-  hulu: "Hulu",
-  u_next: "U-NEXT",
-  d_anime: "dアニメストア",
-  abema: "ABEMA",
-  lemino: "Lemino",
-  fod: "FOD Premium",
-  tver: "TVer",
-  dmm_tv: "DMM TV",
-  telasa: "TELASA",
-  anime_times: "アニメタイムズ",
-};
-
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
   const { q } = await searchParams;
   if (!q) return { title: "作品検索" };
@@ -46,7 +30,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           slug: works.slug,
           title: works.title,
           type: works.type,
-          platforms: works.platforms,
           description: works.description,
         })
         .from(works)
@@ -97,9 +80,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
                     {TYPE_LABELS[work.type]}
                   </span>
-                  {(work.platforms ?? []).map((p) => (
-                    <span key={p} className="text-xs text-gray-400">{PLATFORM_LABELS[p] ?? p}</span>
-                  ))}
                 </div>
                 <p className="font-medium text-sm">{work.title}</p>
                 {work.description && (

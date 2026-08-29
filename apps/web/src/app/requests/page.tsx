@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { workRequests } from "@kansou/db";
+import { workRequests, works } from "@kansou/db";
 import { eq, desc } from "drizzle-orm";
 
 export const revalidate = 300;
@@ -23,8 +23,14 @@ const TYPE_STYLES: Record<string, string> = {
 
 export default async function AddedRequestsPage() {
   const rows = await db
-    .select()
+    .select({
+      id: workRequests.id,
+      title: workRequests.title,
+      type: workRequests.type,
+      linkedSlug: works.slug,
+    })
     .from(workRequests)
+    .leftJoin(works, eq(works.id, workRequests.linkedWorkId))
     .where(eq(workRequests.status, "added"))
     .orderBy(desc(workRequests.updatedAt));
 
@@ -45,7 +51,7 @@ export default async function AddedRequestsPage() {
           {rows.map((r) => (
             <Link
               key={r.id}
-              href={`/search?q=${encodeURIComponent(r.title)}`}
+              href={r.linkedSlug ? `/works/${r.linkedSlug}` : `/search?q=${encodeURIComponent(r.title)}`}
               className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
             >
               <div className="flex items-center gap-2 min-w-0">

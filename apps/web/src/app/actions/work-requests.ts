@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
-import { workRequests } from "@kansou/db";
+import { workRequests, works } from "@kansou/db";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -47,5 +47,30 @@ export async function updateRequestStatus(
     .set({ status, updatedAt: new Date() })
     .where(eq(workRequests.id, requestId));
   revalidatePath("/admin/requests");
+  return {};
+}
+
+export async function linkRequestToWork(
+  requestId: number,
+  slug: string
+): Promise<{ error?: string }> {
+  if (!(await checkAuth())) return { error: "Unauthorized" };
+
+  const trimmed = slug.trim();
+  if (!trimmed) {
+    await db.update(workRequests).set({ linkedWorkId: null }).where(eq(workRequests.id, requestId));
+    revalidatePath("/admin/requests");
+    revalidatePath("/requests");
+    revalidatePath("/");
+    return {};
+  }
+
+  const [work] = await db.select({ id: works.id }).from(works).where(eq(works.slug, trimmed)).limit(1);
+  if (!work) return { error: `スラグ "${trimmed}" の作品が見つかりません` };
+
+  await db.update(workRequests).set({ linkedWorkId: work.id }).where(eq(workRequests.id, requestId));
+  revalidatePath("/admin/requests");
+  revalidatePath("/requests");
+  revalidatePath("/");
   return {};
 }

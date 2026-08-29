@@ -109,6 +109,7 @@ export const workRequests = pgTable("work_requests", {
   note: text("note"),
   requesterName: varchar("requester_name", { length: 100 }),
   status: requestStatusEnum("status").notNull().default("pending"),
+  linkedWorkId: integer("linked_work_id").references(() => works.id, { onDelete: "set null" }), // 追加済み作品への直接リンク（一覧からワンクリック遷移用）
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

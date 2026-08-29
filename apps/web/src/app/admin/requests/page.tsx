@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { workRequests } from "@kansou/db";
+import { workRequests, works } from "@kansou/db";
 import { desc, eq } from "drizzle-orm";
 import { StatusSelect } from "./_status-select";
+import { LinkWork } from "./_link-work";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -24,8 +25,20 @@ export default async function AdminRequestsPage({
   const activeTab = STATUS_TABS.some((t) => t.key === status) ? status! : "all";
 
   const rows = await db
-    .select()
+    .select({
+      id: workRequests.id,
+      title: workRequests.title,
+      type: workRequests.type,
+      note: workRequests.note,
+      requesterName: workRequests.requesterName,
+      status: workRequests.status,
+      createdAt: workRequests.createdAt,
+      linkedWorkId: workRequests.linkedWorkId,
+      linkedTitle: works.title,
+      linkedSlug: works.slug,
+    })
     .from(workRequests)
+    .leftJoin(works, eq(works.id, workRequests.linkedWorkId))
     .where(activeTab === "all" ? undefined : eq(workRequests.status, activeTab as "pending" | "in_progress" | "added" | "rejected"))
     .orderBy(desc(workRequests.createdAt));
 
@@ -75,6 +88,9 @@ export default async function AdminRequestsPage({
                 </div>
                 <StatusSelect requestId={r.id} currentStatus={r.status} />
               </div>
+              {r.status === "added" && (
+                <LinkWork requestId={r.id} linkedTitle={r.linkedTitle} linkedSlug={r.linkedSlug} />
+              )}
             </div>
           ))}
         </div>
