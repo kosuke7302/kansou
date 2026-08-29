@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | 感想ログ",
   },
   description:
-    "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。「〇〇 感想」の決定版。",
+    "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。ログインすれば、見た作品やレビューを自分の記録として残せます。「〇〇 感想」の決定版。",
   verification: {
     google: "jCN8CuiJ0wWU6dpVCo1dd6hYXsWmBP9gAA_8SrQ9Di4",
   },
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     siteName: "感想ログ",
     title: "感想ログ | アニメ・漫画・ドラマの話数別感想サイト",
     description:
-      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。「〇〇 感想」の決定版。",
+      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。ログインすれば、見た作品やレビューを自分の記録として残せます。",
   },
   twitter: {
     card: "summary",
     title: "感想ログ",
     description:
-      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。",
+      "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧。ログインで自分の視聴記録・レビュー一覧も残せます。",
   },
 };
 
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
           <div className="bg-indigo-50 border-b border-indigo-100">
             <p className="max-w-4xl mx-auto px-4 py-1.5 text-center text-xs text-indigo-700">
-              アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるサイト
+              アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるサイト。ログインで自分の記録にも
             </p>
           </div>
 
