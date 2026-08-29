@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments, favorites } from "@kansou/db";
+import { works, episodes, comments } from "@kansou/db";
 import { eq, asc, count, countDistinct, isNull, isNotNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { PaginationNav } from "@/app/_components/pagination-nav";
 import { FavoriteButton } from "@/app/_components/favorite-button";
-import { auth } from "@/auth";
 
 const PAGE_SIZE = 200;
 
@@ -76,9 +75,6 @@ export default async function WorkPage({
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
-  const session = await auth();
-  const userId = session?.user?.id;
-
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
   const tab: Tab =
@@ -129,7 +125,6 @@ export default async function WorkPage({
     pagedEpisodes,
     pagedVolumes,
     commentedEpisodes,
-    favoriteRows,
   ] = await Promise.all([
     db.select({ workCommentCount: count(comments.id) }).from(comments)
       .where(and(eq(comments.workId, work.id), isNull(comments.episodeId))),
@@ -145,12 +140,7 @@ export default async function WorkPage({
     tab === "episode" ? pagedEpisodesQuery : Promise.resolve([] as EpisodeRow[]),
     isManga && tab === "volume" ? pagedVolumesQuery : Promise.resolve([] as EpisodeRow[]),
     tab === "commented" ? commentedQuery : Promise.resolve([] as EpisodeRow[]),
-    userId
-      ? db.select({ id: favorites.id }).from(favorites)
-          .where(and(eq(favorites.userId, userId), eq(favorites.workId, work.id))).limit(1)
-      : Promise.resolve([]),
   ]);
-  const isFavorited = favoriteRows.length > 0;
 
   const epTotalPages = Math.max(1, Math.ceil(Number(episodeTotal) / PAGE_SIZE));
   const volTotalPages = Math.max(1, Math.ceil(Number(volumeTotal) / PAGE_SIZE));
@@ -164,7 +154,7 @@ export default async function WorkPage({
             {TYPE_LABELS[work.type]}
           </span>
           <h1 className="text-2xl font-bold">{work.title}</h1>
-          <FavoriteButton workId={work.id} slug={slug} initialFavorited={isFavorited} isLoggedIn={!!userId} />
+          <FavoriteButton workId={work.id} slug={slug} />
         </div>
         {work.description && (
           <p className="text-gray-500 text-sm mt-1">{work.description}</p>

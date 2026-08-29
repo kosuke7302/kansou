@@ -1,27 +1,31 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { usePathname } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { rateEpisode } from "@/app/actions/ratings";
+import { useSession, signIn } from "next-auth/react";
+import { rateEpisode, getMyRating } from "@/app/actions/ratings";
 
 export function EpisodeRating({
   episodeId,
   averageRating,
   ratingCount,
-  myRating,
-  isLoggedIn,
 }: {
   episodeId: number;
   averageRating: number;
   ratingCount: number;
-  myRating: number | null;
-  isLoggedIn: boolean;
 }) {
   const pathname = usePathname();
-  const [rating, setRating] = useState(myRating);
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const [rating, setRating] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getMyRating(episodeId).then(setRating);
+    }
+  }, [isLoggedIn, episodeId]);
 
   function handleClick(value: number) {
     if (!isLoggedIn) {

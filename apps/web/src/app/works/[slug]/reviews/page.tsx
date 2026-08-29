@@ -10,6 +10,7 @@ import { CommentThread } from "@/app/_components/comment-thread";
 const BASE_URL = "https://www.kansou-log.com";
 
 export const revalidate = 60;
+export const dynamic = "force-static";
 
 type Params = Promise<{ slug: string }>;
 

@@ -4,6 +4,7 @@ import { works } from "@kansou/db";
 import { eq } from "drizzle-orm";
 
 export const revalidate = 86400;
+export const dynamic = "force-static";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

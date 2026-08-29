@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { episodeRatings } from "@kansou/db";
 import { revalidatePath } from "next/cache";
+import { and, eq } from "drizzle-orm";
 
 export async function rateEpisode(
   episodeId: number,
@@ -27,4 +28,17 @@ export async function rateEpisode(
 
   revalidatePath(path);
   return {};
+}
+
+export async function getMyRating(episodeId: number): Promise<number | null> {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) return null;
+
+  const [row] = await db
+    .select({ rating: episodeRatings.rating })
+    .from(episodeRatings)
+    .where(and(eq(episodeRatings.episodeId, episodeId), eq(episodeRatings.userId, userId)))
+    .limit(1);
+  return row?.rating ?? null;
 }

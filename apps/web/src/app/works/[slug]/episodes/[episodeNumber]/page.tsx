@@ -11,11 +11,11 @@ import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
-import { auth } from "@/auth";
 
 const BASE_URL = "https://www.kansou-log.com";
 
 export const revalidate = 60;
+export const dynamic = "force-static";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -85,19 +85,10 @@ export default async function EpisodePage({
     REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
   ) as Record<ReactionType, number>;
 
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  const [[{ averageRating, ratingCount }], myRatingRows] = await Promise.all([
-    db.select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
-      .from(episodeRatings)
-      .where(eq(episodeRatings.episodeId, episode.id)),
-    userId
-      ? db.select({ rating: episodeRatings.rating }).from(episodeRatings)
-          .where(and(eq(episodeRatings.episodeId, episode.id), eq(episodeRatings.userId, userId))).limit(1)
-      : Promise.resolve([]),
-  ]);
-  const myRating = myRatingRows[0]?.rating ?? null;
+  const [{ averageRating, ratingCount }] = await db
+    .select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
+    .from(episodeRatings)
+    .where(eq(episodeRatings.episodeId, episode.id));
 
   const label = work.type === "movie" ? "本編" : `第${epNum}話`;
   const pageUrl = `${BASE_URL}/works/${slug}/episodes/${epNum}`;
@@ -165,8 +156,6 @@ export default async function EpisodePage({
               episodeId={episode.id}
               averageRating={Number(averageRating) || 0}
               ratingCount={Number(ratingCount)}
-              myRating={myRating}
-              isLoggedIn={!!userId}
             />
             <EpisodeReactions
               episodeId={episode.id}

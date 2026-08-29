@@ -1,24 +1,28 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { usePathname } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { toggleFavorite } from "@/app/actions/favorites";
+import { useSession, signIn } from "next-auth/react";
+import { toggleFavorite, getFavoriteStatus } from "@/app/actions/favorites";
 
 export function FavoriteButton({
   workId,
   slug,
-  initialFavorited,
-  isLoggedIn,
 }: {
   workId: number;
   slug: string;
-  initialFavorited: boolean;
-  isLoggedIn: boolean;
 }) {
-  const [favorited, setFavorited] = useState(initialFavorited);
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const [favorited, setFavorited] = useState(false);
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getFavoriteStatus(workId).then(setFavorited);
+    }
+  }, [isLoggedIn, workId]);
 
   function handleClick() {
     if (!isLoggedIn) {

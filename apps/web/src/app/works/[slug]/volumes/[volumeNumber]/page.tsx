@@ -12,11 +12,11 @@ import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
-import { auth } from "@/auth";
 
 const BASE_URL = "https://www.kansou-log.com";
 
 export const revalidate = 60;
+export const dynamic = "force-static";
 
 type Params = Promise<{ slug: string; volumeNumber: string }>;
 
@@ -71,19 +71,10 @@ export default async function VolumePage({ params }: { params: Params }) {
     REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
   ) as Record<ReactionType, number>;
 
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  const [[{ averageRating, ratingCount }], myRatingRows] = await Promise.all([
-    db.select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
-      .from(episodeRatings)
-      .where(eq(episodeRatings.episodeId, volume.id)),
-    userId
-      ? db.select({ rating: episodeRatings.rating }).from(episodeRatings)
-          .where(and(eq(episodeRatings.episodeId, volume.id), eq(episodeRatings.userId, userId))).limit(1)
-      : Promise.resolve([]),
-  ]);
-  const myRating = myRatingRows[0]?.rating ?? null;
+  const [{ averageRating, ratingCount }] = await db
+    .select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
+    .from(episodeRatings)
+    .where(eq(episodeRatings.episodeId, volume.id));
 
   const shareTitle = `${work.title} 第${volNum}巻 感想`;
   const pageUrl = `${BASE_URL}/works/${slug}/volumes/${volNum}`;
@@ -144,8 +135,6 @@ export default async function VolumePage({ params }: { params: Params }) {
         episodeId={volume.id}
         averageRating={Number(averageRating) || 0}
         ratingCount={Number(ratingCount)}
-        myRating={myRating}
-        isLoggedIn={!!userId}
       />
       <EpisodeReactions
         episodeId={volume.id}

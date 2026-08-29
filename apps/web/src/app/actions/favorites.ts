@@ -30,3 +30,16 @@ export async function toggleFavorite(
   revalidatePath("/favorites");
   return { favorited: !existing };
 }
+
+export async function getFavoriteStatus(workId: number): Promise<boolean> {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) return false;
+
+  const [existing] = await db
+    .select({ id: favorites.id })
+    .from(favorites)
+    .where(and(eq(favorites.userId, userId), eq(favorites.workId, workId)))
+    .limit(1);
+  return !!existing;
+}
