@@ -7,6 +7,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
         <nav className="flex items-center gap-6">
           <span className="font-bold text-indigo-600">管理画面</span>
+          <Link href="/admin/stats" className="text-sm text-gray-600 hover:text-indigo-600">利用状況</Link>
           <Link href="/admin/works" className="text-sm text-gray-600 hover:text-indigo-600">作品一覧</Link>
           <Link href="/admin/works/new" className="text-sm text-gray-600 hover:text-indigo-600">作品追加</Link>
           <Link href="/admin/requests" className="text-sm text-gray-600 hover:text-indigo-600">作品リクエスト</Link>

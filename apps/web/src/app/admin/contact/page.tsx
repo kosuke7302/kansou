@@ -3,6 +3,8 @@ import { contactMessages } from "@kansou/db";
 import { desc } from "drizzle-orm";
 import { DeleteContactButton } from "./_delete-contact-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminContactPage() {
   const rows = await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
 
