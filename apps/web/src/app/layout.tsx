@@ -36,7 +36,7 @@ export const metadata: Metadata = {
       "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧できるコミュニティサイト。ログインすると、お気に入り作品や感想を後から見返せます。",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "感想ログ",
     description:
       "アニメ・漫画・ドラマ・映画の話数ごとに感想を投稿・閲覧。ログインすると、お気に入り作品や感想を後から見返せます。",
