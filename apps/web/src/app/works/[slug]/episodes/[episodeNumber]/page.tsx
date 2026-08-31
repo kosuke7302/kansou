@@ -150,21 +150,6 @@ export default async function EpisodePage({
           </div>
         </div>
 
-        {work.type !== "movie" && (
-          <>
-            <EpisodeRating
-              episodeId={episode.id}
-              averageRating={Number(averageRating) || 0}
-              ratingCount={Number(ratingCount)}
-            />
-            <EpisodeReactions
-              episodeId={episode.id}
-              episodeLabel={label}
-              initialCounts={reactionCounts}
-            />
-          </>
-        )}
-
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">みんなの感想</h2>
           {commentList.length === 0 ? (
@@ -174,9 +159,24 @@ export default async function EpisodePage({
           )}
         </section>
 
+        <CommentForm slug={slug} episodeNumber={epNum} />
+
         <AdSenseAd slot="" format="auto" />
 
-        <CommentForm slug={slug} episodeNumber={epNum} />
+        {work.type !== "movie" && (
+          <>
+            <EpisodeReactions
+              episodeId={episode.id}
+              episodeLabel={label}
+              initialCounts={reactionCounts}
+            />
+            <EpisodeRating
+              episodeId={episode.id}
+              averageRating={Number(averageRating) || 0}
+              ratingCount={Number(ratingCount)}
+            />
+          </>
+        )}
       </div>
     </>
   );

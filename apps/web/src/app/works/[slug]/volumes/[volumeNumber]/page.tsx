@@ -131,17 +131,6 @@ export default async function VolumePage({ params }: { params: Params }) {
         </div>
       </div>
 
-      <EpisodeRating
-        episodeId={volume.id}
-        averageRating={Number(averageRating) || 0}
-        ratingCount={Number(ratingCount)}
-      />
-      <EpisodeReactions
-        episodeId={volume.id}
-        episodeLabel={`第${volNum}巻`}
-        initialCounts={reactionCounts}
-      />
-
       <section className="space-y-3">
         <h2 className="text-sm font-semibold">みんなの感想</h2>
         {commentList.length === 0 ? (
@@ -151,9 +140,20 @@ export default async function VolumePage({ params }: { params: Params }) {
         )}
       </section>
 
+      <CommentForm slug={slug} volumeNumber={volNum} />
+
       <AdSenseAd slot="" format="auto" />
 
-      <CommentForm slug={slug} volumeNumber={volNum} />
+      <EpisodeReactions
+        episodeId={volume.id}
+        episodeLabel={`第${volNum}巻`}
+        initialCounts={reactionCounts}
+      />
+      <EpisodeRating
+        episodeId={volume.id}
+        averageRating={Number(averageRating) || 0}
+        ratingCount={Number(ratingCount)}
+      />
     </div>
     </>
   );
