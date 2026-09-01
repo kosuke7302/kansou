@@ -7,6 +7,7 @@ import { eq, asc, count, countDistinct, isNull, isNotNull, and } from "drizzle-o
 import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { PaginationNav } from "@/app/_components/pagination-nav";
 import { FavoriteButton } from "@/app/_components/favorite-button";
+import { ShareButtons } from "@/app/_components/share-buttons";
 
 const PAGE_SIZE = 200;
 
@@ -159,6 +160,9 @@ export default async function WorkPage({
         {work.description && (
           <p className="text-gray-500 text-sm mt-1">{work.description}</p>
         )}
+        <div className="mt-2">
+          <ShareButtons title={work.title} url={`${BASE_URL}/works/${slug}`} />
+        </div>
       </div>
 
       {/* 作品全体の感想へのリンク */}

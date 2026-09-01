@@ -6,6 +6,7 @@ import { works, comments } from "@kansou/db";
 import { eq, asc, and, isNull } from "drizzle-orm";
 import { WorkCommentForm } from "@/app/_components/work-comment-form";
 import { CommentThread } from "@/app/_components/comment-thread";
+import { ShareButtons } from "@/app/_components/share-buttons";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -52,7 +53,10 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
         <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
           ネタバレ注意 — 作品を最後まで読んだ・観た方の感想ページです
         </p>
-        <p className="text-gray-500 text-sm mt-2">{commentList.length}件の感想</p>
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-gray-500 text-sm">{commentList.length}件の感想</p>
+          <ShareButtons title={`${work.title} 全体感想・レビュー`} url={`${BASE_URL}/works/${slug}/reviews`} />
+        </div>
       </div>
 
       <section className="space-y-3">
