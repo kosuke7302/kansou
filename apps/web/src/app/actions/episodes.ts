@@ -29,6 +29,7 @@ export async function deleteEpisode(
   if (!(await checkAuth())) return { error: "Unauthorized" };
   await db.delete(episodes).where(eq(episodes.id, episodeId));
   revalidatePath(`/works/${workSlug}`);
+  revalidatePath("/sitemap.xml");
   return {};
 }
 
@@ -45,5 +46,6 @@ export async function deleteEpisodesAbove(
     .where(and(eq(episodes.workId, workId), gt(column, threshold)))
     .returning({ id: episodes.id });
   revalidatePath(`/works/${workSlug}`);
+  revalidatePath("/sitemap.xml");
   return { count: deleted.length };
 }

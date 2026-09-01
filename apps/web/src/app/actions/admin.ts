@@ -98,6 +98,7 @@ export async function addWork(_prev: AddWorkState, formData: FormData): Promise<
 
   revalidatePath("/admin/works");
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return { success: `「${title}」を追加しました（スラグ: ${slug}）` };
 }
 
@@ -173,6 +174,7 @@ export async function updateWork(_prev: AddWorkState, formData: FormData): Promi
   revalidatePath(`/works/${work.slug}`);
   revalidatePath("/admin/works");
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return { success: "更新しました" };
 }
 
@@ -190,6 +192,7 @@ export async function deleteWork(workId: number): Promise<{ error?: string }> {
   revalidatePath(`/works/${work.slug}`);
   revalidatePath("/admin/works");
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return {};
 }
 
@@ -242,6 +245,7 @@ export async function bulkAddWorks(_prev: AddWorkState, formData: FormData): Pro
 
   revalidatePath("/admin/works");
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
 
   const msg = [...results, ...errors].join("\n");
   if (errors.length > 0 && results.length === 0) return { error: msg };
