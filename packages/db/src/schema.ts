@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, integer, timestamp, boolean, pgEnum, uniqueIndex, type AnyPgColumn } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, integer, timestamp, boolean, jsonb, pgEnum, uniqueIndex, type AnyPgColumn } from "drizzle-orm/pg-core";
 
 export const contentTypeEnum = pgEnum("content_type", [
   "manga",
@@ -121,6 +121,13 @@ export const contactMessages = pgTable("contact_messages", {
   email: varchar("email", { length: 255 }),
   body: text("body").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// GA4 Data APIから定期取得した集計結果のキャッシュ（1日1回バッチ更新、ページ本体はISRのまま毎回叩かない）
+export const analyticsCache = pgTable("analytics_cache", {
+  key: varchar("key", { length: 50 }).primaryKey(), // "monthly_pageviews" | "top_pages_7d" など
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type Work = typeof works.$inferSelect;

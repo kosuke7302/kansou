@@ -127,6 +127,13 @@
       "when": 1788020000000,
       "tag": "0017_works_from_request",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1788030000000,
+      "tag": "0018_analytics_cache",
+      "breakpoints": true
     }
   ]
 }

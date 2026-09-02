@@ -3,5 +3,11 @@
   "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "regions": ["hnd1"]
+  "regions": ["hnd1"],
+  "crons": [
+    {
+      "path": "/api/cron/sync-analytics",
+      "schedule": "0 18 * * *"
+    }
+  ]
 }

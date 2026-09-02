@@ -5,3 +5,4 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
   sharp: false
+  protobufjs: true
