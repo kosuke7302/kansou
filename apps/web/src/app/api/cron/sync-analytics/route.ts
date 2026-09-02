@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { analyticsCache, works } from "@kansou/db";
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { fetchMonthlyPageViews, fetchTopPages } from "@/lib/ga4";
 
 export const maxDuration = 30;
@@ -30,7 +30,7 @@ async function resolveTopPages(pages: { path: string; pageViews: number; activeU
   const workRows = await db
     .select({ slug: works.slug, title: works.title })
     .from(works)
-    .where(sql`${works.slug} = ANY(${slugs})`);
+    .where(inArray(works.slug, slugs));
   const titleBySlug = new Map(workRows.map((w) => [w.slug, w.title]));
 
   return pages
