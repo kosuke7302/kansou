@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { works, comments, episodes, analyticsCache } from "@kansou/db";
-import { eq, count, gte, desc, isNull, isNotNull, and } from "drizzle-orm";
+import { eq, count, gte, desc } from "drizzle-orm";
 import { WorksFilter, type Work } from "./_components/works-filter";
 
 export const revalidate = 60;
@@ -90,78 +90,11 @@ async function getAnalyticsStats() {
   return { monthlyPageViews, topPages };
 }
 
-type RecentComment = {
-  id: number;
-  body: string;
-  authorName: string;
-  createdAt: Date;
-  href: string;
-  label: string;
-};
-
-async function getRecentComments(limit = 6): Promise<RecentComment[]> {
-  const [episodeComments, workComments] = await Promise.all([
-    db
-      .select({
-        id: comments.id,
-        body: comments.body,
-        authorName: comments.authorName,
-        createdAt: comments.createdAt,
-        slug: works.slug,
-        workTitle: works.title,
-        episodeNumber: episodes.episodeNumber,
-        volumeNumber: episodes.volumeNumber,
-      })
-      .from(comments)
-      .innerJoin(episodes, eq(episodes.id, comments.episodeId))
-      .innerJoin(works, eq(works.id, episodes.workId))
-      .where(isNotNull(comments.episodeId))
-      .orderBy(desc(comments.createdAt))
-      .limit(limit),
-    db
-      .select({
-        id: comments.id,
-        body: comments.body,
-        authorName: comments.authorName,
-        createdAt: comments.createdAt,
-        slug: works.slug,
-        workTitle: works.title,
-      })
-      .from(comments)
-      .innerJoin(works, eq(works.id, comments.workId))
-      .where(and(isNull(comments.episodeId), isNotNull(comments.workId)))
-      .orderBy(desc(comments.createdAt))
-      .limit(limit),
-  ]);
-
-  return [
-    ...episodeComments.map((c) => ({
-      id: c.id,
-      body: c.body,
-      authorName: c.authorName,
-      createdAt: c.createdAt,
-      href: c.volumeNumber != null ? `/works/${c.slug}/volumes/${c.volumeNumber}` : `/works/${c.slug}/episodes/${c.episodeNumber}`,
-      label: c.volumeNumber != null ? `${c.workTitle} 第${c.volumeNumber}巻` : `${c.workTitle} 第${c.episodeNumber}話`,
-    })),
-    ...workComments.map((c) => ({
-      id: c.id,
-      body: c.body,
-      authorName: c.authorName,
-      createdAt: c.createdAt,
-      href: `/works/${c.slug}/reviews`,
-      label: `${c.workTitle} 作品全体`,
-    })),
-  ]
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, limit);
-}
-
 export default async function HomePage() {
-  const [allWorks, requestOriginWorks, analyticsStats, recentComments] = await Promise.all([
+  const [allWorks, requestOriginWorks, analyticsStats] = await Promise.all([
     getWorks(),
     getRequestOriginWorks(),
     getAnalyticsStats(),
-    getRecentComments(),
   ]);
 
   return (
@@ -191,27 +124,6 @@ export default async function HomePage() {
                   {p.title}{p.label && ` ${p.label}`}
                 </span>
                 <span className="shrink-0 text-sm text-gray-400">👁 {p.pageViews.toLocaleString()}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {recentComments.length > 0 && (
-        <section>
-          <h2 className="text-base font-semibold mb-3">💬 最近の感想</h2>
-          <div className="grid gap-2">
-            {recentComments.map((c) => (
-              <Link
-                key={c.id}
-                href={c.href}
-                className="block min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
-              >
-                <p className="text-xs text-indigo-500 truncate">{c.label}</p>
-                <p className="text-sm text-gray-700 line-clamp-2 mt-0.5">{c.body}</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {c.authorName} ・ {new Date(c.createdAt).toLocaleDateString("ja-JP")}
-                </p>
               </Link>
             ))}
           </div>
