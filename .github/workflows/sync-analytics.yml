@@ -1,0 +1,22 @@
+name: Sync GA4 analytics cache
+
+on:
+  schedule:
+    - cron: "0 18 * * *" # 毎日 UTC18:00 = JST 3:00
+  workflow_dispatch: {} # 手動実行用
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call sync-analytics endpoint
+        run: |
+          status=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://www.kansou-log.com/api/cron/sync-analytics)
+          echo "HTTP status: $status"
+          cat /tmp/response.json
+          if [ "$status" -ge 300 ]; then
+            echo "Sync failed"
+            exit 1
+          fi
