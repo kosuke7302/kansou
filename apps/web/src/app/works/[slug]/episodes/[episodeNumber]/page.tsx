@@ -28,7 +28,7 @@ export async function generateMetadata({
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return {};
   const label = work.type === "movie" ? "本編" : `第${episodeNumber}話`;
-  const title = `${work.title} ${label} 感想`;
+  const title = `${work.title} ${label} 感想・レビュー`;
   const description = `${work.title} ${label}の感想・レビュー・考察をみんなで語ろう。ネタバレあり。`;
   const url = `${BASE_URL}/works/${slug}/episodes/${episodeNumber}`;
 

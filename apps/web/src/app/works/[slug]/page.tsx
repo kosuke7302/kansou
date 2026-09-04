@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps<"/works/[slug]">): 
   const { slug } = await params;
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return {};
-  const title = `${work.title} 感想`;
+  const title = `${work.title} 感想・レビュー・評価`;
   const description = `${work.title}の話数ごとの感想・レビュー・考察まとめ。ネタバレあり。`;
   const url = `${BASE_URL}/works/${slug}`;
   return {

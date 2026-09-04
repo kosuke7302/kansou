@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug, volumeNumber } = await params;
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return {};
-  const title = `${work.title} 第${volumeNumber}巻 感想`;
+  const title = `${work.title} 第${volumeNumber}巻 感想・レビュー`;
   const description = `${work.title} 第${volumeNumber}巻の感想・レビュー・考察をみんなで語ろう。ネタバレあり。`;
   const url = `${BASE_URL}/works/${slug}/volumes/${volumeNumber}`;
   return {
