@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { analyticsCache, works } from "@kansou/db";
 import { eq, inArray } from "drizzle-orm";
 import { fetchMonthlyPageViews, fetchTopPages } from "@/lib/ga4";
+import { fetchNetflixTop10Japan } from "@/lib/netflix-top10";
 
 export const maxDuration = 30;
 
@@ -57,6 +58,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const results: Record<string, { ok: boolean; [key: string]: unknown }> = {};
+
   try {
     const [monthlyPageViews, topPagesRaw] = await Promise.all([
       fetchMonthlyPageViews(),
@@ -69,9 +72,21 @@ export async function GET(req: NextRequest) {
       upsertCache("top_pages_7d", { pages: topPages }),
     ]);
 
-    return NextResponse.json({ ok: true, monthlyPageViews, topPagesCount: topPages.length });
+    results.ga4 = { ok: true, monthlyPageViews, topPagesCount: topPages.length };
   } catch (err) {
     console.error("GA4 sync failed:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    results.ga4 = { ok: false, error: String(err) };
   }
+
+  try {
+    const netflixTop10 = await fetchNetflixTop10Japan();
+    await upsertCache("netflix_top10_jp", netflixTop10);
+    results.netflixTop10 = { ok: true, weekOf: netflixTop10.weekOf };
+  } catch (err) {
+    console.error("Netflix Top10 sync failed:", err);
+    results.netflixTop10 = { ok: false, error: String(err) };
+  }
+
+  const anyFailed = Object.values(results).some((r) => !r.ok);
+  return NextResponse.json(results, { status: anyFailed ? 500 : 200 });
 }

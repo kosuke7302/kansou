@@ -9,6 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="font-bold text-indigo-600">管理画面</span>
           <Link href="/admin/stats" className="text-sm text-gray-600 hover:text-indigo-600">利用状況</Link>
           <Link href="/admin/works" className="text-sm text-gray-600 hover:text-indigo-600">作品一覧</Link>
+          <Link href="/admin/popularity" className="text-sm text-gray-600 hover:text-indigo-600">人気作品</Link>
           <Link href="/admin/works/new" className="text-sm text-gray-600 hover:text-indigo-600">作品追加</Link>
           <Link href="/admin/requests" className="text-sm text-gray-600 hover:text-indigo-600">作品リクエスト</Link>
           <Link href="/admin/episode-requests" className="text-sm text-gray-600 hover:text-indigo-600">追加話リクエスト</Link>
