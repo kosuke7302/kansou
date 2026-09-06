@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { ImageAttach, type ImageAttachHandle } from "./image-attach";
 import { postComment, type CommentActionState } from "@/app/actions/comments";
 
 const NICKNAME_KEY = "kansou_nickname";
@@ -15,7 +16,11 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const imageAttachRef = useRef<ImageAttachHandle>(null);
   const { data: session, status } = useSession();
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const spoilerLabel = episodeNumber !== undefined ? `第${episodeNumber}話` : `第${volumeNumber}巻`;
 
@@ -26,8 +31,9 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   }, [session?.user?.name]);
 
   useEffect(() => {
-    if (state.success && textareaRef.current) {
-      textareaRef.current.value = "";
+    if (state.success) {
+      if (textareaRef.current) textareaRef.current.value = "";
+      imageAttachRef.current?.reset();
     }
   }, [state.success]);
 
@@ -77,12 +83,21 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
           className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           disabled={pending}
         />
+
+        <ImageAttach
+          ref={imageAttachRef}
+          imageUrl={imageUrl}
+          onChange={setImageUrl}
+          onUploadingChange={setImageUploading}
+          disabled={pending}
+        />
+
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || imageUploading}
           className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
         >
-          {pending ? "投稿中..." : "投稿する"}
+          {pending ? "投稿中..." : imageUploading ? "画像アップロード中..." : "投稿する"}
         </button>
 
         <div className="text-xs text-gray-400 space-y-0.5">

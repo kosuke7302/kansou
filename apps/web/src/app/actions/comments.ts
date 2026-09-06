@@ -9,6 +9,21 @@ import { auth } from "@/auth";
 
 export type CommentActionState = { error?: string; success?: boolean };
 
+// クライアントはVercel Blobへの直アップロード後のURLしか送ってこない想定だが、
+// hidden inputは書き換え可能なため、実際にBlobストレージのURLかをサーバー側でも検証する
+function sanitizeImageUrl(raw: FormDataEntryValue | null): string | null {
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".public.blob.vercel-storage.com")) {
+      return null;
+    }
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 export async function postComment(
   _prev: CommentActionState,
   formData: FormData
@@ -81,11 +96,14 @@ export async function postComment(
     if (!parent) return { error: "返信先のコメントが見つかりません" };
   }
 
+  const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
+
   const session = await auth();
   await db.insert(comments).values({
     episodeId: episode.id,
     parentId,
     body: body.trim(),
+    imageUrl,
     authorName,
     userId: session?.user?.id ?? null,
   });
@@ -128,11 +146,14 @@ export async function postWorkComment(
     if (!parent) return { error: "返信先のコメントが見つかりません" };
   }
 
+  const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
+
   const session = await auth();
   await db.insert(comments).values({
     workId: work.id,
     parentId,
     body: body.trim(),
+    imageUrl,
     authorName,
     userId: session?.user?.id ?? null,
   });

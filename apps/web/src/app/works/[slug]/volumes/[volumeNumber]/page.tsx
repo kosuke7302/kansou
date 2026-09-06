@@ -123,6 +123,7 @@ export default async function VolumePage({ params }: { params: Params }) {
         "author": { "@type": "Person", "name": c.authorName ?? "名無し" },
         "datePublished": new Date(c.createdAt).toISOString(),
         "text": c.body,
+        ...(c.imageUrl && { "image": c.imageUrl }),
       })),
     }),
   };

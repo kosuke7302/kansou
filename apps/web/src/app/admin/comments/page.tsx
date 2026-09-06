@@ -19,6 +19,7 @@ export default async function AdminCommentsPage({
       .select({
         id: comments.id,
         body: comments.body,
+        imageUrl: comments.imageUrl,
         authorName: comments.authorName,
         parentId: comments.parentId,
         createdAt: comments.createdAt,
@@ -35,6 +36,7 @@ export default async function AdminCommentsPage({
       .select({
         id: comments.id,
         body: comments.body,
+        imageUrl: comments.imageUrl,
         authorName: comments.authorName,
         parentId: comments.parentId,
         createdAt: comments.createdAt,
@@ -49,6 +51,7 @@ export default async function AdminCommentsPage({
   type Row = {
     id: number;
     body: string;
+    imageUrl: string | null;
     authorName: string;
     parentId: number | null;
     createdAt: Date;
@@ -60,6 +63,7 @@ export default async function AdminCommentsPage({
     ...episodeComments.map((c) => ({
       id: c.id,
       body: c.body,
+      imageUrl: c.imageUrl,
       authorName: c.authorName,
       parentId: c.parentId,
       createdAt: c.createdAt,
@@ -75,6 +79,7 @@ export default async function AdminCommentsPage({
     ...workComments.map((c) => ({
       id: c.id,
       body: c.body,
+      imageUrl: c.imageUrl,
       authorName: c.authorName,
       parentId: c.parentId,
       createdAt: c.createdAt,
@@ -112,6 +117,12 @@ export default async function AdminCommentsPage({
                   </span>
                 </div>
                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{row.body}</p>
+                {row.imageUrl && (
+                  <a href={row.imageUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-1.5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={row.imageUrl} alt="添付画像" className="max-h-24 rounded border border-gray-200" />
+                  </a>
+                )}
               </div>
               <DeleteCommentButton commentId={row.id} />
             </div>

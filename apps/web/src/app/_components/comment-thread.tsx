@@ -12,6 +12,7 @@ export type CommentItem = {
   id: number;
   authorName: string;
   body: string;
+  imageUrl: string | null;
   createdAt: string | Date;
   likeCount: number;
   parentId: number | null;
@@ -122,6 +123,16 @@ function CommentRow({ comment }: { comment: CommentItem }) {
         <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
       </div>
       <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.body}</p>
+      {comment.imageUrl && (
+        <a href={comment.imageUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={comment.imageUrl}
+            alt="添付画像"
+            className="max-h-64 rounded-lg border border-gray-200 object-contain"
+          />
+        </a>
+      )}
     </>
   );
 }

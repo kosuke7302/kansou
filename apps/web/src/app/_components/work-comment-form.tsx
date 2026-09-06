@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { ImageAttach, type ImageAttachHandle } from "./image-attach";
 import { postWorkComment, type CommentActionState } from "@/app/actions/comments";
 
 const NICKNAME_KEY = "kansou_nickname";
@@ -11,7 +12,11 @@ export function WorkCommentForm({ slug }: { slug: string }) {
   const [state, action, pending] = useActionState(postWorkComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const imageAttachRef = useRef<ImageAttachHandle>(null);
   const { data: session, status } = useSession();
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
@@ -20,8 +25,9 @@ export function WorkCommentForm({ slug }: { slug: string }) {
   }, [session?.user?.name]);
 
   useEffect(() => {
-    if (state.success && textareaRef.current) {
-      textareaRef.current.value = "";
+    if (state.success) {
+      if (textareaRef.current) textareaRef.current.value = "";
+      imageAttachRef.current?.reset();
     }
   }, [state.success]);
 
@@ -62,12 +68,21 @@ export function WorkCommentForm({ slug }: { slug: string }) {
           className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           disabled={pending}
         />
+
+        <ImageAttach
+          ref={imageAttachRef}
+          imageUrl={imageUrl}
+          onChange={setImageUrl}
+          onUploadingChange={setImageUploading}
+          disabled={pending}
+        />
+
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || imageUploading}
           className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
         >
-          {pending ? "投稿中..." : "投稿する"}
+          {pending ? "投稿中..." : imageUploading ? "画像アップロード中..." : "投稿する"}
         </button>
 
         {status !== "authenticated" && status !== "loading" && (
