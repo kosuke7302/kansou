@@ -130,6 +130,17 @@ export const analyticsCache = pgTable("analytics_cache", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// 話数/巻ページの「次の話がない」場合にユーザーがワンクリックで送る追加リクエスト
+export const episodeAddRequests = pgTable("episode_add_requests", {
+  id: serial("id").primaryKey(),
+  workId: integer("work_id")
+    .references(() => works.id, { onDelete: "cascade" })
+    .notNull(),
+  field: varchar("field", { length: 10 }).notNull(), // "episode" | "volume"
+  requestedNumber: integer("requested_number").notNull(), // 追加してほしい話数・巻数
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export type Work = typeof works.$inferSelect;
 export type NewWork = typeof works.$inferInsert;
 export type Episode = typeof episodes.$inferSelect;
@@ -147,3 +158,5 @@ export type EpisodeReaction = typeof episodeReactions.$inferSelect;
 export type NewEpisodeReaction = typeof episodeReactions.$inferInsert;
 export type EpisodeRating = typeof episodeRatings.$inferSelect;
 export type NewEpisodeRating = typeof episodeRatings.$inferInsert;
+export type EpisodeAddRequest = typeof episodeAddRequests.$inferSelect;
+export type NewEpisodeAddRequest = typeof episodeAddRequests.$inferInsert;

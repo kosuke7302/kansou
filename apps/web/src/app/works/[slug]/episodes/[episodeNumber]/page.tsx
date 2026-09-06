@@ -10,6 +10,7 @@ import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
+import { EpisodeNav } from "@/app/_components/episode-nav";
 import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
 
 const BASE_URL = "https://www.kansou-log.com";
@@ -90,6 +91,17 @@ export default async function EpisodePage({
     .from(episodeRatings)
     .where(eq(episodeRatings.episodeId, episode.id));
 
+  const [prevEpisode] = await db
+    .select({ episodeNumber: episodes.episodeNumber })
+    .from(episodes)
+    .where(and(eq(episodes.workId, work.id), eq(episodes.episodeNumber, epNum - 1)))
+    .limit(1);
+  const [nextEpisode] = await db
+    .select({ episodeNumber: episodes.episodeNumber })
+    .from(episodes)
+    .where(and(eq(episodes.workId, work.id), eq(episodes.episodeNumber, epNum + 1)))
+    .limit(1);
+
   const label = work.type === "movie" ? "本編" : `第${epNum}話`;
   const pageUrl = `${BASE_URL}/works/${slug}/episodes/${epNum}`;
   const shareTitle = `${work.title} ${label} 感想`;
@@ -150,6 +162,17 @@ export default async function EpisodePage({
           </div>
         </div>
 
+        {work.type !== "movie" && (
+          <EpisodeNav
+            slug={slug}
+            workId={work.id}
+            field="episode"
+            currentNumber={epNum}
+            prevNumber={prevEpisode?.episodeNumber ?? null}
+            nextExists={!!nextEpisode}
+          />
+        )}
+
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">みんなの感想</h2>
           {commentList.length === 0 ? (
@@ -174,6 +197,14 @@ export default async function EpisodePage({
               episodeId={episode.id}
               averageRating={Number(averageRating) || 0}
               ratingCount={Number(ratingCount)}
+            />
+            <EpisodeNav
+              slug={slug}
+              workId={work.id}
+              field="episode"
+              currentNumber={epNum}
+              prevNumber={prevEpisode?.episodeNumber ?? null}
+              nextExists={!!nextEpisode}
             />
           </>
         )}

@@ -126,10 +126,34 @@ function CommentRow({ comment }: { comment: CommentItem }) {
   );
 }
 
+type SortOrder = "newest" | "oldest" | "likes";
+
+const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
+  { value: "oldest", label: "古い順" },
+  { value: "newest", label: "新しい順" },
+  { value: "likes", label: "いいね順" },
+];
+
+function sortComments(list: CommentItem[], order: SortOrder): CommentItem[] {
+  const sorted = [...list];
+  if (order === "newest") {
+    sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  } else if (order === "likes") {
+    sorted.sort((a, b) => b.likeCount - a.likeCount);
+  } else {
+    sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }
+  return sorted;
+}
+
 export function CommentThread({ slug, episodeNumber, volumeNumber, comments }: ThreadProps) {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("oldest");
 
-  const topLevel = comments.filter((c) => c.parentId === null);
+  const topLevel = sortComments(
+    comments.filter((c) => c.parentId === null),
+    sortOrder
+  );
   const repliesByParent = new Map<number, CommentItem[]>();
   for (const c of comments) {
     if (c.parentId !== null) {
@@ -141,6 +165,19 @@ export function CommentThread({ slug, episodeNumber, volumeNumber, comments }: T
 
   return (
     <>
+      <div className="flex justify-end mb-2">
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+          className="text-xs border border-gray-200 rounded-lg px-2 py-1 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
       {topLevel.map((comment) => (
         <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
           <CommentRow comment={comment} />

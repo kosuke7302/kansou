@@ -11,6 +11,7 @@ import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
+import { EpisodeNav } from "@/app/_components/episode-nav";
 import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
 
 const BASE_URL = "https://www.kansou-log.com";
@@ -76,6 +77,21 @@ export default async function VolumePage({ params }: { params: Params }) {
     .from(episodeRatings)
     .where(eq(episodeRatings.episodeId, volume.id));
 
+  const [prevVolume] = await db
+    .select({ volumeNumber: episodes.volumeNumber })
+    .from(episodes)
+    .where(
+      and(eq(episodes.workId, work.id), eq(episodes.volumeNumber, volNum - 1), isNull(episodes.episodeNumber))
+    )
+    .limit(1);
+  const [nextVolume] = await db
+    .select({ volumeNumber: episodes.volumeNumber })
+    .from(episodes)
+    .where(
+      and(eq(episodes.workId, work.id), eq(episodes.volumeNumber, volNum + 1), isNull(episodes.episodeNumber))
+    )
+    .limit(1);
+
   const shareTitle = `${work.title} 第${volNum}巻 感想`;
   const pageUrl = `${BASE_URL}/works/${slug}/volumes/${volNum}`;
 
@@ -131,6 +147,15 @@ export default async function VolumePage({ params }: { params: Params }) {
         </div>
       </div>
 
+      <EpisodeNav
+        slug={slug}
+        workId={work.id}
+        field="volume"
+        currentNumber={volNum}
+        prevNumber={prevVolume?.volumeNumber ?? null}
+        nextExists={!!nextVolume}
+      />
+
       <section className="space-y-3">
         <h2 className="text-sm font-semibold">みんなの感想</h2>
         {commentList.length === 0 ? (
@@ -153,6 +178,14 @@ export default async function VolumePage({ params }: { params: Params }) {
         episodeId={volume.id}
         averageRating={Number(averageRating) || 0}
         ratingCount={Number(ratingCount)}
+      />
+      <EpisodeNav
+        slug={slug}
+        workId={work.id}
+        field="volume"
+        currentNumber={volNum}
+        prevNumber={prevVolume?.volumeNumber ?? null}
+        nextExists={!!nextVolume}
       />
     </div>
     </>
