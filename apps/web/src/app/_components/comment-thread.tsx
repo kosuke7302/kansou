@@ -117,7 +117,13 @@ function CommentRow({ comment }: { comment: CommentItem }) {
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
           <span className="text-xs text-gray-400">
-            {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+            {new Date(comment.createdAt).toLocaleString("ja-JP", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         </div>
         <LikeButton commentId={comment.id} initialCount={comment.likeCount} />
