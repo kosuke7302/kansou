@@ -83,7 +83,7 @@ function ReplyForm({
         placeholder="ニックネーム（省略可）"
         maxLength={100}
         disabled={isPending}
-        className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+        className="w-full text-base border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
       />
       <textarea
         name="body"
@@ -92,7 +92,7 @@ function ReplyForm({
         maxLength={1000}
         placeholder="返信を書く"
         disabled={isPending}
-        className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+        className="w-full text-base border border-gray-200 rounded-lg px-2.5 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
       />
       <div className="flex gap-2">
         <button

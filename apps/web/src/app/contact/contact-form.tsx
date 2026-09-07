@@ -36,7 +36,7 @@ export function ContactForm() {
             maxLength={100}
             placeholder="例：田中 太郎"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 
@@ -52,7 +52,7 @@ export function ContactForm() {
             maxLength={255}
             placeholder="例：example@email.com"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 
@@ -69,7 +69,7 @@ export function ContactForm() {
             maxLength={2000}
             placeholder="お問い合わせ内容をご記入ください"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 

@@ -37,7 +37,7 @@ export function RequestForm({ defaultTitle = "" }: { defaultTitle?: string }) {
             defaultValue={defaultTitle}
             placeholder="例：〇〇〇〇"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 
@@ -51,7 +51,7 @@ export function RequestForm({ defaultTitle = "" }: { defaultTitle?: string }) {
             name="type"
             defaultValue=""
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           >
             <option value="">指定なし</option>
             <option value="anime">アニメ</option>
@@ -73,7 +73,7 @@ export function RequestForm({ defaultTitle = "" }: { defaultTitle?: string }) {
             maxLength={1000}
             placeholder="任意でご記入ください"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 
@@ -89,7 +89,7 @@ export function RequestForm({ defaultTitle = "" }: { defaultTitle?: string }) {
             maxLength={100}
             placeholder="ニックネームでも可"
             disabled={pending}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+            className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           />
         </div>
 

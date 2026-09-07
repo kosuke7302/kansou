@@ -80,7 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   name="q"
                   type="search"
                   placeholder="作品を検索..."
-                  className="w-full border border-gray-200 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="w-full border border-gray-200 rounded-full px-4 py-1.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
               </form>
               <HeaderAuth />
