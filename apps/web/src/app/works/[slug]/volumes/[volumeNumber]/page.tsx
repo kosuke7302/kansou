@@ -2,17 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments, episodeReactions, episodeRatings } from "@kansou/db";
+import { works, episodes, comments, episodeRatings } from "@kansou/db";
 import { eq, and, isNull, asc, avg, count } from "drizzle-orm";
 
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
-import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { EpisodeNav } from "@/app/_components/episode-nav";
-import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -63,14 +61,6 @@ export default async function VolumePage({ params }: { params: Params }) {
     .from(comments)
     .where(eq(comments.episodeId, volume.id))
     .orderBy(asc(comments.createdAt));
-
-  const reactionRows = await db
-    .select({ type: episodeReactions.type, count: episodeReactions.count })
-    .from(episodeReactions)
-    .where(eq(episodeReactions.episodeId, volume.id));
-  const reactionCounts = Object.fromEntries(
-    REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
-  ) as Record<ReactionType, number>;
 
   const [{ averageRating, ratingCount }] = await db
     .select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
@@ -170,11 +160,6 @@ export default async function VolumePage({ params }: { params: Params }) {
 
       <AdSenseAd slot="" format="auto" />
 
-      <EpisodeReactions
-        episodeId={volume.id}
-        episodeLabel={`第${volNum}巻`}
-        initialCounts={reactionCounts}
-      />
       <EpisodeRating
         episodeId={volume.id}
         averageRating={Number(averageRating) || 0}

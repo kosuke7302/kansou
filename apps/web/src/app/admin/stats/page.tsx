@@ -1,12 +1,8 @@
 import { db } from "@/lib/db";
-import { comments, favorites, episodeReactions, episodeRatings, workRequests, contactMessages } from "@kansou/db";
+import { comments, favorites, episodeRatings, workRequests, contactMessages } from "@kansou/db";
 import { sql, avg, count } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
-
-const REACTION_LABELS: Record<string, string> = {
-  cry: "😭 泣いた", laugh: "😂 笑った", shock: "😱 衝撃", hype: "🔥 神回", angry: "😡 イライラ",
-};
 
 const REQUEST_STATUS_LABELS: Record<string, string> = {
   pending: "未対応", in_progress: "対応中", added: "追加済み", rejected: "却下",
@@ -27,7 +23,6 @@ export default async function AdminStatsPage() {
     [{ commentTotal }],
     [{ favoriteTotal }],
     [{ favoriteUsers }],
-    reactionRows,
     [{ ratingTotal, ratingAvg }],
     requestRows,
     [{ contactTotal }],
@@ -36,8 +31,6 @@ export default async function AdminStatsPage() {
     db.select({ commentTotal: count() }).from(comments),
     db.select({ favoriteTotal: count() }).from(favorites),
     db.select({ favoriteUsers: sql<number>`count(distinct ${favorites.userId})` }).from(favorites),
-    db.select({ type: episodeReactions.type, total: sql<number>`coalesce(sum(${episodeReactions.count}), 0)` })
-      .from(episodeReactions).groupBy(episodeReactions.type),
     db.select({ ratingTotal: count(), ratingAvg: avg(episodeRatings.rating) }).from(episodeRatings),
     db.select({ status: workRequests.status, total: count() }).from(workRequests).groupBy(workRequests.status),
     db.select({ contactTotal: count() }).from(contactMessages),
@@ -53,7 +46,6 @@ export default async function AdminStatsPage() {
   ]);
 
   const activeUserCount = Number((activeUserRows.rows[0] as { cnt: string }).cnt);
-  const reactionTotal = reactionRows.reduce((sum, r) => sum + Number(r.total), 0);
   const requestTotal = requestRows.reduce((sum, r) => sum + Number(r.total), 0);
 
   return (
@@ -70,7 +62,6 @@ export default async function AdminStatsPage() {
           value={Number(favoriteTotal)}
           sub={`${Number(favoriteUsers)}ユーザー`}
         />
-        <StatCard label="リアクション" value={reactionTotal} sub="ログイン不要" />
         <StatCard
           label="評価（星）"
           value={Number(ratingTotal)}
@@ -85,41 +76,20 @@ export default async function AdminStatsPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <h2 className="text-sm font-semibold mb-3">リアクション内訳</h2>
-          {reactionTotal === 0 ? (
-            <p className="text-sm text-gray-400">まだリアクションはありません</p>
-          ) : (
-            <div className="space-y-1.5">
-              {reactionRows
-                .filter((r) => Number(r.total) > 0)
-                .sort((a, b) => Number(b.total) - Number(a.total))
-                .map((r) => (
-                  <div key={r.type} className="flex items-center justify-between text-sm">
-                    <span>{REACTION_LABELS[r.type] ?? r.type}</span>
-                    <span className="font-medium">{Number(r.total)}</span>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <h2 className="text-sm font-semibold mb-3">作品リクエストの状況</h2>
-          {requestTotal === 0 ? (
-            <p className="text-sm text-gray-400">まだリクエストはありません</p>
-          ) : (
-            <div className="space-y-1.5">
-              {requestRows.map((r) => (
-                <div key={r.status} className="flex items-center justify-between text-sm">
-                  <span>{REQUEST_STATUS_LABELS[r.status] ?? r.status}</span>
-                  <span className="font-medium">{Number(r.total)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="bg-white rounded-xl border border-gray-200 p-4 max-w-md">
+        <h2 className="text-sm font-semibold mb-3">作品リクエストの状況</h2>
+        {requestTotal === 0 ? (
+          <p className="text-sm text-gray-400">まだリクエストはありません</p>
+        ) : (
+          <div className="space-y-1.5">
+            {requestRows.map((r) => (
+              <div key={r.status} className="flex items-center justify-between text-sm">
+                <span>{REQUEST_STATUS_LABELS[r.status] ?? r.status}</span>
+                <span className="font-medium">{Number(r.total)}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

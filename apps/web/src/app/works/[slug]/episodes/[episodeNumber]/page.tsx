@@ -2,16 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments, episodeReactions, episodeRatings } from "@kansou/db";
+import { works, episodes, comments, episodeRatings } from "@kansou/db";
 import { eq, and, asc, avg, count } from "drizzle-orm";
 import { CommentForm } from "@/app/_components/comment-form";
 import { AdSenseAd } from "@/app/_components/adsense";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
-import { EpisodeReactions } from "@/app/_components/episode-reactions";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { EpisodeNav } from "@/app/_components/episode-nav";
-import { REACTION_TYPES, type ReactionType } from "@/lib/reaction-types";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -77,14 +75,6 @@ export default async function EpisodePage({
     .from(comments)
     .where(eq(comments.episodeId, episode.id))
     .orderBy(asc(comments.createdAt));
-
-  const reactionRows = await db
-    .select({ type: episodeReactions.type, count: episodeReactions.count })
-    .from(episodeReactions)
-    .where(eq(episodeReactions.episodeId, episode.id));
-  const reactionCounts = Object.fromEntries(
-    REACTION_TYPES.map((t) => [t, reactionRows.find((r) => r.type === t)?.count ?? 0])
-  ) as Record<ReactionType, number>;
 
   const [{ averageRating, ratingCount }] = await db
     .select({ averageRating: avg(episodeRatings.rating), ratingCount: count(episodeRatings.id) })
@@ -189,11 +179,6 @@ export default async function EpisodePage({
 
         {work.type !== "movie" && (
           <>
-            <EpisodeReactions
-              episodeId={episode.id}
-              episodeLabel={label}
-              initialCounts={reactionCounts}
-            />
             <EpisodeRating
               episodeId={episode.id}
               averageRating={Number(averageRating) || 0}
