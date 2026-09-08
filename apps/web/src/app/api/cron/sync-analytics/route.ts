@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { analyticsCache, works } from "@kansou/db";
 import { eq, inArray } from "drizzle-orm";
-import { fetchMonthlyPageViews, fetchTopPages } from "@/lib/ga4";
+import { fetchTotalPageViews, fetchTopPages } from "@/lib/ga4";
 import { fetchNetflixTop10Japan } from "@/lib/netflix-top10";
 
 export const maxDuration = 30;
@@ -61,18 +61,18 @@ export async function GET(req: NextRequest) {
   const results: Record<string, { ok: boolean; [key: string]: unknown }> = {};
 
   try {
-    const [monthlyPageViews, topPagesRaw] = await Promise.all([
-      fetchMonthlyPageViews(),
+    const [totalPageViews, topPagesRaw] = await Promise.all([
+      fetchTotalPageViews(),
       fetchTopPages(10),
     ]);
     const topPages = await resolveTopPages(topPagesRaw);
 
     await Promise.all([
-      upsertCache("monthly_pageviews", { count: monthlyPageViews }),
+      upsertCache("total_pageviews", { count: totalPageViews }),
       upsertCache("top_pages_7d", { pages: topPages }),
     ]);
 
-    results.ga4 = { ok: true, monthlyPageViews, topPagesCount: topPages.length };
+    results.ga4 = { ok: true, totalPageViews, topPagesCount: topPages.length };
   } catch (err) {
     console.error("GA4 sync failed:", err);
     results.ga4 = { ok: false, error: String(err) };

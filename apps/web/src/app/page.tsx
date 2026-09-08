@@ -78,16 +78,16 @@ async function getAnalyticsStats() {
   const rows = await db
     .select({ key: analyticsCache.key, value: analyticsCache.value })
     .from(analyticsCache)
-    .where(eq(analyticsCache.key, "monthly_pageviews"));
+    .where(eq(analyticsCache.key, "total_pageviews"));
   const [topPagesRow] = await db
     .select({ value: analyticsCache.value })
     .from(analyticsCache)
     .where(eq(analyticsCache.key, "top_pages_7d"));
 
-  const monthlyPageViews = (rows[0]?.value as { count?: number } | undefined)?.count ?? null;
+  const totalPageViews = (rows[0]?.value as { count?: number } | undefined)?.count ?? null;
   const topPages = ((topPagesRow?.value as { pages?: TopPageEntry[] } | undefined)?.pages ?? []).slice(0, 3);
 
-  return { monthlyPageViews, topPages };
+  return { totalPageViews, topPages };
 }
 
 export default async function HomePage() {
@@ -101,9 +101,9 @@ export default async function HomePage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">感想ログ</h1>
 
-      {analyticsStats.monthlyPageViews !== null && (
+      {analyticsStats.totalPageViews !== null && (
         <p className="text-sm text-gray-500">
-          直近30日間のページ閲覧数: <span className="font-semibold text-gray-700">{analyticsStats.monthlyPageViews.toLocaleString()}</span>回
+          累計ページ閲覧数: <span className="font-semibold text-gray-700">{analyticsStats.totalPageViews.toLocaleString()}</span>回
         </p>
       )}
 
@@ -123,7 +123,6 @@ export default async function HomePage() {
                 <span className="font-medium truncate min-w-0 flex-1">
                   {p.title}{p.label && ` ${p.label}`}
                 </span>
-                <span className="shrink-0 text-sm text-gray-400">👁 {p.pageViews.toLocaleString()}</span>
               </Link>
             ))}
           </div>

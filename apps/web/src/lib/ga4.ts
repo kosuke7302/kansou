@@ -17,12 +17,13 @@ function getPropertyId() {
   return propertyId;
 }
 
-/** 直近30日間のサイト全体のページビュー数 */
-export async function fetchMonthlyPageViews(): Promise<number> {
+/** サイト全体の累計ページビュー数（GA4計測開始〜現在） */
+export async function fetchTotalPageViews(): Promise<number> {
   const client = getClient();
   const [response] = await client.runReport({
     property: `properties/${getPropertyId()}`,
-    dateRanges: [{ startDate: "30daysAgo", endDate: "today" }],
+    // GA4導入より確実に前の日付を指定し、計測されている全期間を対象にする
+    dateRanges: [{ startDate: "2020-01-01", endDate: "today" }],
     metrics: [{ name: "screenPageViews" }],
   });
   const value = response.rows?.[0]?.metricValues?.[0]?.value;
