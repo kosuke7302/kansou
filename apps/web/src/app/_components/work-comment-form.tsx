@@ -4,11 +4,18 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { ImageAttach, type ImageAttachHandle } from "./image-attach";
 import { postWorkComment, type CommentActionState } from "@/app/actions/comments";
+import { trackEvent } from "@/lib/gtag";
 
 const NICKNAME_KEY = "kansou_nickname";
 const initialState: CommentActionState = {};
 
-export function WorkCommentForm({ slug }: { slug: string }) {
+type Props = {
+  slug: string;
+  workId: number;
+  workTitle: string;
+};
+
+export function WorkCommentForm({ slug, workId, workTitle }: Props) {
   const [state, action, pending] = useActionState(postWorkComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -18,6 +25,17 @@ export function WorkCommentForm({ slug }: { slug: string }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
 
+  // GA4ファネル計測（クリック・入力開始は同一ページ内で1回のみ発火）
+  const hasFiredClickRef = useRef(false);
+  const hasFiredStartRef = useRef(false);
+
+  const eventParams = {
+    work_id: workId,
+    work_title: workTitle,
+    episode_id: null,
+    episode_number: null,
+  };
+
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
     if (saved) setNickname(saved);
@@ -26,14 +44,28 @@ export function WorkCommentForm({ slug }: { slug: string }) {
 
   useEffect(() => {
     if (state.success) {
+      trackEvent("comment_submit", eventParams);
       if (textareaRef.current) textareaRef.current.value = "";
       imageAttachRef.current?.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success]);
 
   function handleNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setNickname(e.target.value);
     localStorage.setItem(NICKNAME_KEY, e.target.value);
+  }
+
+  function handleTextareaFocus() {
+    if (hasFiredClickRef.current) return;
+    hasFiredClickRef.current = true;
+    trackEvent("comment_input_click", eventParams);
+  }
+
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    if (hasFiredStartRef.current || e.target.value.length === 0) return;
+    hasFiredStartRef.current = true;
+    trackEvent("comment_input_start");
   }
 
   return (
@@ -65,6 +97,8 @@ export function WorkCommentForm({ slug }: { slug: string }) {
           rows={4}
           maxLength={1000}
           required
+          onFocus={handleTextareaFocus}
+          onChange={handleTextareaChange}
           className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           disabled={pending}
         />

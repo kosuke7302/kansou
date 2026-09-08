@@ -156,7 +156,13 @@ export default async function VolumePage({ params }: { params: Params }) {
         )}
       </section>
 
-      <CommentForm slug={slug} volumeNumber={volNum} />
+      <CommentForm
+        slug={slug}
+        volumeNumber={volNum}
+        workId={work.id}
+        workTitle={work.title}
+        episodeId={volume.id}
+      />
 
       <AdSenseAd slot="" format="auto" />
 

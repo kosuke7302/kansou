@@ -4,15 +4,22 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { ImageAttach, type ImageAttachHandle } from "./image-attach";
 import { postComment, type CommentActionState } from "@/app/actions/comments";
+import { trackEvent } from "@/lib/gtag";
 
 const NICKNAME_KEY = "kansou_nickname";
 const initialState: CommentActionState = {};
 
-type Props =
-  | { slug: string; episodeNumber: number; volumeNumber?: never }
-  | { slug: string; volumeNumber: number; episodeNumber?: never };
+type Props = {
+  slug: string;
+  workId: number;
+  workTitle: string;
+  episodeId: number;
+} & (
+  | { episodeNumber: number; volumeNumber?: never }
+  | { volumeNumber: number; episodeNumber?: never }
+);
 
-export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
+export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
   const [nickname, setNickname] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,7 +29,19 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
 
+  // GA4ファネル計測（クリック・入力開始は同一ページ内で1回のみ発火）
+  const hasFiredClickRef = useRef(false);
+  const hasFiredStartRef = useRef(false);
+
   const spoilerLabel = episodeNumber !== undefined ? `第${episodeNumber}話` : `第${volumeNumber}巻`;
+
+  const eventParams = {
+    work_id: workId,
+    work_title: workTitle,
+    episode_id: episodeId,
+    episode_number: episodeNumber ?? null,
+    ...(volumeNumber !== undefined && { volume_number: volumeNumber }),
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);
@@ -32,14 +51,28 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
 
   useEffect(() => {
     if (state.success) {
+      trackEvent("comment_submit", eventParams);
       if (textareaRef.current) textareaRef.current.value = "";
       imageAttachRef.current?.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success]);
 
   function handleNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setNickname(e.target.value);
     localStorage.setItem(NICKNAME_KEY, e.target.value);
+  }
+
+  function handleTextareaFocus() {
+    if (hasFiredClickRef.current) return;
+    hasFiredClickRef.current = true;
+    trackEvent("comment_input_click", eventParams);
+  }
+
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    if (hasFiredStartRef.current || e.target.value.length === 0) return;
+    hasFiredStartRef.current = true;
+    trackEvent("comment_input_start");
   }
 
   return (
@@ -80,6 +113,8 @@ export function CommentForm({ slug, episodeNumber, volumeNumber }: Props) {
           rows={4}
           maxLength={1000}
           required
+          onFocus={handleTextareaFocus}
+          onChange={handleTextareaChange}
           className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
           disabled={pending}
         />

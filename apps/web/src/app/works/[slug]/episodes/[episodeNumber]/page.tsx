@@ -173,7 +173,13 @@ export default async function EpisodePage({
           )}
         </section>
 
-        <CommentForm slug={slug} episodeNumber={epNum} />
+        <CommentForm
+          slug={slug}
+          episodeNumber={epNum}
+          workId={work.id}
+          workTitle={work.title}
+          episodeId={episode.id}
+        />
 
         <AdSenseAd slot="" format="auto" />
 

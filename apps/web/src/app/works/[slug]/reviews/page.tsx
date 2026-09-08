@@ -69,7 +69,7 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
         )}
       </section>
 
-      <WorkCommentForm slug={slug} />
+      <WorkCommentForm slug={slug} workId={work.id} workTitle={work.title} />
     </div>
   );
 }
