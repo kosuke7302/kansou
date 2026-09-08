@@ -150,7 +150,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
           <button
             key={tab.key}
             onClick={() => handleGenreChange(tab.key)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            className={`px-4 py-2.5 rounded-full text-sm font-medium transition-colors ${
               genre === tab.key
                 ? "bg-indigo-600 text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300"
@@ -165,7 +165,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
       <div>
         <button
           onClick={() => setShowPlatforms((v) => !v)}
-          className="flex items-center gap-1 text-xs text-gray-500 font-medium"
+          className="flex items-center gap-1 text-sm text-gray-500 font-medium py-2"
         >
           配信サービスで絞り込む
           {platform !== "all" && (
@@ -179,7 +179,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
               <button
                 key={tab.key}
                 onClick={() => handlePlatformChange(tab.key)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                className={`px-3.5 py-2 rounded-full text-xs font-medium transition-colors ${
                   platform === tab.key
                     ? tab.key === "all"
                       ? "bg-indigo-600 text-white"
@@ -267,7 +267,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
                 >
                   ← 前
                 </button>
@@ -285,7 +285,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                       <button
                         key={item}
                         onClick={() => setPage(item as number)}
-                        className={`w-8 h-8 text-sm rounded-lg transition-colors ${
+                        className={`w-11 h-11 text-sm rounded-lg transition-colors ${
                           page === item
                             ? "bg-indigo-600 text-white"
                             : "border border-gray-200 hover:border-indigo-300"
@@ -298,7 +298,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
                 >
                   次 →
                 </button>

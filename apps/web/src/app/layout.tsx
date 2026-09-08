@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import Link from "next/link";
+import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 import { HeaderAuth } from "./_components/header-auth";
 import "./globals.css";
@@ -50,17 +51,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
       <head>
-        {/* AdSense */}
-        <script
-          async
+        {/* AdSense: 現状どのページも広告枠(slot)は空でまだ表示していないため、
+            初期表示をブロックしないようlazyOnloadで読み込む（枠を設定すれば普通に動作する） */}
+        <Script
+          id="adsbygoogle-loader"
+          strategy="lazyOnload"
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
           crossOrigin="anonymous"
         />
         {/* GA4 */}
         {GA4_ID && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`} />
-            <script
+            <Script id="ga4-loader" strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`} />
+            <Script
+              id="ga4-init"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA4_ID}');`,
               }}
