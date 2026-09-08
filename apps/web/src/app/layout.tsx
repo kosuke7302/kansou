@@ -77,7 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SessionProvider>
           <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
             <div className="max-w-4xl mx-auto px-4 h-14 flex items-center gap-4">
-              <a href="/" className="text-xl font-bold text-indigo-600 tracking-tight shrink-0">
+              <a href="/" className="flex items-center h-full text-xl font-bold text-indigo-600 tracking-tight shrink-0">
                 感想ログ
               </a>
               <form method="get" action="/search" className="flex-1 max-w-sm">
@@ -85,7 +85,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   name="q"
                   type="search"
                   placeholder="作品を検索..."
-                  className="w-full border border-gray-200 rounded-full px-4 py-1.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="w-full h-12 border border-gray-200 rounded-full px-4 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
               </form>
               <HeaderAuth />
@@ -105,20 +105,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <footer className="bg-white border-t border-gray-200 mt-auto">
           <div className="max-w-4xl mx-auto px-4 py-5">
-            <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-3">
-              <Link href="/request" className="text-xs text-gray-500 hover:text-indigo-500">
+            <nav className="flex flex-wrap justify-center gap-x-2 gap-y-1 mb-3">
+              <Link href="/request" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
                 作品をリクエスト
               </Link>
-              <Link href="/requests" className="text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/requests" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
                 追加されたリクエスト
               </Link>
-              <Link href="/privacy-policy" className="text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/privacy-policy" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
                 プライバシーポリシー
               </Link>
-              <Link href="/terms" className="text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/terms" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
                 利用規約
               </Link>
-              <Link href="/contact" className="text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/contact" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
                 お問い合わせ
               </Link>
             </nav>

@@ -16,7 +16,7 @@ export function HeaderAuth() {
   const [showBenefits, setShowBenefits] = useState(false);
 
   if (status === "loading") {
-    return <div className="w-8 h-8 shrink-0" />;
+    return <div className="w-12 h-12 shrink-0" />;
   }
 
   if (!session?.user) {
@@ -24,7 +24,7 @@ export function HeaderAuth() {
       <div className="relative shrink-0">
         <button
           onClick={() => setShowBenefits((v) => !v)}
-          className="text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-full whitespace-nowrap transition-colors"
+          className="h-12 flex items-center text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-4 rounded-full whitespace-nowrap transition-colors"
         >
           ログイン
         </button>
@@ -42,7 +42,7 @@ export function HeaderAuth() {
               </ul>
               <button
                 onClick={() => signIn("google")}
-                className="w-full text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded-lg transition-colors"
+                className="w-full min-h-12 flex items-center justify-center text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 rounded-lg transition-colors"
               >
                 Googleでログイン
               </button>
@@ -58,7 +58,7 @@ export function HeaderAuth() {
       <button
         onClick={() => setMenuOpen((v) => !v)}
         aria-label="アカウントメニュー"
-        className="block"
+        className="w-12 h-12 flex items-center justify-center"
       >
         {session.user.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -82,21 +82,21 @@ export function HeaderAuth() {
             <Link
               href="/favorites"
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
             >
               お気に入り
             </Link>
             <Link
               href="/my-comments"
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
             >
               マイコメント
             </Link>
             <Link
               href="/account"
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
             >
               アカウント設定
             </Link>
@@ -105,7 +105,7 @@ export function HeaderAuth() {
                 setMenuOpen(false);
                 signOut();
               }}
-              className="block w-full text-left px-4 py-2.5 text-sm text-gray-400 hover:bg-gray-50 border-t border-gray-100"
+              className="min-h-12 w-full flex items-center text-left px-4 text-sm text-gray-400 hover:bg-gray-50 border-t border-gray-100"
             >
               ログアウト
             </button>

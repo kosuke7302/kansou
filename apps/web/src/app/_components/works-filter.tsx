@@ -150,7 +150,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
           <button
             key={tab.key}
             onClick={() => handleGenreChange(tab.key)}
-            className={`px-4 py-2.5 rounded-full text-sm font-medium transition-colors ${
+            className={`min-h-12 flex items-center px-4 rounded-full text-sm font-medium transition-colors ${
               genre === tab.key
                 ? "bg-indigo-600 text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300"
@@ -165,7 +165,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
       <div>
         <button
           onClick={() => setShowPlatforms((v) => !v)}
-          className="flex items-center gap-1 text-sm text-gray-500 font-medium py-2"
+          className="min-h-12 flex items-center gap-1 text-sm text-gray-500 font-medium"
         >
           配信サービスで絞り込む
           {platform !== "all" && (
@@ -179,7 +179,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
               <button
                 key={tab.key}
                 onClick={() => handlePlatformChange(tab.key)}
-                className={`px-3.5 py-2 rounded-full text-xs font-medium transition-colors ${
+                className={`min-h-12 flex items-center px-3.5 rounded-full text-xs font-medium transition-colors ${
                   platform === tab.key
                     ? tab.key === "all"
                       ? "bg-indigo-600 text-white"
@@ -197,7 +197,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
       {/* 作品リクエスト導線 */}
       <Link
         href="/request"
-        className="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-2.5 hover:bg-indigo-100 transition-colors"
+        className="min-h-12 flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-lg px-4 hover:bg-indigo-100 transition-colors"
       >
         <span className="text-sm text-indigo-700">お探しの作品がない場合はリクエストできます</span>
         <span className="text-indigo-500 text-sm shrink-0 ml-2">→</span>
@@ -224,7 +224,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
               </Link>
             ))}
           </div>
-          <Link href="/requests" className="inline-block text-xs text-indigo-500 hover:underline mt-2">
+          <Link href="/requests" className="min-h-12 inline-flex items-center text-xs text-indigo-500 hover:underline mt-2">
             すべて見る →
           </Link>
         </section>
@@ -267,7 +267,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="min-h-12 flex items-center px-4 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
                 >
                   ← 前
                 </button>
@@ -285,7 +285,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                       <button
                         key={item}
                         onClick={() => setPage(item as number)}
-                        className={`w-11 h-11 text-sm rounded-lg transition-colors ${
+                        className={`w-12 h-12 flex items-center justify-center text-sm rounded-lg transition-colors ${
                           page === item
                             ? "bg-indigo-600 text-white"
                             : "border border-gray-200 hover:border-indigo-300"
@@ -298,7 +298,7 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="min-h-12 flex items-center px-4 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
                 >
                   次 →
                 </button>
