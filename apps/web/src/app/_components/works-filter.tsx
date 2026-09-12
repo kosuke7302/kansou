@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type ContentType = "anime" | "manga" | "drama" | "movie";
 export type Platform = "netflix" | "amazon_prime" | "disney_plus" | "hulu" | "u_next" | "d_anime" | "abema" | "lemino" | "fod" | "tver" | "dmm_tv" | "telasa" | "anime_times";
@@ -101,11 +102,23 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
-export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[]; requestOriginWorks?: RequestOriginWork[] }) {
-  const [genre, setGenre] = useState<GenreKey>("all");
-  const [platform, setPlatform] = useState<Platform | "all">("all");
+const GENRE_KEYS = GENRE_TABS.map((t) => t.key) as readonly string[];
+const PLATFORM_KEYS = PLATFORM_TABS.map((t) => t.key) as readonly string[];
+
+function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; requestOriginWorks?: RequestOriginWork[] }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const typeParam = searchParams.get("type");
+  const platformParam = searchParams.get("platform");
+  const initialGenre = (GENRE_KEYS.includes(typeParam ?? "") ? typeParam : "all") as GenreKey;
+  const initialPlatform = (PLATFORM_KEYS.includes(platformParam ?? "") ? platformParam : "all") as Platform | "all";
+
+  const [genre, setGenre] = useState<GenreKey>(initialGenre);
+  const [platform, setPlatform] = useState<Platform | "all">(initialPlatform);
   const [page, setPage] = useState(1);
-  const [showPlatforms, setShowPlatforms] = useState(false);
+  const [showPlatforms, setShowPlatforms] = useState(initialPlatform !== "all");
 
   const isFiltering = genre !== "all" || platform !== "all";
 
@@ -132,14 +145,24 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
   const topList = trending.length > 0 ? trending : popular;
   const topLabel = trending.length > 0 ? "🔥 今週の話題作 TOP10" : "🔥 人気の作品 TOP10";
 
+  function updateUrl(nextGenre: GenreKey, nextPlatform: Platform | "all") {
+    const params = new URLSearchParams();
+    if (nextGenre !== "all") params.set("type", nextGenre);
+    if (nextPlatform !== "all") params.set("platform", nextPlatform);
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  }
+
   function handleGenreChange(key: GenreKey) {
     setGenre(key);
     setPage(1);
+    updateUrl(key, platform);
   }
 
   function handlePlatformChange(key: Platform | "all") {
     setPlatform(key);
     setPage(1);
+    updateUrl(genre, key);
   }
 
   return (
@@ -310,5 +333,15 @@ export function WorksFilter({ works, requestOriginWorks = [] }: { works: Work[];
         )}
       </section>
     </div>
+  );
+}
+
+// useSearchParams()を使うためSuspenseで包む（ISRされているホームページ自体はサーバー側でsearchParamsを
+// 読んでいないため、force-static/revalidateへの影響はない）
+export function WorksFilter(props: { works: Work[]; requestOriginWorks?: RequestOriginWork[] }) {
+  return (
+    <Suspense fallback={null}>
+      <WorksFilterInner {...props} />
+    </Suspense>
   );
 }
