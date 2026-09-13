@@ -5,7 +5,7 @@ import { eq, inArray } from "drizzle-orm";
 import { fetchTotalPageViews, fetchTopPages } from "@/lib/ga4";
 import { fetchNetflixTop10Japan } from "@/lib/netflix-top10";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 async function upsertCache(key: string, value: unknown) {
   await db
