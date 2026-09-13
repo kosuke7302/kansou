@@ -60,6 +60,7 @@ export const comments = pgTable("comments", {
   imageUrl: varchar("image_url", { length: 512 }), // Vercel Blobにアップロードした添付画像のURL（任意）
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),
   likeCount: integer("like_count").default(0).notNull(),
+  isOfficial: boolean("is_official").default(false).notNull(), // 管理画面ログイン中の投稿（運営の返信）かどうか
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

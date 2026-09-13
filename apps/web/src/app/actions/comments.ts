@@ -24,6 +24,11 @@ function sanitizeImageUrl(raw: FormDataEntryValue | null): string | null {
   }
 }
 
+async function checkAdminAuth() {
+  const jar = await cookies();
+  return jar.get("admin_session")?.value === process.env.ADMIN_PASSWORD;
+}
+
 export async function postComment(
   _prev: CommentActionState,
   formData: FormData
@@ -99,6 +104,7 @@ export async function postComment(
   const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
 
   const session = await auth();
+  const isOfficial = await checkAdminAuth();
   await db.insert(comments).values({
     episodeId: episode.id,
     parentId,
@@ -106,6 +112,7 @@ export async function postComment(
     imageUrl,
     authorName,
     userId: session?.user?.id ?? null,
+    isOfficial,
   });
   revalidatePath("/");
   return { success: true };
@@ -149,6 +156,7 @@ export async function postWorkComment(
   const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
 
   const session = await auth();
+  const isOfficial = await checkAdminAuth();
   await db.insert(comments).values({
     workId: work.id,
     parentId,
@@ -156,6 +164,7 @@ export async function postWorkComment(
     imageUrl,
     authorName,
     userId: session?.user?.id ?? null,
+    isOfficial,
   });
   revalidatePath(`/works/${slug}`);
   revalidatePath("/");
@@ -174,11 +183,6 @@ export async function unlikeComment(commentId: number): Promise<void> {
     .update(comments)
     .set({ likeCount: sql`GREATEST(${comments.likeCount} - 1, 0)` })
     .where(eq(comments.id, commentId));
-}
-
-async function checkAdminAuth() {
-  const jar = await cookies();
-  return jar.get("admin_session")?.value === process.env.ADMIN_PASSWORD;
 }
 
 export async function deleteComment(commentId: number): Promise<{ error?: string }> {

@@ -148,6 +148,13 @@
       "when": 1788050000000,
       "tag": "0020_comments_image_url",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1789330000000,
+      "tag": "0021_comments_is_official",
+      "breakpoints": true
     }
   ]
 }

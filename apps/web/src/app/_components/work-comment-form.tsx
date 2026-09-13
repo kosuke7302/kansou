@@ -70,7 +70,8 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
 
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-4">
-      <h2 className="text-sm font-semibold mb-3">作品全体の感想を投稿する</h2>
+      <h2 className="text-sm font-semibold">作品全体の感想を投稿する</h2>
+      <p className="text-xs text-gray-400 mt-0.5 mb-3">運営が全部読んで返信します。</p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
 

@@ -16,6 +16,7 @@ export type CommentItem = {
   createdAt: string | Date;
   likeCount: number;
   parentId: number | null;
+  isOfficial: boolean;
 };
 
 type ThreadProps = {
@@ -116,6 +117,11 @@ function CommentRow({ comment }: { comment: CommentItem }) {
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
+          {comment.isOfficial && (
+            <span className="text-[10px] font-semibold bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">
+              運営
+            </span>
+          )}
           <span className="text-xs text-gray-400">
             {new Date(comment.createdAt).toLocaleString("ja-JP", {
               year: "numeric",
