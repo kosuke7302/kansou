@@ -167,7 +167,7 @@ export default async function EpisodePage({
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">みんなの感想</h2>
           {commentList.length === 0 ? (
-            <p className="text-center text-gray-400 py-8">まだ感想がありません。最初の一言を投稿しましょう！</p>
+            <p className="text-center text-gray-400 py-8">全然コメントがないので助けてください</p>
           ) : (
             <CommentThread slug={slug} episodeNumber={epNum} comments={commentList} />
           )}

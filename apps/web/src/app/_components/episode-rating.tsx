@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { usePathname } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
 import { rateEpisode, getMyRating } from "@/app/actions/ratings";
 
 export function EpisodeRating({
@@ -15,23 +14,15 @@ export function EpisodeRating({
   ratingCount: number;
 }) {
   const pathname = usePathname();
-  const { status } = useSession();
-  const isLoggedIn = status === "authenticated";
   const [rating, setRating] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      getMyRating(episodeId).then(setRating);
-    }
-  }, [isLoggedIn, episodeId]);
+    getMyRating(episodeId).then(setRating);
+  }, [episodeId]);
 
   function handleClick(value: number) {
-    if (!isLoggedIn) {
-      signIn("google", { callbackUrl: pathname });
-      return;
-    }
     if (isPending) return;
     setRating(value);
     startTransition(async () => {
