@@ -1,3 +1,12 @@
+// afb提供のHulu用バナー素材（管理画面上で発行されたものをそのまま使用。Hulu本体からの画像流用ではない）
+const HULU_BANNER = {
+  imgSrc: "https://www.afi-b.com/upload_image/8792-1515374326-3.jpg",
+  width: 234,
+  height: 60,
+  alt: "Hulu",
+  pixelSrc: "https://t.afi-b.com/lead/G8792C/d991429d/y315961m",
+};
+
 const PLATFORM_INFO: Record<string, {
   label: string;
   bgColor: string;
@@ -116,6 +125,29 @@ export function StreamingBanner({ platforms }: { platforms: (string | null)[] | 
             );
           })}
         </div>
+
+        {validPlatforms.includes("hulu") && process.env.AFFILIATE_URL_HULU && (
+          <div className="inline-block">
+            <a
+              href={process.env.AFFILIATE_URL_HULU}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="inline-block"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={HULU_BANNER.imgSrc}
+                width={HULU_BANNER.width}
+                height={HULU_BANNER.height}
+                alt={HULU_BANNER.alt}
+                className="border-0"
+              />
+            </a>
+            {/* 成果計測用の計測タグ（クリックとは独立した表示計測ピクセル）。afbの提供コード通り<a>の外に置く */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={HULU_BANNER.pixelSrc} width={1} height={1} alt="" className="border-0" />
+          </div>
+        )}
       </div>
     </div>
   );
