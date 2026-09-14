@@ -94,8 +94,10 @@ const PLATFORM_INFO: Record<string, {
 };
 
 export function StreamingBanner({ platforms }: { platforms: (string | null)[] | null }) {
+  // アフィリエイトリンクが設定されていない配信サービスは、「PR/アフィリエイト広告を含みます」
+  // という表示と実態が食い違ってしまうため掲載しない
   const validPlatforms = (platforms ?? []).filter(
-    (p): p is string => !!p && !!PLATFORM_INFO[p]
+    (p): p is string => !!p && !!PLATFORM_INFO[p] && !!process.env[PLATFORM_INFO[p].affiliateEnv]
   );
   if (validPlatforms.length === 0) return null;
 
