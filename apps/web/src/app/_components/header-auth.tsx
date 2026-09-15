@@ -94,6 +94,13 @@ export function HeaderAuth() {
               マイコメント
             </Link>
             <Link
+              href="/my-ranking"
+              onClick={() => setMenuOpen(false)}
+              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              Myランキング
+            </Link>
+            <Link
               href="/account"
               onClick={() => setMenuOpen(false)}
               className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"

@@ -99,6 +99,27 @@ export const episodeRatings = pgTable("episode_ratings", {
   uniqueIndex("episode_ratings_episode_user_idx").on(t.episodeId, t.userId),
 ]);
 
+// ユーザーが作る「Myランキング」（TOP5）。1ユーザー1本。公開URLはshareId経由でGoogleアカウントIDを露出させない
+export const rankingProfiles = pgTable("ranking_profiles", {
+  userId: text("user_id").primaryKey(),
+  shareId: varchar("share_id", { length: 20 }).notNull().unique(),
+  title: varchar("title", { length: 100 }).default("私のアニメ・漫画ランキング").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const rankingEntries = pgTable("ranking_entries", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  workId: integer("work_id")
+    .references(() => works.id, { onDelete: "cascade" })
+    .notNull(),
+  position: integer("position").notNull(), // 1〜5
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("ranking_entries_user_work_idx").on(t.userId, t.workId),
+  uniqueIndex("ranking_entries_user_position_idx").on(t.userId, t.position),
+]);
+
 export const userProfiles = pgTable("user_profiles", {
   userId: text("user_id").primaryKey(),
   nickname: varchar("nickname", { length: 100 }),
@@ -162,3 +183,7 @@ export type EpisodeRating = typeof episodeRatings.$inferSelect;
 export type NewEpisodeRating = typeof episodeRatings.$inferInsert;
 export type EpisodeAddRequest = typeof episodeAddRequests.$inferSelect;
 export type NewEpisodeAddRequest = typeof episodeAddRequests.$inferInsert;
+export type RankingProfile = typeof rankingProfiles.$inferSelect;
+export type NewRankingProfile = typeof rankingProfiles.$inferInsert;
+export type RankingEntry = typeof rankingEntries.$inferSelect;
+export type NewRankingEntry = typeof rankingEntries.$inferInsert;
