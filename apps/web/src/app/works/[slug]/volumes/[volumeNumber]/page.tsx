@@ -148,9 +148,11 @@ export default async function VolumePage({ params }: { params: Params }) {
       />
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">みんなの感想</h2>
+        <h2 className="text-sm font-semibold">同じ巻を読んだ仲間の感想</h2>
         {commentList.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">全然コメントがないので助けてください</p>
+          <p className="text-center text-gray-400 py-8">
+            このページ、あなたが最初に見つけました。全然コメントがないので助けてください
+          </p>
         ) : (
           <CommentThread slug={slug} volumeNumber={volNum} comments={commentList} />
         )}

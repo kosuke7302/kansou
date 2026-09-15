@@ -4,10 +4,26 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { comments, episodes, works } from "@kansou/db";
-import { eq, and, isNull, sql } from "drizzle-orm";
+import { eq, and, isNull, sql, count } from "drizzle-orm";
 import { auth } from "@/auth";
+import { getOrCreateAnonId } from "@/lib/anon-id";
 
-export type CommentActionState = { error?: string; success?: boolean };
+export type CommentActionState = { error?: string; success?: boolean; isFirstComment?: boolean };
+
+// ログイン済みならGoogleアカウントID、未ログインならCookieの匿名IDで投稿者を識別し、
+// この投稿がその識別子にとって初めての投稿かどうかを判定する（初コメントバッジ用）
+async function resolveCommentIdentity(): Promise<{ userId: string | null; anonId: string | null; isFirstComment: boolean }> {
+  const session = await auth();
+  const userId = session?.user?.id ?? null;
+  const anonId = userId ? null : await getOrCreateAnonId();
+
+  const [{ priorCount }] = await db
+    .select({ priorCount: count() })
+    .from(comments)
+    .where(userId ? eq(comments.userId, userId) : eq(comments.anonId, anonId!));
+
+  return { userId, anonId, isFirstComment: Number(priorCount) === 0 };
+}
 
 // クライアントはVercel Blobへの直アップロード後のURLしか送ってこない想定だが、
 // hidden inputは書き換え可能なため、実際にBlobストレージのURLかをサーバー側でも検証する
@@ -103,19 +119,21 @@ export async function postComment(
 
   const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
 
-  const session = await auth();
   const isOfficial = await checkAdminAuth();
+  const { userId, anonId, isFirstComment } = await resolveCommentIdentity();
   await db.insert(comments).values({
     episodeId: episode.id,
     parentId,
     body: body.trim(),
     imageUrl,
     authorName,
-    userId: session?.user?.id ?? null,
+    userId,
+    anonId,
     isOfficial,
+    isFirstComment,
   });
   revalidatePath("/");
-  return { success: true };
+  return { success: true, isFirstComment };
 }
 
 export async function postWorkComment(
@@ -155,20 +173,22 @@ export async function postWorkComment(
 
   const imageUrl = sanitizeImageUrl(formData.get("imageUrl"));
 
-  const session = await auth();
   const isOfficial = await checkAdminAuth();
+  const { userId, anonId, isFirstComment } = await resolveCommentIdentity();
   await db.insert(comments).values({
     workId: work.id,
     parentId,
     body: body.trim(),
     imageUrl,
     authorName,
-    userId: session?.user?.id ?? null,
+    userId,
+    anonId,
     isOfficial,
+    isFirstComment,
   });
   revalidatePath(`/works/${slug}`);
   revalidatePath("/");
-  return { success: true };
+  return { success: true, isFirstComment };
 }
 
 export async function likeComment(commentId: number): Promise<void> {

@@ -17,6 +17,7 @@ export type CommentItem = {
   likeCount: number;
   parentId: number | null;
   isOfficial: boolean;
+  isFirstComment: boolean;
 };
 
 type ThreadProps = {
@@ -120,6 +121,11 @@ function CommentRow({ comment }: { comment: CommentItem }) {
           {comment.isOfficial && (
             <span className="text-[10px] font-semibold bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">
               運営
+            </span>
+          )}
+          {comment.isFirstComment && (
+            <span className="text-[10px] font-semibold bg-amber-400 text-amber-900 px-1.5 py-0.5 rounded-full">
+              🔰初コメント
             </span>
           )}
           <span className="text-xs text-gray-400">

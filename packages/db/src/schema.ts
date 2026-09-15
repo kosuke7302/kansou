@@ -56,11 +56,13 @@ export const comments = pgTable("comments", {
   parentId: integer("parent_id")
     .references((): AnyPgColumn => comments.id, { onDelete: "cascade" }),
   userId: text("user_id"), // Googleアカウントの安定ID（account.providerAccountId）。匿名投稿はnull
+  anonId: text("anon_id"), // 未ログイン投稿の識別用Cookie値（kansou_anon_id）。ログイン投稿はnull
   body: text("body").notNull(),
   imageUrl: varchar("image_url", { length: 512 }), // Vercel Blobにアップロードした添付画像のURL（任意）
   authorName: varchar("author_name", { length: 100 }).notNull().default("名無し"),
   likeCount: integer("like_count").default(0).notNull(),
   isOfficial: boolean("is_official").default(false).notNull(), // 管理画面ログイン中の投稿（運営の返信）かどうか
+  isFirstComment: boolean("is_first_comment").default(false).notNull(), // このユーザー/匿名IDにとって初めての投稿か
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
