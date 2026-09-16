@@ -45,7 +45,7 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
     .orderBy(asc(comments.createdAt));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 sm:pb-0">
       <MobileCommentCta />
       <div>
         <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">

@@ -125,7 +125,7 @@ export default async function VolumePage({ params }: { params: Params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="space-y-6">
+      <div className="space-y-6 pb-20 sm:pb-0">
       <MobileCommentCta />
       <div>
         <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
