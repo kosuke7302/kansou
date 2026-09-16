@@ -1,18 +1,26 @@
 "use client";
 
-// スマホ幅のみ表示する「コメントを入力」固定ボタン。タップでコメントフォームまでスクロールする。
-// コメント件数によってページの長さが変わり、フォームが最初から画面内に入っていることもあるため、
-// 表示・非表示は出し分けずページごとに常に同じ場所に表示する
+import { useState } from "react";
+
+// スマホ幅のみ表示する「コメントを入力」固定ボタン。コメントフォーム自体はスマホでは
+// 最初は隠れており(CommentForm/WorkCommentFormのmax-sm:hidden)、タップして初めて
+// 表示・フォーカスされる。表示させたらボタン自身は用済みなので消える
 export function MobileCommentCta({ targetId = "comment-form" }: { targetId?: string }) {
+  const [pressed, setPressed] = useState(false);
+
   function handleClick() {
     const target = document.getElementById(targetId);
     if (!target) return;
+    target.classList.remove("max-sm:hidden");
     // ユーザー操作(クリック)と同じ呼び出しスタック内でfocus()を呼ばないと、
     // スマホブラウザがソフトキーボードを表示してくれないため、setTimeoutは使わない
     const textarea = target.querySelector("textarea");
     textarea?.focus();
     target.scrollIntoView({ behavior: "smooth", block: "start" });
+    setPressed(true);
   }
+
+  if (pressed) return null;
 
   return (
     <button
