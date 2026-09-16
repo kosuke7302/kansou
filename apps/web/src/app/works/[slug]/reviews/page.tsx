@@ -7,6 +7,7 @@ import { eq, asc, and, isNull } from "drizzle-orm";
 import { WorkCommentForm } from "@/app/_components/work-comment-form";
 import { CommentThread } from "@/app/_components/comment-thread";
 import { ShareButtons } from "@/app/_components/share-buttons";
+import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -45,6 +46,7 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
 
   return (
     <div className="space-y-6">
+      <MobileCommentCta />
       <div>
         <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
           ← {work.title}

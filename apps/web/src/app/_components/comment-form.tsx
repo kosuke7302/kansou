@@ -21,7 +21,7 @@ type Props = {
 
 export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber, volumeNumber }: Props) {
   const [state, action, pending] = useActionState(postComment, initialState);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState("名前未設定");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageAttachRef = useRef<ImageAttachHandle>(null);
   const { data: session, status } = useSession();
@@ -76,7 +76,7 @@ export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber,
   }
 
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4">
+    <section id="comment-form" className="bg-white border border-gray-200 rounded-lg p-4">
       <h2 className="text-sm font-semibold">💬 今回の感想を一言</h2>
       <p className="text-xs text-gray-400 mt-0.5 mb-3">
         「○○最高」「ここ意味わからん」だけでもOK！放送前の考察・予想も歓迎です。運営が全部読んで返信します。初めての投稿には🔰「初コメント」バッジが付きます。

@@ -44,7 +44,7 @@ function ReplyForm({
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState("名前未設定");
 
   useEffect(() => {
     const saved = localStorage.getItem(NICKNAME_KEY);

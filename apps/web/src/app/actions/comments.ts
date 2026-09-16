@@ -70,7 +70,7 @@ export async function postComment(
   const authorName =
     typeof authorNameRaw === "string" && authorNameRaw.trim()
       ? authorNameRaw.trim().slice(0, 100)
-      : "名無し";
+      : "名前未設定";
 
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return { error: "作品が見つかりません" };
@@ -155,7 +155,7 @@ export async function postWorkComment(
   const authorName =
     typeof authorNameRaw === "string" && authorNameRaw.trim()
       ? authorNameRaw.trim().slice(0, 100)
-      : "名無し";
+      : "名前未設定";
 
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) return { error: "作品が見つかりません" };

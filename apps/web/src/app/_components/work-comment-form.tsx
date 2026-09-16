@@ -17,7 +17,7 @@ type Props = {
 
 export function WorkCommentForm({ slug, workId, workTitle }: Props) {
   const [state, action, pending] = useActionState(postWorkComment, initialState);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState("名前未設定");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageAttachRef = useRef<ImageAttachHandle>(null);
   const { data: session, status } = useSession();
@@ -69,7 +69,7 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
   }
 
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4">
+    <section id="comment-form" className="bg-white border border-gray-200 rounded-lg p-4">
       <h2 className="text-sm font-semibold">作品全体の感想を投稿する</h2>
       <p className="text-xs text-gray-400 mt-0.5 mb-3">
         運営が全部読んで返信します。初めての投稿には🔰「初コメント」バッジが付きます。

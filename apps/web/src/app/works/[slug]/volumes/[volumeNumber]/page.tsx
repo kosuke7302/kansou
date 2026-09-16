@@ -11,6 +11,7 @@ import { ShareButtons } from "@/app/_components/share-buttons";
 import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { EpisodeNav } from "@/app/_components/episode-nav";
+import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -125,6 +126,7 @@ export default async function VolumePage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="space-y-6">
+      <MobileCommentCta />
       <div>
         <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
           ← {work.title}
@@ -148,7 +150,6 @@ export default async function VolumePage({ params }: { params: Params }) {
       />
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">同じ巻を読んだ仲間の感想</h2>
         {commentList.length === 0 ? (
           <p className="text-center text-gray-400 py-8">
             このページ、あなたが最初に見つけました。全然コメントがないので助けてください
