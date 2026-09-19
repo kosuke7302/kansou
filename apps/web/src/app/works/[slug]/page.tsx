@@ -3,35 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { works, episodes, comments } from "@kansou/db";
-import { eq, asc, count, countDistinct, isNull, isNotNull, and } from "drizzle-orm";
+import { eq, asc, count, isNull, isNotNull, and } from "drizzle-orm";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
-import { PaginationNav } from "@/app/_components/pagination-nav";
 import { FavoriteButton } from "@/app/_components/favorite-button";
 import { ShareButtons } from "@/app/_components/share-buttons";
+import { WorkEpisodeBrowser, type EpisodeRow } from "@/app/_components/work-episode-browser";
 
-const PAGE_SIZE = 200;
-
-type EpisodeRow = {
-  id: number;
-  episodeNumber: number | null;
-  volumeNumber: number | null;
-  title: string | null;
-  commentCount: number;
-};
-
-type Tab = "episode" | "volume" | "commented";
-
-function buildHref(
-  slug: string,
-  params: { epPage?: number; volPage?: number; tab?: Tab }
-) {
-  const usp = new URLSearchParams();
-  if (params.tab && params.tab !== "episode") usp.set("tab", params.tab);
-  if (params.epPage && params.epPage > 1) usp.set("epPage", String(params.epPage));
-  if (params.volPage && params.volPage > 1) usp.set("volPage", String(params.volPage));
-  const qs = usp.toString();
-  return `/works/${slug}${qs ? `?${qs}` : ""}`;
-}
+export const revalidate = 3600;
+export const dynamic = "force-static";
 
 const TYPE_LABELS: Record<string, string> = {
   anime: "アニメ", manga: "漫画", drama: "ドラマ", movie: "映画",
@@ -61,25 +40,14 @@ export async function generateMetadata({ params }: PageProps<"/works/[slug]">): 
   };
 }
 
-export default async function WorkPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ epPage?: string; volPage?: string; tab?: string }>;
-}) {
+export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   const { slug } = await params;
-  const { epPage: epPageRaw, volPage: volPageRaw, tab: tabRaw } = await searchParams;
-  const epPage = Math.max(1, Number(epPageRaw) || 1);
-  const volPage = Math.max(1, Number(volPageRaw) || 1);
 
   const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
   if (!work) notFound();
 
   const isManga = work.type === "manga";
   const isMovie = work.type === "movie";
-  const tab: Tab =
-    tabRaw === "commented" ? "commented" : isManga && tabRaw === "volume" ? "volume" : "episode";
 
   const episodeCols = {
     id: episodes.id,
@@ -89,62 +57,32 @@ export default async function WorkPage({
     commentCount: count(comments.id),
   };
 
-  const pagedEpisodesQuery = db
+  const episodesQuery = db
     .select(episodeCols)
     .from(episodes)
     .leftJoin(comments, eq(comments.episodeId, episodes.id))
     .where(and(eq(episodes.workId, work.id), isNotNull(episodes.episodeNumber)))
     .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
-    .orderBy(asc(episodes.episodeNumber))
-    .limit(PAGE_SIZE)
-    .offset((epPage - 1) * PAGE_SIZE);
+    .orderBy(asc(episodes.episodeNumber));
 
-  const pagedVolumesQuery = db
-    .select(episodeCols)
-    .from(episodes)
-    .leftJoin(comments, eq(comments.episodeId, episodes.id))
-    .where(and(eq(episodes.workId, work.id), isNull(episodes.episodeNumber)))
-    .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
-    .orderBy(asc(episodes.volumeNumber))
-    .limit(PAGE_SIZE)
-    .offset((volPage - 1) * PAGE_SIZE);
+  const volumesQuery = isManga
+    ? db
+        .select(episodeCols)
+        .from(episodes)
+        .leftJoin(comments, eq(comments.episodeId, episodes.id))
+        .where(and(eq(episodes.workId, work.id), isNull(episodes.episodeNumber)))
+        .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
+        .orderBy(asc(episodes.volumeNumber))
+    : Promise.resolve([] as EpisodeRow[]);
 
-  const commentedQuery = db
-    .select(episodeCols)
-    .from(episodes)
-    .innerJoin(comments, eq(comments.episodeId, episodes.id))
-    .where(eq(episodes.workId, work.id))
-    .groupBy(episodes.id, episodes.episodeNumber, episodes.volumeNumber, episodes.title)
-    .orderBy(asc(episodes.volumeNumber), asc(episodes.episodeNumber))
-    .limit(PAGE_SIZE);
-
-  const [
-    [{ workCommentCount }],
-    [{ episodeTotal }],
-    [{ volumeTotal }],
-    [{ commentedTotal }],
-    pagedEpisodes,
-    pagedVolumes,
-    commentedEpisodes,
-  ] = await Promise.all([
-    db.select({ workCommentCount: count(comments.id) }).from(comments)
+  const [[{ workCommentCount }], allEpisodes, allVolumes] = await Promise.all([
+    db
+      .select({ workCommentCount: count(comments.id) })
+      .from(comments)
       .where(and(eq(comments.workId, work.id), isNull(comments.episodeId))),
-    db.select({ episodeTotal: count() }).from(episodes)
-      .where(and(eq(episodes.workId, work.id), isNotNull(episodes.episodeNumber))),
-    isManga
-      ? db.select({ volumeTotal: count() }).from(episodes)
-          .where(and(eq(episodes.workId, work.id), isNull(episodes.episodeNumber)))
-      : Promise.resolve([{ volumeTotal: 0 }]),
-    db.select({ commentedTotal: countDistinct(episodes.id) }).from(episodes)
-      .innerJoin(comments, eq(comments.episodeId, episodes.id))
-      .where(eq(episodes.workId, work.id)),
-    tab === "episode" ? pagedEpisodesQuery : Promise.resolve([] as EpisodeRow[]),
-    isManga && tab === "volume" ? pagedVolumesQuery : Promise.resolve([] as EpisodeRow[]),
-    tab === "commented" ? commentedQuery : Promise.resolve([] as EpisodeRow[]),
+    episodesQuery,
+    volumesQuery,
   ]);
-
-  const epTotalPages = Math.max(1, Math.ceil(Number(episodeTotal) / PAGE_SIZE));
-  const volTotalPages = Math.max(1, Math.ceil(Number(volumeTotal) / PAGE_SIZE));
 
   return (
     <div className="space-y-6">
@@ -184,178 +122,15 @@ export default async function WorkPage({
 
       <StreamingBanner platforms={work.platforms} />
 
-      {isManga ? (
-        <section>
-          {/* 話／巻／コメントありタブ */}
-          <div className="flex gap-2 mb-3 flex-wrap">
-            <Link
-              href={buildHref(slug, { tab: "episode", epPage, volPage })}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                tab === "episode" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
-              }`}
-            >
-              話（{episodeTotal}）
-            </Link>
-            <Link
-              href={buildHref(slug, { tab: "volume", epPage, volPage })}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                tab === "volume" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
-              }`}
-            >
-              巻（{volumeTotal}）
-            </Link>
-            <Link
-              href={buildHref(slug, { tab: "commented", epPage, volPage })}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
-              }`}
-            >
-              💬コメントあり（{commentedTotal}）
-            </Link>
-          </div>
-
-          {tab === "commented" ? (
-            commentedEpisodes.length === 0 ? (
-              <p className="text-gray-400 text-sm">まだコメントがありません</p>
-            ) : (
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {commentedEpisodes.map((ep) => (
-                  <Link
-                    key={ep.id}
-                    href={
-                      ep.volumeNumber != null
-                        ? `/works/${slug}/volumes/${ep.volumeNumber}`
-                        : `/works/${slug}/episodes/${ep.episodeNumber}`
-                    }
-                    title={ep.title ?? undefined}
-                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>{ep.volumeNumber != null ? `第${ep.volumeNumber}巻` : `${ep.episodeNumber}話`}</span>
-                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                  </Link>
-                ))}
-              </div>
-            )
-          ) : tab === "volume" ? (
-            pagedVolumes.length === 0 ? (
-              <p className="text-gray-400 text-sm">データがありません</p>
-            ) : (
-              <>
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                  {pagedVolumes.map((vol) => (
-                    <Link
-                      key={vol.id}
-                      href={`/works/${slug}/volumes/${vol.volumeNumber}`}
-                      className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                    >
-                      <span>第{vol.volumeNumber}巻</span>
-                      {Number(vol.commentCount) > 0 && (
-                        <span className="text-xs text-indigo-500 font-medium">💬{vol.commentCount}</span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-                <PaginationNav
-                  page={volPage}
-                  totalPages={volTotalPages}
-                  hrefFor={(p) => buildHref(slug, { tab: "volume", epPage, volPage: p })}
-                />
-              </>
-            )
-          ) : pagedEpisodes.length === 0 ? (
-            <p className="text-gray-400 text-sm">データがありません</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
-                {pagedEpisodes.map((ep) => (
-                  <Link
-                    key={ep.id}
-                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
-                    title={ep.title ?? undefined}
-                    className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>{ep.episodeNumber}話</span>
-                    {Number(ep.commentCount) > 0 && (
-                      <span className="text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-              <PaginationNav
-                page={epPage}
-                totalPages={epTotalPages}
-                hrefFor={(p) => buildHref(slug, { tab: "episode", epPage: p, volPage })}
-              />
-            </>
-          )}
-        </section>
-      ) : (
-        <section>
-          {isMovie ? (
-            <h2 className="text-lg font-semibold mb-3">作品</h2>
-          ) : (
-            <div className="flex gap-2 mb-3 flex-wrap">
-              <Link
-                href={buildHref(slug, { tab: "episode", epPage })}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  tab === "episode" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
-                }`}
-              >
-                話数一覧（{episodeTotal}）
-              </Link>
-              <Link
-                href={buildHref(slug, { tab: "commented", epPage })}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
-                }`}
-              >
-                💬コメントあり（{commentedTotal}）
-              </Link>
-            </div>
-          )}
-
-          {tab === "commented" && !isMovie ? (
-            commentedEpisodes.length === 0 ? (
-              <p className="text-gray-400 text-sm">まだコメントがありません</p>
-            ) : (
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {commentedEpisodes.map((ep) => (
-                  <Link
-                    key={ep.id}
-                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
-                    title={ep.title ?? undefined}
-                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>第{ep.episodeNumber}話</span>
-                    <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                  </Link>
-                ))}
-              </div>
-            )
-          ) : pagedEpisodes.length === 0 ? (
-            <p className="text-gray-400 text-sm">データがありません</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {pagedEpisodes.map((ep) => (
-                  <Link
-                    key={ep.id}
-                    href={`/works/${slug}/episodes/${ep.episodeNumber}`}
-                    title={ep.title ?? undefined}
-                    className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                  >
-                    <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
-                    {Number(ep.commentCount) > 0 && (
-                      <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-              <PaginationNav page={epPage} totalPages={epTotalPages} hrefFor={(p) => buildHref(slug, { epPage: p })} />
-            </>
-          )}
-        </section>
-      )}
+      <WorkEpisodeBrowser
+        slug={slug}
+        isManga={isManga}
+        isMovie={isMovie}
+        episodeTotal={allEpisodes.length}
+        volumeTotal={allVolumes.length}
+        episodes={allEpisodes}
+        volumes={allVolumes}
+      />
     </div>
   );
 }
