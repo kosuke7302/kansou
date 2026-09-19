@@ -4,7 +4,7 @@ import { works, comments, episodes, analyticsCache } from "@kansou/db";
 import { eq, count, gte, desc } from "drizzle-orm";
 import { WorksFilter, type Work } from "./_components/works-filter";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 async function getWorks(): Promise<Work[]> {
   const worksWithEpisodes = await db

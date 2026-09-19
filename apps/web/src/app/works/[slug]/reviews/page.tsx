@@ -11,7 +11,7 @@ import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
 
 const BASE_URL = "https://www.kansou-log.com";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 export const dynamic = "force-static";
 
 type Params = Promise<{ slug: string }>;
