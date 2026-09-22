@@ -8,6 +8,10 @@ import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { FavoriteButton } from "@/app/_components/favorite-button";
 import { ShareButtons } from "@/app/_components/share-buttons";
 import { WorkEpisodeBrowser, type EpisodeRow } from "@/app/_components/work-episode-browser";
+import { CommentForm } from "@/app/_components/comment-form";
+import { CommentThread } from "@/app/_components/comment-thread";
+import { AdSenseAd } from "@/app/_components/adsense";
+import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
@@ -75,14 +79,32 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
         .orderBy(asc(episodes.volumeNumber))
     : Promise.resolve([] as EpisodeRow[]);
 
-  const [[{ workCommentCount }], allEpisodes, allVolumes] = await Promise.all([
+  const movieEpisodeQuery = isMovie
+    ? db
+        .select({ id: episodes.id, episodeNumber: episodes.episodeNumber })
+        .from(episodes)
+        .where(and(eq(episodes.workId, work.id), isNotNull(episodes.episodeNumber)))
+        .orderBy(asc(episodes.episodeNumber))
+        .limit(1)
+    : Promise.resolve([] as { id: number; episodeNumber: number | null }[]);
+
+  const [[{ workCommentCount }], allEpisodes, allVolumes, [movieEpisode]] = await Promise.all([
     db
       .select({ workCommentCount: count(comments.id) })
       .from(comments)
       .where(and(eq(comments.workId, work.id), isNull(comments.episodeId))),
     episodesQuery,
     volumesQuery,
+    movieEpisodeQuery,
   ]);
+
+  const movieCommentList = isMovie && movieEpisode
+    ? await db
+        .select()
+        .from(comments)
+        .where(eq(comments.episodeId, movieEpisode.id))
+        .orderBy(asc(comments.createdAt))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -122,15 +144,40 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
 
       <StreamingBanner platforms={work.platforms} />
 
-      <WorkEpisodeBrowser
-        slug={slug}
-        isManga={isManga}
-        isMovie={isMovie}
-        episodeTotal={allEpisodes.length}
-        volumeTotal={allVolumes.length}
-        episodes={allEpisodes}
-        volumes={allVolumes}
-      />
+      {isMovie && movieEpisode ? (
+        <>
+          <MobileCommentCta />
+          <section className="space-y-3">
+            {movieCommentList.length === 0 ? (
+              <p className="text-center text-gray-400 py-8">
+                このページ、あなたが最初に見つけました。全然コメントがないので助けてください
+              </p>
+            ) : (
+              <CommentThread slug={slug} episodeNumber={movieEpisode.episodeNumber ?? 1} comments={movieCommentList} />
+            )}
+          </section>
+
+          <CommentForm
+            slug={slug}
+            episodeNumber={movieEpisode.episodeNumber ?? 1}
+            workId={work.id}
+            workTitle={work.title}
+            episodeId={movieEpisode.id}
+          />
+
+          <AdSenseAd slot="" format="auto" />
+        </>
+      ) : (
+        <WorkEpisodeBrowser
+          slug={slug}
+          isManga={isManga}
+          isMovie={isMovie}
+          episodeTotal={allEpisodes.length}
+          volumeTotal={allVolumes.length}
+          episodes={allEpisodes}
+          volumes={allVolumes}
+        />
+      )}
     </div>
   );
 }

@@ -132,6 +132,7 @@ export async function postComment(
     isOfficial,
     isFirstComment,
   });
+  revalidatePath(`/works/${slug}`);
   revalidatePath("/");
   return { success: true, isFirstComment };
 }
