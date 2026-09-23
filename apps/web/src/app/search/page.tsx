@@ -82,9 +82,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   </span>
                 </div>
                 <p className="font-medium text-sm">{work.title}</p>
-                {work.description && (
-                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{work.description}</p>
-                )}
               </div>
               <span className="text-xs text-indigo-400 shrink-0 mt-1">感想を見る →</span>
             </Link>

@@ -117,9 +117,6 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           <h1 className="text-2xl font-bold">{work.title}</h1>
           <FavoriteButton workId={work.id} slug={slug} />
         </div>
-        {work.description && (
-          <p className="text-gray-500 text-sm mt-1">{work.description}</p>
-        )}
         <div className="mt-2">
           <ShareButtons title={work.title} url={`${BASE_URL}/works/${slug}`} />
         </div>
