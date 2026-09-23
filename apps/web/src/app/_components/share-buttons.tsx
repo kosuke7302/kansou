@@ -8,12 +8,12 @@ export function ShareButtons({ title, url }: Props) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-gray-500">シェア:</span>
+      <span className="text-xs text-ink-muted">シェア:</span>
       <a
         href={xUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-black text-white hover:bg-gray-800 transition-colors"
+        className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-black text-white hover:bg-ink transition-colors"
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

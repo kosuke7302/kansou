@@ -1,9 +1,38 @@
 @import "tailwindcss";
 
+@theme {
+  --color-accent-50: #e4ece9;
+  --color-accent-100: #cfe0da;
+  --color-accent-200: #a8c9be;
+  --color-accent-300: #7fb3ac;
+  --color-accent-400: #5a9089;
+  --color-accent-500: #3d746d;
+  --color-accent-600: #2f5c58;
+  --color-accent-700: #244945;
+  --color-accent-800: #1c3835;
+  --color-accent-900: #142623;
+
+  --color-badge-50: #f6ead9;
+  --color-badge-600: #b5824a;
+  --color-badge-700: #8f6539;
+
+  --color-paper: #faf8f4;
+  --color-paper-soft: #f2efe8;
+  --color-ink: #2a2723;
+  --color-ink-soft: #57534a;
+  --color-ink-muted: #8a8377;
+  --color-line: #e7e1d6;
+
+  --font-head: var(--font-zen-old-mincho), "Hiragino Mincho ProN", serif;
+  --font-body: var(--font-zen-kaku-gothic-new), "Hiragino Kaku Gothic ProN", sans-serif;
+
+  --radius-card: 3px;
+}
+
 :root {
   color-scheme: light;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }

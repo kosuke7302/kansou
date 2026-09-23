@@ -69,7 +69,7 @@ function ReplyForm({
   }
 
   return (
-    <form action={handleSubmit} className="mt-2 ml-4 pl-3 border-l-2 border-gray-100 space-y-2">
+    <form action={handleSubmit} className="mt-2 ml-4 pl-3 border-l-2 border-paper-soft space-y-2">
       <input type="hidden" name="slug" value={slug} />
       {episodeNumber !== undefined && <input type="hidden" name="episodeNumber" value={episodeNumber} />}
       {volumeNumber !== undefined && <input type="hidden" name="volumeNumber" value={volumeNumber} />}
@@ -85,7 +85,7 @@ function ReplyForm({
         placeholder="ニックネーム（省略可）"
         maxLength={100}
         disabled={isPending}
-        className="w-full text-base border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+        className="w-full text-base border border-line rounded-card px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300 disabled:opacity-50"
       />
       <textarea
         name="body"
@@ -94,17 +94,17 @@ function ReplyForm({
         maxLength={1000}
         placeholder="返信を書く"
         disabled={isPending}
-        className="w-full text-base border border-gray-200 rounded-lg px-2.5 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+        className="w-full text-base border border-line rounded-card px-2.5 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-accent-300 disabled:opacity-50"
       />
       <div className="flex gap-2">
         <button
           type="submit"
           disabled={isPending}
-          className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+          className="text-xs bg-accent-600 text-white px-3 py-1.5 rounded-card hover:bg-accent-700 disabled:opacity-50"
         >
           {isPending ? "送信中..." : "返信する"}
         </button>
-        <button type="button" onClick={onDone} className="text-xs text-gray-400 hover:text-gray-600">
+        <button type="button" onClick={onDone} className="text-xs text-ink-muted hover:text-ink-soft">
           キャンセル
         </button>
       </div>
@@ -117,9 +117,9 @@ function CommentRow({ comment }: { comment: CommentItem }) {
     <>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600">{comment.authorName}</span>
+          <span className="text-xs font-medium text-ink-soft">{comment.authorName}</span>
           {comment.isOfficial && (
-            <span className="text-[10px] font-semibold bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold bg-accent-600 text-white px-1.5 py-0.5 rounded-full">
               運営
             </span>
           )}
@@ -128,7 +128,7 @@ function CommentRow({ comment }: { comment: CommentItem }) {
               初コメント
             </span>
           )}
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-ink-muted">
             {new Date(comment.createdAt).toLocaleString("ja-JP", {
               year: "numeric",
               month: "numeric",
@@ -147,7 +147,7 @@ function CommentRow({ comment }: { comment: CommentItem }) {
           <img
             src={comment.imageUrl}
             alt="添付画像"
-            className="max-h-64 rounded-lg border border-gray-200 object-contain"
+            className="max-h-64 rounded-card border border-line object-contain"
           />
         </a>
       )}
@@ -198,7 +198,7 @@ export function CommentThread({ slug, episodeNumber, volumeNumber, comments }: T
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-1 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="text-xs border border-line rounded-card px-2 py-1 text-ink-soft focus:outline-none focus:ring-2 focus:ring-accent-300"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -208,18 +208,18 @@ export function CommentThread({ slug, episodeNumber, volumeNumber, comments }: T
         </select>
       </div>
       {topLevel.map((comment) => (
-        <div key={comment.id} className="bg-white border border-gray-200 rounded-lg px-4 py-3">
+        <div key={comment.id} className="bg-white border border-line rounded-card px-4 py-3">
           <CommentRow comment={comment} />
 
           <button
             onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-            className="text-xs text-indigo-500 hover:underline mt-1.5"
+            className="text-xs text-accent-500 hover:underline mt-1.5"
           >
             {replyingTo === comment.id ? "キャンセル" : "返信する"}
           </button>
 
           {(repliesByParent.get(comment.id) ?? []).map((reply) => (
-            <div key={reply.id} className="mt-2 ml-4 pl-3 border-l-2 border-gray-100">
+            <div key={reply.id} className="mt-2 ml-4 pl-3 border-l-2 border-paper-soft">
               <CommentRow comment={reply} />
             </div>
           ))}

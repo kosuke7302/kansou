@@ -80,9 +80,9 @@ export default async function MyCommentsPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-xl font-bold">マイコメント</h1>
+      <h1 className="font-head text-xl font-bold">マイコメント</h1>
       {rows.length === 0 ? (
-        <p className="text-gray-400 text-sm py-12 text-center">
+        <p className="text-ink-muted text-sm py-12 text-center">
           まだコメントを投稿していません
         </p>
       ) : (
@@ -91,10 +91,10 @@ export default async function MyCommentsPage() {
             <Link
               key={row.id}
               href={row.href}
-              className="block bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+              className="block bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
             >
-              <p className="text-xs text-indigo-500 font-medium mb-1">{row.label}</p>
-              <p className="text-sm text-gray-700 line-clamp-2">{row.body}</p>
+              <p className="text-xs text-accent-500 font-medium mb-1">{row.label}</p>
+              <p className="text-sm text-ink line-clamp-2">{row.body}</p>
             </Link>
           ))}
         </div>

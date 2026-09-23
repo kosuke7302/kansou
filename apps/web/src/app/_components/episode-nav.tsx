@@ -44,26 +44,26 @@ export function EpisodeNav({ slug, workId, field, currentNumber, prevNumber, nex
   }
 
   return (
-    <div className="flex items-center justify-between gap-2 text-sm border-t border-b border-gray-100 py-3">
+    <div className="flex items-center justify-between gap-2 text-sm border-t border-b border-paper-soft py-3">
       {prevNumber !== null ? (
-        <Link href={hrefFor(slug, field, prevNumber)} className="text-indigo-500 hover:underline">
+        <Link href={hrefFor(slug, field, prevNumber)} className="text-accent-500 hover:underline">
           ← {labelFor(field, prevNumber)}
         </Link>
       ) : (
-        <span className="text-xs text-gray-300">これが最初です</span>
+        <span className="text-xs text-line">これが最初です</span>
       )}
 
       {nextExists ? (
-        <Link href={hrefFor(slug, field, nextNumber)} className="text-indigo-500 hover:underline">
+        <Link href={hrefFor(slug, field, nextNumber)} className="text-accent-500 hover:underline">
           {labelFor(field, nextNumber)} →
         </Link>
       ) : requested ? (
-        <span className="text-xs text-gray-400">リクエスト済みです。追加をお待ちください</span>
+        <span className="text-xs text-ink-muted">リクエスト済みです。追加をお待ちください</span>
       ) : (
         <button
           onClick={handleRequest}
           disabled={isPending}
-          className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full disabled:opacity-50 shrink-0"
+          className="text-xs bg-paper-soft hover:bg-line text-ink-soft px-3 py-1.5 rounded-full disabled:opacity-50 shrink-0"
         >
           {isPending ? "送信中..." : `${labelFor(field, nextNumber)}をリクエストする`}
         </button>

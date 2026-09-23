@@ -73,7 +73,7 @@ export default async function RankingPage({ params }: { params: Params }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{ranking.title}</h1>
+        <h1 className="font-head text-2xl font-bold">{ranking.title}</h1>
         <div className="mt-2">
           <ShareButtons title={ranking.title} url={pageUrl} />
         </div>
@@ -84,9 +84,9 @@ export default async function RankingPage({ params }: { params: Params }) {
           <Link
             key={entry.slug}
             href={`/works/${entry.slug}`}
-            className="flex items-center gap-3 min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+            className="flex items-center gap-3 min-w-0 bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
           >
-            <span className="w-6 text-center text-lg font-bold text-indigo-500 shrink-0">{entry.position}</span>
+            <span className="w-6 text-center text-lg font-bold text-accent-500 shrink-0">{entry.position}</span>
             <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[entry.type]}`}>
               {TYPE_LABELS[entry.type]}
             </span>
@@ -95,8 +95,8 @@ export default async function RankingPage({ params }: { params: Params }) {
         ))}
       </div>
 
-      <p className="text-center text-xs text-gray-400">
-        <Link href="/my-ranking" className="text-indigo-500 hover:underline">
+      <p className="text-center text-xs text-ink-muted">
+        <Link href="/my-ranking" className="text-accent-500 hover:underline">
           あなたもMyランキングを作る →
         </Link>
       </p>

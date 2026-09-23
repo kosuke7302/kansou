@@ -33,7 +33,7 @@ export function LikeButton({ commentId, initialCount }: Props) {
       className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full transition-colors ${
         liked
           ? "text-red-400 bg-red-50"
-          : "text-gray-400 hover:text-red-400 hover:bg-red-50"
+          : "text-ink-muted hover:text-red-400 hover:bg-red-50"
       }`}
     >
       <span>{liked ? "♥" : "♡"}</span>

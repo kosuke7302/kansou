@@ -74,9 +74,9 @@ export const ImageAttach = forwardRef<ImageAttachHandle, Props>(function ImageAt
       {previewUrl ? (
         <div className="relative inline-block">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={previewUrl} alt="添付画像プレビュー" className="max-h-32 rounded-lg border border-gray-200" />
+          <img src={previewUrl} alt="添付画像プレビュー" className="max-h-32 rounded-card border border-line" />
           {uploading && (
-            <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-xs text-gray-500 rounded-lg">
+            <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-xs text-ink-muted rounded-card">
               アップロード中...
             </span>
           )}
@@ -84,14 +84,14 @@ export const ImageAttach = forwardRef<ImageAttachHandle, Props>(function ImageAt
             type="button"
             onClick={reset}
             disabled={disabled}
-            className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 text-white text-xs hover:bg-gray-900 disabled:opacity-50"
+            className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center rounded-full bg-ink text-white text-xs hover:bg-ink disabled:opacity-50"
             aria-label="画像を削除"
           >
             ×
           </button>
         </div>
       ) : (
-        <label className="inline-flex items-center gap-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg px-3 py-1.5 cursor-pointer hover:border-indigo-300 w-fit">
+        <label className="inline-flex items-center gap-1.5 text-xs text-ink-muted border border-line rounded-card px-3 py-1.5 cursor-pointer hover:border-accent-300 w-fit">
           画像を添付
           <input
             ref={fileInputRef}

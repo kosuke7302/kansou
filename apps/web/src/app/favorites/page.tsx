@@ -45,9 +45,9 @@ export default async function FavoritesPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-xl font-bold">お気に入り</h1>
+      <h1 className="font-head text-xl font-bold">お気に入り</h1>
       {rows.length === 0 ? (
-        <p className="text-gray-400 text-sm py-12 text-center">
+        <p className="text-ink-muted text-sm py-12 text-center">
           お気に入りに登録した作品はまだありません
         </p>
       ) : (
@@ -56,7 +56,7 @@ export default async function FavoritesPage() {
             <Link
               key={work.slug}
               href={`/works/${work.slug}`}
-              className="flex items-center gap-3 min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+              className="flex items-center gap-3 min-w-0 bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
             >
               <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
                 {TYPE_LABELS[work.type]}

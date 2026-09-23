@@ -39,8 +39,8 @@ export default async function MyRankingPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold">Myランキング</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="font-head text-xl font-bold">Myランキング</h1>
+        <p className="text-sm text-ink-muted mt-1">
           お気に入り登録した作品からTOP5を選んでシェアしよう
         </p>
       </div>

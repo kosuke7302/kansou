@@ -43,10 +43,10 @@ const PLATFORM_META: Record<Platform, { label: string; badge: string; activeBg: 
   amazon_prime: { label: "Prime Video", badge: "bg-sky-100 text-sky-700",       activeBg: "bg-sky-600 text-white" },
   disney_plus:  { label: "Disney+",     badge: "bg-blue-100 text-blue-800",     activeBg: "bg-blue-800 text-white" },
   hulu:         { label: "Hulu",        badge: "bg-green-100 text-green-700",   activeBg: "bg-green-600 text-white" },
-  u_next:       { label: "U-NEXT",      badge: "bg-gray-800 text-white",        activeBg: "bg-gray-900 text-white" },
+  u_next:       { label: "U-NEXT",      badge: "bg-ink text-white",        activeBg: "bg-ink text-white" },
   d_anime:      { label: "dアニメ",     badge: "bg-pink-100 text-pink-700",     activeBg: "bg-pink-600 text-white" },
   abema:        { label: "ABEMA",       badge: "bg-teal-100 text-teal-700",     activeBg: "bg-teal-500 text-white" },
-  lemino:       { label: "Lemino",      badge: "bg-indigo-100 text-indigo-800", activeBg: "bg-indigo-800 text-white" },
+  lemino:       { label: "Lemino",      badge: "bg-accent-100 text-accent-800", activeBg: "bg-accent-800 text-white" },
   fod:          { label: "FOD",         badge: "bg-rose-100 text-rose-700",     activeBg: "bg-rose-600 text-white" },
   tver:         { label: "TVer",        badge: "bg-amber-100 text-amber-700",   activeBg: "bg-amber-500 text-white" },
   dmm_tv:       { label: "DMM TV",      badge: "bg-neutral-200 text-neutral-800", activeBg: "bg-neutral-800 text-white" },
@@ -87,7 +87,7 @@ function WorkCard({ work }: { work: Work }) {
   return (
     <Link
       href={`/works/${work.slug}`}
-      className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+      className="flex items-center justify-between min-w-0 bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
     >
       <div className="flex items-center gap-2 min-w-0">
         <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
@@ -95,7 +95,7 @@ function WorkCard({ work }: { work: Work }) {
         </span>
         <span className="font-medium truncate min-w-0">{work.title}</span>
       </div>
-      <span className="shrink-0 text-sm text-gray-400 ml-3">
+      <span className="shrink-0 text-sm text-ink-muted ml-3">
         {work.commentCount.toLocaleString()}件
       </span>
     </Link>
@@ -175,8 +175,8 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
             onClick={() => handleGenreChange(tab.key)}
             className={`min-h-12 flex items-center px-4 rounded-full text-sm font-medium transition-colors ${
               genre === tab.key
-                ? "bg-indigo-600 text-white"
-                : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300"
+                ? "bg-accent-600 text-white"
+                : "bg-white border border-line text-ink-soft hover:border-accent-300"
             }`}
           >
             {tab.label}
@@ -188,11 +188,11 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
       <div>
         <button
           onClick={() => setShowPlatforms((v) => !v)}
-          className="min-h-12 flex items-center gap-1 text-sm text-gray-500 font-medium"
+          className="min-h-12 flex items-center gap-1 text-sm text-ink-muted font-medium"
         >
           配信サービスで絞り込む
           {platform !== "all" && (
-            <span className="text-indigo-600">（{PLATFORM_TABS.find((t) => t.key === platform)?.label}）</span>
+            <span className="text-accent-600">（{PLATFORM_TABS.find((t) => t.key === platform)?.label}）</span>
           )}
           <span className={`transition-transform ${showPlatforms ? "rotate-180" : ""}`}>▾</span>
         </button>
@@ -205,9 +205,9 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
                 className={`min-h-12 flex items-center px-3.5 rounded-full text-xs font-medium transition-colors ${
                   platform === tab.key
                     ? tab.key === "all"
-                      ? "bg-indigo-600 text-white"
-                      : (PLATFORM_META[tab.key as Platform]?.activeBg ?? "bg-indigo-600 text-white")
-                    : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300"
+                      ? "bg-accent-600 text-white"
+                      : (PLATFORM_META[tab.key as Platform]?.activeBg ?? "bg-accent-600 text-white")
+                    : "bg-white border border-line text-ink-soft hover:border-accent-300"
                 }`}
               >
                 {tab.label}
@@ -220,22 +220,22 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
       {/* 作品リクエスト導線 */}
       <Link
         href="/request"
-        className="min-h-12 flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-lg px-4 hover:bg-indigo-100 transition-colors"
+        className="min-h-12 flex items-center justify-between bg-accent-50 border border-accent-100 rounded-card px-4 hover:bg-accent-100 transition-colors"
       >
-        <span className="text-sm text-indigo-700">お探しの作品がない場合はリクエストできます</span>
-        <span className="text-indigo-500 text-sm shrink-0 ml-2">→</span>
+        <span className="text-sm text-accent-700">お探しの作品がない場合はリクエストできます</span>
+        <span className="text-accent-500 text-sm shrink-0 ml-2">→</span>
       </Link>
 
       {/* リクエストで追加された作品（絞り込みなし時のみ） */}
       {!isFiltering && requestOriginWorks.length > 0 && (
         <section>
-          <h2 className="text-base font-semibold mb-3">リクエストで追加された作品</h2>
+          <h2 className="font-head text-base font-semibold mb-3">リクエストで追加された作品</h2>
           <div className="grid gap-2">
             {requestOriginWorks.map((w) => (
               <Link
                 key={w.id}
                 href={`/works/${w.slug}`}
-                className="flex items-center justify-between min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+                className="flex items-center justify-between min-w-0 bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[w.type]}`}>
@@ -243,11 +243,11 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
                   </span>
                   <span className="font-medium truncate min-w-0">{w.title}</span>
                 </div>
-                <span className="shrink-0 text-xs text-indigo-400 ml-3">見る →</span>
+                <span className="shrink-0 text-xs text-accent-400 ml-3">見る →</span>
               </Link>
             ))}
           </div>
-          <Link href="/requests" className="min-h-12 inline-flex items-center text-xs text-indigo-500 hover:underline mt-2">
+          <Link href="/requests" className="min-h-12 inline-flex items-center text-xs text-accent-500 hover:underline mt-2">
             すべて見る →
           </Link>
         </section>
@@ -256,11 +256,11 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
       {/* 話題の作品（絞り込みなし時のみ） */}
       {!isFiltering && (
         <section>
-          <h2 className="text-base font-semibold mb-3">{topLabel}</h2>
+          <h2 className="font-head text-base font-semibold mb-3">{topLabel}</h2>
           <div className="grid gap-2">
             {topList.map((work, i) => (
               <div key={work.slug} className="flex items-center gap-3 min-w-0">
-                <span className={`w-6 text-center text-sm font-bold shrink-0 ${i < 3 ? "text-indigo-500" : "text-gray-400"}`}>
+                <span className={`w-6 text-center text-sm font-bold shrink-0 ${i < 3 ? "text-accent-500" : "text-ink-muted"}`}>
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -274,9 +274,9 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
 
       {/* 全作品／絞り込み結果 */}
       <section>
-        <p className="text-sm text-gray-500 mb-3">
+        <p className="text-sm text-ink-muted mb-3">
           {isFiltering ? `${filtered.length}件の作品` : `すべての作品（${filtered.length}件）`}
-          {totalPages > 1 && <span className="ml-1 text-gray-400">（{page}/{totalPages}ページ）</span>}
+          {totalPages > 1 && <span className="ml-1 text-ink-muted">（{page}/{totalPages}ページ）</span>}
         </p>
         {paginated.length > 0 ? (
           <>
@@ -290,7 +290,7 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="min-h-12 flex items-center px-4 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="min-h-12 flex items-center px-4 text-sm border border-line rounded-card disabled:opacity-40 hover:border-accent-300 transition-colors"
                 >
                   ← 前
                 </button>
@@ -303,15 +303,15 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
                   }, [])
                   .map((item, idx) =>
                     item === "…" ? (
-                      <span key={`ellipsis-${idx}`} className="text-gray-400 text-sm px-1">…</span>
+                      <span key={`ellipsis-${idx}`} className="text-ink-muted text-sm px-1">…</span>
                     ) : (
                       <button
                         key={item}
                         onClick={() => setPage(item as number)}
-                        className={`w-12 h-12 flex items-center justify-center text-sm rounded-lg transition-colors ${
+                        className={`w-12 h-12 flex items-center justify-center text-sm rounded-card transition-colors ${
                           page === item
-                            ? "bg-indigo-600 text-white"
-                            : "border border-gray-200 hover:border-indigo-300"
+                            ? "bg-accent-600 text-white"
+                            : "border border-line hover:border-accent-300"
                         }`}
                       >
                         {item}
@@ -321,7 +321,7 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="min-h-12 flex items-center px-4 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:border-indigo-300 transition-colors"
+                  className="min-h-12 flex items-center px-4 text-sm border border-line rounded-card disabled:opacity-40 hover:border-accent-300 transition-colors"
                 >
                   次 →
                 </button>
@@ -329,7 +329,7 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
             )}
           </>
         ) : (
-          <p className="text-center text-gray-400 py-12">作品が見つかりませんでした</p>
+          <p className="text-center text-ink-muted py-12">作品が見つかりませんでした</p>
         )}
       </section>
     </div>

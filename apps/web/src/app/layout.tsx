@@ -1,14 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Zen_Old_Mincho, Zen_Kaku_Gothic_New } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 import { HeaderAuth } from "./_components/header-auth";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const zenOldMincho = Zen_Old_Mincho({
+  weight: ["400", "600", "700"],
   subsets: ["latin"],
+  variable: "--font-zen-old-mincho",
+});
+const zenKakuGothicNew = Zen_Kaku_Gothic_New({
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-zen-kaku-gothic-new",
 });
 
 const BASE_URL = "https://www.kansou-log.com";
@@ -49,7 +55,7 @@ const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="ja" className={`${zenOldMincho.variable} ${zenKakuGothicNew.variable} h-full antialiased`}>
       <head>
         {/* AdSense: 現状どのページも広告枠(slot)は空でまだ表示していないため、
             初期表示をブロックしないようlazyOnloadで読み込む（枠を設定すれば普通に動作する） */}
@@ -73,11 +79,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </>
         )}
       </head>
-      <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
+      <body className="min-h-full flex flex-col bg-paper text-ink">
         <SessionProvider>
-          <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <header className="bg-white border-b border-line sticky top-0 z-10">
             <div className="max-w-4xl mx-auto px-4 h-14 flex items-center gap-4">
-              <a href="/" className="flex items-center h-full text-xl font-bold text-indigo-600 tracking-tight shrink-0">
+              <a href="/" className="flex items-center h-full font-head text-xl font-bold text-accent-600 tracking-tight shrink-0">
                 感想ログ
               </a>
               <form method="get" action="/search" className="flex-1 max-w-sm">
@@ -85,15 +91,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   name="q"
                   type="search"
                   placeholder="作品を検索..."
-                  className="w-full h-12 border border-gray-200 rounded-full px-4 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="w-full h-12 border border-line rounded-full px-4 text-base focus:outline-none focus:ring-2 focus:ring-accent-300"
                 />
               </form>
               <HeaderAuth />
             </div>
           </header>
 
-          <div className="bg-indigo-50 border-b border-indigo-100">
-            <p className="max-w-4xl mx-auto px-4 py-1.5 text-center text-xs text-indigo-700">
+          <div className="bg-accent-50 border-b border-accent-100">
+            <p className="max-w-4xl mx-auto px-4 py-1.5 text-center text-xs text-accent-700">
               先のネタバレを避けながら、同じ話を見た人の感想を楽しめます。ログインすると、お気に入り作品や自分の感想をあとから見返せます。
             </p>
           </div>
@@ -103,26 +109,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
         </SessionProvider>
 
-        <footer className="bg-white border-t border-gray-200 mt-auto">
+        <footer className="bg-white border-t border-line mt-auto">
           <div className="max-w-4xl mx-auto px-4 py-5">
             <nav className="flex flex-wrap justify-center gap-x-2 gap-y-1 mb-3">
-              <Link href="/request" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/request" className="min-h-12 flex items-center px-3 text-xs text-ink-muted hover:text-accent-600">
                 作品をリクエスト
               </Link>
-              <Link href="/requests" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/requests" className="min-h-12 flex items-center px-3 text-xs text-ink-muted hover:text-accent-600">
                 追加されたリクエスト
               </Link>
-              <Link href="/privacy-policy" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/privacy-policy" className="min-h-12 flex items-center px-3 text-xs text-ink-muted hover:text-accent-600">
                 プライバシーポリシー
               </Link>
-              <Link href="/terms" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/terms" className="min-h-12 flex items-center px-3 text-xs text-ink-muted hover:text-accent-600">
                 利用規約
               </Link>
-              <Link href="/contact" className="min-h-12 flex items-center px-3 text-xs text-gray-500 hover:text-indigo-500">
+              <Link href="/contact" className="min-h-12 flex items-center px-3 text-xs text-ink-muted hover:text-accent-600">
                 お問い合わせ
               </Link>
             </nav>
-            <p className="text-center text-xs text-gray-400">© {new Date().getFullYear()} 感想ログ</p>
+            <p className="text-center text-xs text-ink-muted">© {new Date().getFullYear()} 感想ログ</p>
           </div>
         </footer>
       </body>

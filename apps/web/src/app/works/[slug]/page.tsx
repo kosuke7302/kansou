@@ -109,12 +109,12 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/" className="text-sm text-indigo-500 hover:underline">← 作品一覧</Link>
+        <Link href="/" className="text-sm text-accent-500 hover:underline">← 作品一覧</Link>
         <div className="flex items-center gap-3 mt-2 flex-wrap">
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_STYLES[work.type]}`}>
             {TYPE_LABELS[work.type]}
           </span>
-          <h1 className="text-2xl font-bold">{work.title}</h1>
+          <h1 className="font-head text-2xl font-bold">{work.title}</h1>
           <FavoriteButton workId={work.id} slug={slug} />
         </div>
         <div className="mt-2">
@@ -125,7 +125,7 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
       {/* 作品全体の感想へのリンク */}
       <Link
         href={`/works/${slug}/reviews`}
-        className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 hover:bg-amber-100 transition-colors"
+        className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-card px-4 py-3 hover:bg-amber-100 transition-colors"
       >
         <div>
           <p className="text-sm font-semibold text-amber-800">作品全体の感想・レビュー</p>
@@ -146,7 +146,7 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
           <MobileCommentCta />
           <section className="space-y-3">
             {movieCommentList.length === 0 ? (
-              <p className="text-center text-gray-400 py-8">
+              <p className="text-center text-ink-muted py-8">
                 このページ、あなたが最初に見つけました。全然コメントがないので助けてください
               </p>
             ) : (

@@ -16,13 +16,13 @@ export default async function AccountPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-xl font-bold">アカウント設定</h1>
+      <h1 className="font-head text-xl font-bold">アカウント設定</h1>
       <div className="flex items-center gap-3">
         {session.user.image && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={session.user.image} alt="" className="w-12 h-12 rounded-full" referrerPolicy="no-referrer" />
         )}
-        <p className="text-sm text-gray-500">{session.user.email}</p>
+        <p className="text-sm text-ink-muted">{session.user.email}</p>
       </div>
       <NicknameForm currentName={session.user.name ?? ""} />
     </div>

@@ -33,11 +33,11 @@ export function EpisodeRating({
   const displayValue = hover ?? rating ?? 0;
 
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4">
+    <section className="bg-white border border-line rounded-card p-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <p className="text-sm font-semibold">この話数を評価する</p>
         {ratingCount > 0 && (
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-ink-muted">
             平均 {averageRating.toFixed(1)}（{ratingCount}件）
           </p>
         )}
@@ -52,11 +52,11 @@ export function EpisodeRating({
             aria-label={`${value}点`}
             className="text-2xl leading-none disabled:opacity-60"
           >
-            <span className={value <= displayValue ? "text-amber-400" : "text-gray-200"}>★</span>
+            <span className={value <= displayValue ? "text-amber-400" : "text-line"}>★</span>
           </button>
         ))}
         {rating !== null && (
-          <span className="text-xs text-gray-400 ml-2">あなたの評価: {rating}</span>
+          <span className="text-xs text-ink-muted ml-2">あなたの評価: {rating}</span>
         )}
       </div>
     </section>

@@ -99,25 +99,25 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">感想ログ</h1>
+      <h1 className="font-head text-2xl font-bold">感想ログ</h1>
 
       {analyticsStats.totalPageViews !== null && (
-        <p className="text-sm text-gray-500">
-          累計ページ閲覧数: <span className="font-semibold text-gray-700">{analyticsStats.totalPageViews.toLocaleString()}</span>回
+        <p className="text-sm text-ink-muted">
+          累計ページ閲覧数: <span className="font-semibold text-ink">{analyticsStats.totalPageViews.toLocaleString()}</span>回
         </p>
       )}
 
       {analyticsStats.topPages.length > 0 && (
         <section>
-          <h2 className="text-base font-semibold mb-3">直近7日間のアクセスTOP3</h2>
+          <h2 className="font-head text-base font-semibold mb-3">直近7日間のアクセスTOP3</h2>
           <div className="grid gap-2">
             {analyticsStats.topPages.map((p, i) => (
               <Link
                 key={p.path}
                 href={p.path}
-                className="flex items-center gap-3 min-w-0 bg-white rounded-lg border border-gray-200 px-4 py-3 hover:border-indigo-300 hover:shadow-sm transition-all"
+                className="flex items-center gap-3 min-w-0 bg-white rounded-card border border-line px-4 py-3 hover:border-accent-300 transition-all"
               >
-                <span className="w-6 text-center text-sm font-bold shrink-0 text-indigo-500">
+                <span className="w-6 text-center text-sm font-bold shrink-0 text-accent-500">
                   {i + 1}
                 </span>
                 <span className="font-medium truncate min-w-0 flex-1">

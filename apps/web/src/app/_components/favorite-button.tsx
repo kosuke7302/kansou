@@ -42,7 +42,7 @@ export function FavoriteButton({
       className={`shrink-0 flex items-center gap-1 text-sm px-3 py-1.5 rounded-full border transition-colors disabled:opacity-50 ${
         favorited
           ? "bg-pink-50 border-pink-200 text-pink-600"
-          : "bg-white border-gray-200 text-gray-500 hover:border-pink-300 hover:text-pink-500"
+          : "bg-white border-line text-ink-muted hover:border-pink-300 hover:text-pink-500"
       }`}
     >
       <span>{favorited ? "♥" : "♡"}</span>

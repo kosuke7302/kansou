@@ -69,19 +69,19 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
   }
 
   return (
-    <section id="comment-form" className="max-sm:hidden bg-white border border-gray-200 rounded-lg p-4">
-      <h2 className="text-sm font-semibold">作品全体の感想を投稿する</h2>
-      <p className="text-xs text-gray-400 mt-0.5 mb-3">
+    <section id="comment-form" className="max-sm:hidden bg-white border border-line rounded-card p-4">
+      <h2 className="font-head text-sm font-semibold">作品全体の感想を投稿する</h2>
+      <p className="text-xs text-ink-muted mt-0.5 mb-3">
         運営が全部読んで返信します。初めての投稿には「初コメント」バッジが付きます。
       </p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
 
         {state.error && (
-          <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{state.error}</p>
+          <p className="text-sm text-red-500 bg-red-50 rounded-card px-3 py-2">{state.error}</p>
         )}
         {state.success && (
-          <p className="text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
+          <p className="text-sm text-green-600 bg-green-50 rounded-card px-3 py-2">
             {state.isFirstComment ? "投稿しました！「初コメント」バッジ獲得です！" : "投稿しました！"}
           </p>
         )}
@@ -92,7 +92,7 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
           onChange={handleNicknameChange}
           placeholder="ニックネーム（省略可）"
           maxLength={100}
-          className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+          className="w-full text-base border border-line rounded-card px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300 disabled:opacity-50"
           disabled={pending}
         />
         <textarea
@@ -104,7 +104,7 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
           required
           onFocus={handleTextareaFocus}
           onChange={handleTextareaChange}
-          className="w-full text-base border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+          className="w-full text-base border border-line rounded-card px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-accent-300 disabled:opacity-50"
           disabled={pending}
         />
 
@@ -119,14 +119,14 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
         <button
           type="submit"
           disabled={pending || imageUploading}
-          className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+          className="bg-accent-600 text-white text-sm font-medium px-4 py-2 rounded-card hover:bg-accent-700 transition-colors disabled:opacity-50"
         >
           {pending ? "投稿中..." : imageUploading ? "画像アップロード中..." : "投稿する"}
         </button>
 
         {status !== "authenticated" && status !== "loading" && (
-          <p className="text-xs text-gray-400">
-            <button type="button" onClick={() => signIn("google")} className="text-indigo-500 hover:underline">
+          <p className="text-xs text-ink-muted">
+            <button type="button" onClick={() => signIn("google")} className="text-accent-500 hover:underline">
               ログイン
             </button>
             すると、投稿した感想を後から見返せます

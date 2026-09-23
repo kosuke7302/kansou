@@ -128,14 +128,14 @@ export default async function VolumePage({ params }: { params: Params }) {
       <div className="space-y-6 pb-20 sm:pb-0">
       <MobileCommentCta />
       <div>
-        <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
+        <Link href={`/works/${slug}`} className="text-sm text-accent-500 hover:underline">
           ← {work.title}
         </Link>
-        <h1 className="text-2xl font-bold mt-2">
+        <h1 className="font-head text-2xl font-bold mt-2">
           {work.title} 第{volNum}巻 感想
         </h1>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-gray-500 text-sm">{commentList.length}件のコメント</p>
+          <p className="text-ink-muted text-sm">{commentList.length}件のコメント</p>
           <ShareButtons title={shareTitle} url={pageUrl} />
         </div>
       </div>
@@ -151,7 +151,7 @@ export default async function VolumePage({ params }: { params: Params }) {
 
       <section className="space-y-3">
         {commentList.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">
+          <p className="text-center text-ink-muted py-8">
             このページ、あなたが最初に見つけました。全然コメントがないので助けてください
           </p>
         ) : (

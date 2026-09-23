@@ -24,25 +24,25 @@ export function HeaderAuth() {
       <div className="relative shrink-0">
         <button
           onClick={() => setShowBenefits((v) => !v)}
-          className="h-12 flex items-center text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-4 rounded-full whitespace-nowrap transition-colors"
+          className="h-12 flex items-center text-sm text-white bg-accent-600 hover:bg-accent-700 px-4 rounded-full whitespace-nowrap transition-colors"
         >
           ログイン
         </button>
         {showBenefits && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowBenefits(false)} />
-            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-20">
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-line rounded-card shadow-lg p-3 z-20">
               <ul className="space-y-1 mb-3">
                 {BENEFITS.map((b) => (
-                  <li key={b} className="flex items-start gap-1.5 text-xs text-gray-600">
-                    <span className="text-indigo-500 shrink-0">✓</span>
+                  <li key={b} className="flex items-start gap-1.5 text-xs text-ink-soft">
+                    <span className="text-accent-500 shrink-0">✓</span>
                     <span>{b}</span>
                   </li>
                 ))}
               </ul>
               <button
                 onClick={() => signIn("google")}
-                className="w-full min-h-12 flex items-center justify-center text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 rounded-lg transition-colors"
+                className="w-full min-h-12 flex items-center justify-center text-sm text-white bg-accent-600 hover:bg-accent-700 px-3 rounded-card transition-colors"
               >
                 Googleでログイン
               </button>
@@ -69,7 +69,7 @@ export function HeaderAuth() {
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-medium">
+          <div className="w-8 h-8 rounded-full bg-accent-100 text-accent-600 flex items-center justify-center text-sm font-medium">
             {session.user.name?.[0] ?? "?"}
           </div>
         )}
@@ -78,32 +78,32 @@ export function HeaderAuth() {
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20">
+          <div className="absolute right-0 top-full mt-2 w-44 bg-white border border-line rounded-card shadow-lg py-1 z-20">
             <Link
               href="/favorites"
               onClick={() => setMenuOpen(false)}
-              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-ink-soft hover:bg-paper-soft"
             >
               お気に入り
             </Link>
             <Link
               href="/my-comments"
               onClick={() => setMenuOpen(false)}
-              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-ink-soft hover:bg-paper-soft"
             >
               マイコメント
             </Link>
             <Link
               href="/my-ranking"
               onClick={() => setMenuOpen(false)}
-              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-ink-soft hover:bg-paper-soft"
             >
               Myランキング
             </Link>
             <Link
               href="/account"
               onClick={() => setMenuOpen(false)}
-              className="min-h-12 flex items-center px-4 text-sm text-gray-600 hover:bg-gray-50"
+              className="min-h-12 flex items-center px-4 text-sm text-ink-soft hover:bg-paper-soft"
             >
               アカウント設定
             </Link>
@@ -112,7 +112,7 @@ export function HeaderAuth() {
                 setMenuOpen(false);
                 signOut();
               }}
-              className="min-h-12 w-full flex items-center text-left px-4 text-sm text-gray-400 hover:bg-gray-50 border-t border-gray-100"
+              className="min-h-12 w-full flex items-center text-left px-4 text-sm text-ink-muted hover:bg-paper-soft border-t border-paper-soft"
             >
               ログアウト
             </button>

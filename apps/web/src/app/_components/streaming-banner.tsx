@@ -39,7 +39,7 @@ const PLATFORM_INFO: Record<string, {
   },
   u_next: {
     label: "U-NEXT",
-    bgColor: "bg-gray-900",
+    bgColor: "bg-ink",
     serviceUrl: "https://video.unext.jp/",
     affiliateEnv: "AFFILIATE_URL_U_NEXT",
   },
@@ -57,7 +57,7 @@ const PLATFORM_INFO: Record<string, {
   },
   lemino: {
     label: "Lemino",
-    bgColor: "bg-indigo-800",
+    bgColor: "bg-accent-800",
     serviceUrl: "https://lemino.docomo.ne.jp/",
     affiliateEnv: "AFFILIATE_URL_LEMINO",
   },
@@ -102,13 +102,13 @@ export function StreamingBanner({ platforms }: { platforms: (string | null)[] | 
   if (validPlatforms.length === 0) return null;
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
-      <div className="bg-gray-100 px-3 py-1 flex items-center gap-2">
-        <span className="text-xs font-bold text-gray-600 bg-gray-300 px-1.5 py-0.5 rounded">PR</span>
-        <span className="text-xs text-gray-500">このリンクはアフィリエイト広告を含みます</span>
+    <div className="border border-line rounded-card overflow-hidden">
+      <div className="bg-paper-soft px-3 py-1 flex items-center gap-2">
+        <span className="text-xs font-bold text-ink-soft bg-line px-1.5 py-0.5 rounded">PR</span>
+        <span className="text-xs text-ink-muted">このリンクはアフィリエイト広告を含みます</span>
       </div>
-      <div className="bg-gray-50 p-4 space-y-2">
-        <p className="text-xs text-gray-500">配信中のサービス</p>
+      <div className="bg-paper-soft p-4 space-y-2">
+        <p className="text-xs text-ink-muted">配信中のサービス</p>
         <div className="flex flex-wrap gap-2">
           {validPlatforms.map((platform) => {
             const info = PLATFORM_INFO[platform];
@@ -120,7 +120,7 @@ export function StreamingBanner({ platforms }: { platforms: (string | null)[] | 
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className={`${info.bgColor} text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
+                className={`${info.bgColor} text-white px-4 py-2 rounded-card text-sm font-medium hover:opacity-90 transition-opacity`}
               >
                 {info.label} で観る →
               </a>

@@ -41,20 +41,20 @@ function PageNav({
         type="button"
         onClick={() => onChange(Math.max(1, page - 1))}
         disabled={page === 1}
-        className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:border-indigo-300 disabled:pointer-events-none disabled:opacity-40"
+        className="px-3 py-1.5 text-sm border border-line rounded-card hover:border-accent-300 disabled:pointer-events-none disabled:opacity-40"
       >
         ← 前
       </button>
       {pages.map((item, idx) =>
         item === "…" ? (
-          <span key={`e${idx}`} className="text-gray-400 text-sm px-1">…</span>
+          <span key={`e${idx}`} className="text-ink-muted text-sm px-1">…</span>
         ) : (
           <button
             type="button"
             key={item}
             onClick={() => onChange(item)}
-            className={`w-8 h-8 flex items-center justify-center text-sm rounded-lg transition-colors ${
-              page === item ? "bg-indigo-600 text-white" : "border border-gray-200 hover:border-indigo-300"
+            className={`w-8 h-8 flex items-center justify-center text-sm rounded-card transition-colors ${
+              page === item ? "bg-accent-600 text-white" : "border border-line hover:border-accent-300"
             }`}
           >
             {item}
@@ -65,7 +65,7 @@ function PageNav({
         type="button"
         onClick={() => onChange(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
-        className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:border-indigo-300 disabled:pointer-events-none disabled:opacity-40"
+        className="px-3 py-1.5 text-sm border border-line rounded-card hover:border-accent-300 disabled:pointer-events-none disabled:opacity-40"
       >
         次 →
       </button>
@@ -130,7 +130,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
             type="button"
             onClick={() => changeTab("episode")}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              tab === "episode" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              tab === "episode" ? "bg-accent-600 text-white" : "bg-white border border-line text-ink-soft"
             }`}
           >
             話（{episodeTotal}）
@@ -139,7 +139,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
             type="button"
             onClick={() => changeTab("volume")}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              tab === "volume" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              tab === "volume" ? "bg-accent-600 text-white" : "bg-white border border-line text-ink-soft"
             }`}
           >
             巻（{volumeTotal}）
@@ -148,7 +148,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
             type="button"
             onClick={() => changeTab("commented")}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              tab === "commented" ? "bg-accent-600 text-white" : "bg-white border border-line text-ink-soft"
             }`}
           >
             コメントあり（{commentedTotal}）
@@ -157,7 +157,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
 
         {tab === "commented" ? (
           commented.length === 0 ? (
-            <p className="text-gray-400 text-sm">まだコメントがありません</p>
+            <p className="text-ink-muted text-sm">まだコメントがありません</p>
           ) : (
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
               {commented.map((ep) => (
@@ -169,17 +169,17 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                       : `/works/${slug}/episodes/${ep.episodeNumber}`
                   }
                   title={ep.title ?? undefined}
-                  className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  className="relative flex flex-col items-center justify-center bg-white border border-line rounded-card py-2 text-sm hover:border-accent-300 hover:bg-accent-50 transition-all"
                 >
                   <span>{ep.volumeNumber != null ? `第${ep.volumeNumber}巻` : `${ep.episodeNumber}話`}</span>
-                  <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
+                  <span className="text-xs text-accent-500 font-medium">{ep.commentCount}</span>
                 </Link>
               ))}
             </div>
           )
         ) : tab === "volume" ? (
           pagedVolumes.length === 0 ? (
-            <p className="text-gray-400 text-sm">データがありません</p>
+            <p className="text-ink-muted text-sm">データがありません</p>
           ) : (
             <>
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -187,11 +187,11 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                   <Link
                     key={vol.id}
                     href={`/works/${slug}/volumes/${vol.volumeNumber}`}
-                    className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                    className="relative flex flex-col items-center justify-center bg-white border border-line rounded-card py-2 text-sm hover:border-accent-300 hover:bg-accent-50 transition-all"
                   >
                     <span>第{vol.volumeNumber}巻</span>
                     {vol.commentCount > 0 && (
-                      <span className="text-xs text-indigo-500 font-medium">{vol.commentCount}</span>
+                      <span className="text-xs text-accent-500 font-medium">{vol.commentCount}</span>
                     )}
                   </Link>
                 ))}
@@ -200,7 +200,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
             </>
           )
         ) : pagedEpisodes.length === 0 ? (
-          <p className="text-gray-400 text-sm">データがありません</p>
+          <p className="text-ink-muted text-sm">データがありません</p>
         ) : (
           <>
             <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
@@ -209,11 +209,11 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                   key={ep.id}
                   href={`/works/${slug}/episodes/${ep.episodeNumber}`}
                   title={ep.title ?? undefined}
-                  className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-xs hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  className="flex flex-col items-center justify-center bg-white border border-line rounded-card py-2 text-xs hover:border-accent-300 hover:bg-accent-50 transition-all"
                 >
                   <span>{ep.episodeNumber}話</span>
                   {ep.commentCount > 0 && (
-                    <span className="text-indigo-500 font-medium">{ep.commentCount}</span>
+                    <span className="text-accent-500 font-medium">{ep.commentCount}</span>
                   )}
                 </Link>
               ))}
@@ -228,14 +228,14 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
   return (
     <section>
       {isMovie ? (
-        <h2 className="text-lg font-semibold mb-3">作品</h2>
+        <h2 className="font-head text-lg font-semibold mb-3">作品</h2>
       ) : (
         <div className="flex gap-2 mb-3 flex-wrap">
           <button
             type="button"
             onClick={() => changeTab("episode")}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              tab === "episode" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              tab === "episode" ? "bg-accent-600 text-white" : "bg-white border border-line text-ink-soft"
             }`}
           >
             話数一覧（{episodeTotal}）
@@ -244,7 +244,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
             type="button"
             onClick={() => changeTab("commented")}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
+              tab === "commented" ? "bg-accent-600 text-white" : "bg-white border border-line text-ink-soft"
             }`}
           >
             コメントあり（{commentedTotal}）
@@ -254,7 +254,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
 
       {tab === "commented" && !isMovie ? (
         commented.length === 0 ? (
-          <p className="text-gray-400 text-sm">まだコメントがありません</p>
+          <p className="text-ink-muted text-sm">まだコメントがありません</p>
         ) : (
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
             {commented.map((ep) => (
@@ -262,16 +262,16 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                 key={ep.id}
                 href={`/works/${slug}/episodes/${ep.episodeNumber}`}
                 title={ep.title ?? undefined}
-                className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                className="relative flex flex-col items-center justify-center bg-white border border-line rounded-card py-2 text-sm hover:border-accent-300 hover:bg-accent-50 transition-all"
               >
                 <span>第{ep.episodeNumber}話</span>
-                <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
+                <span className="text-xs text-accent-500 font-medium">{ep.commentCount}</span>
               </Link>
             ))}
           </div>
         )
       ) : pagedEpisodes.length === 0 ? (
-        <p className="text-gray-400 text-sm">データがありません</p>
+        <p className="text-ink-muted text-sm">データがありません</p>
       ) : (
         <>
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -280,11 +280,11 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                 key={ep.id}
                 href={`/works/${slug}/episodes/${ep.episodeNumber}`}
                 title={ep.title ?? undefined}
-                className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                className="flex flex-col items-center justify-center bg-white border border-line rounded-card py-2 text-sm hover:border-accent-300 hover:bg-accent-50 transition-all"
               >
                 <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
                 {ep.commentCount > 0 && (
-                  <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
+                  <span className="text-xs text-accent-500 font-medium">{ep.commentCount}</span>
                 )}
               </Link>
             ))}

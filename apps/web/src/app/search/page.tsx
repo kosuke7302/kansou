@@ -51,19 +51,19 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           defaultValue={query}
           placeholder="作品名・キーワードで検索..."
           autoFocus
-          className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="flex-1 border border-line rounded-card px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-300"
         />
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
+          className="bg-accent-600 text-white px-4 py-2 rounded-card text-sm font-medium hover:bg-accent-700"
         >
           検索
         </button>
       </form>
 
       {query && (
-        <p className="text-sm text-gray-500">
-          「{query}」の検索結果: <span className="font-medium text-gray-700">{results.length}件</span>
+        <p className="text-sm text-ink-muted">
+          「{query}」の検索結果: <span className="font-medium text-ink">{results.length}件</span>
         </p>
       )}
 
@@ -73,7 +73,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <Link
               key={work.id}
               href={`/works/${work.slug}`}
-              className="flex items-start gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+              className="flex items-start gap-3 bg-white border border-line rounded-card px-4 py-3 hover:border-accent-300 hover:bg-accent-50 transition-colors"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
@@ -83,22 +83,22 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 </div>
                 <p className="font-medium text-sm">{work.title}</p>
               </div>
-              <span className="text-xs text-indigo-400 shrink-0 mt-1">感想を見る →</span>
+              <span className="text-xs text-accent-400 shrink-0 mt-1">感想を見る →</span>
             </Link>
           ))}
         </div>
       ) : query ? (
         <div className="text-center py-12 space-y-3">
-          <p className="text-gray-400">「{query}」に一致する作品が見つかりませんでした</p>
+          <p className="text-ink-muted">「{query}」に一致する作品が見つかりませんでした</p>
           <Link
             href={`/request?title=${encodeURIComponent(query)}`}
-            className="inline-block text-sm text-indigo-600 border border-indigo-200 rounded-lg px-4 py-2 hover:bg-indigo-50 transition-colors"
+            className="inline-block text-sm text-accent-600 border border-accent-200 rounded-card px-4 py-2 hover:bg-accent-50 transition-colors"
           >
             この作品をリクエストする →
           </Link>
         </div>
       ) : (
-        <p className="text-center text-gray-400 py-12">キーワードを入力して検索してください</p>
+        <p className="text-center text-ink-muted py-12">キーワードを入力して検索してください</p>
       )}
     </div>
   );

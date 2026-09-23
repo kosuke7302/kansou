@@ -48,22 +48,22 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
     <div className="space-y-6 pb-20 sm:pb-0">
       <MobileCommentCta />
       <div>
-        <Link href={`/works/${slug}`} className="text-sm text-indigo-500 hover:underline">
+        <Link href={`/works/${slug}`} className="text-sm text-accent-500 hover:underline">
           ← {work.title}
         </Link>
-        <h1 className="text-2xl font-bold mt-2">{work.title} 全体感想・レビュー</h1>
-        <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
+        <h1 className="font-head text-2xl font-bold mt-2">{work.title} 全体感想・レビュー</h1>
+        <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-card px-3 py-2 mt-2">
           ネタバレ注意 — 作品を最後まで読んだ・観た方の感想ページです
         </p>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-gray-500 text-sm">{commentList.length}件の感想</p>
+          <p className="text-ink-muted text-sm">{commentList.length}件の感想</p>
           <ShareButtons title={`${work.title} 全体感想・レビュー`} url={`${BASE_URL}/works/${slug}/reviews`} />
         </div>
       </div>
 
       <section className="space-y-3">
         {commentList.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">
+          <p className="text-center text-ink-muted py-8">
             まだ全体感想がありません。読了・完走済みの方はぜひ投稿を！
           </p>
         ) : (
