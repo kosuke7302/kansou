@@ -92,7 +92,7 @@ export const ImageAttach = forwardRef<ImageAttachHandle, Props>(function ImageAt
         </div>
       ) : (
         <label className="inline-flex items-center gap-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg px-3 py-1.5 cursor-pointer hover:border-indigo-300 w-fit">
-          🖼️ 画像を添付
+          画像を添付
           <input
             ref={fileInputRef}
             type="file"

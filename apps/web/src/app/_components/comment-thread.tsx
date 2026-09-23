@@ -125,7 +125,7 @@ function CommentRow({ comment }: { comment: CommentItem }) {
           )}
           {comment.isFirstComment && (
             <span className="text-[10px] font-semibold bg-amber-400 text-amber-900 px-1.5 py-0.5 rounded-full">
-              🔰初コメント
+              初コメント
             </span>
           )}
           <span className="text-xs text-gray-400">

@@ -96,7 +96,7 @@ function WorkCard({ work }: { work: Work }) {
         <span className="font-medium truncate min-w-0">{work.title}</span>
       </div>
       <span className="shrink-0 text-sm text-gray-400 ml-3">
-        💬 {work.commentCount.toLocaleString()}
+        {work.commentCount.toLocaleString()}件
       </span>
     </Link>
   );
@@ -143,7 +143,7 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
     .slice(0, 10);
 
   const topList = trending.length > 0 ? trending : popular;
-  const topLabel = trending.length > 0 ? "🔥 今週の話題作 TOP10" : "🔥 人気の作品 TOP10";
+  const topLabel = trending.length > 0 ? "今週の話題作 TOP10" : "人気の作品 TOP10";
 
   function updateUrl(nextGenre: GenreKey, nextPlatform: Platform | "all") {
     const params = new URLSearchParams();
@@ -229,7 +229,7 @@ function WorksFilterInner({ works, requestOriginWorks = [] }: { works: Work[]; r
       {/* リクエストで追加された作品（絞り込みなし時のみ） */}
       {!isFiltering && requestOriginWorks.length > 0 && (
         <section>
-          <h2 className="text-base font-semibold mb-3">✅ リクエストで追加された作品</h2>
+          <h2 className="text-base font-semibold mb-3">リクエストで追加された作品</h2>
           <div className="grid gap-2">
             {requestOriginWorks.map((w) => (
               <Link

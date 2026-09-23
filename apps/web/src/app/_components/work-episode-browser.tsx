@@ -151,7 +151,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
               tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
             }`}
           >
-            💬コメントあり（{commentedTotal}）
+            コメントあり（{commentedTotal}）
           </button>
         </div>
 
@@ -172,7 +172,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                   className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
                   <span>{ep.volumeNumber != null ? `第${ep.volumeNumber}巻` : `${ep.episodeNumber}話`}</span>
-                  <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                  <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
                 </Link>
               ))}
             </div>
@@ -191,7 +191,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                   >
                     <span>第{vol.volumeNumber}巻</span>
                     {vol.commentCount > 0 && (
-                      <span className="text-xs text-indigo-500 font-medium">💬{vol.commentCount}</span>
+                      <span className="text-xs text-indigo-500 font-medium">{vol.commentCount}</span>
                     )}
                   </Link>
                 ))}
@@ -213,7 +213,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                 >
                   <span>{ep.episodeNumber}話</span>
                   {ep.commentCount > 0 && (
-                    <span className="text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                    <span className="text-indigo-500 font-medium">{ep.commentCount}</span>
                   )}
                 </Link>
               ))}
@@ -247,7 +247,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
               tab === "commented" ? "bg-indigo-600 text-white" : "bg-white border border-gray-200 text-gray-600"
             }`}
           >
-            💬コメントあり（{commentedTotal}）
+            コメントあり（{commentedTotal}）
           </button>
         </div>
       )}
@@ -265,7 +265,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
                 className="relative flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg py-2 text-sm hover:border-indigo-300 hover:bg-indigo-50 transition-all"
               >
                 <span>第{ep.episodeNumber}話</span>
-                <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
               </Link>
             ))}
           </div>
@@ -284,7 +284,7 @@ function WorkEpisodeBrowserInner({ slug, isManga, isMovie, episodeTotal, volumeT
               >
                 <span>{isMovie ? "本編" : `第${ep.episodeNumber}話`}</span>
                 {ep.commentCount > 0 && (
-                  <span className="text-xs text-indigo-500 font-medium">💬{ep.commentCount}</span>
+                  <span className="text-xs text-indigo-500 font-medium">{ep.commentCount}</span>
                 )}
               </Link>
             ))}

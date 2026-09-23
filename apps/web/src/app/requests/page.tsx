@@ -32,7 +32,7 @@ export default async function AddedRequestsPage() {
     <div className="space-y-6">
       <div>
         <Link href="/request" className="text-sm text-indigo-500 hover:underline">← リクエストページへ戻る</Link>
-        <h1 className="text-2xl font-bold mt-3">✅ 追加されたリクエスト作品</h1>
+        <h1 className="text-2xl font-bold mt-3">追加されたリクエスト作品</h1>
         <p className="text-sm text-gray-500 mt-1">
           みなさんのリクエストを受けて感想ログに追加した作品です。
         </p>

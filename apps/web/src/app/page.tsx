@@ -109,7 +109,7 @@ export default async function HomePage() {
 
       {analyticsStats.topPages.length > 0 && (
         <section>
-          <h2 className="text-base font-semibold mb-3">📈 直近7日間のアクセスTOP3</h2>
+          <h2 className="text-base font-semibold mb-3">直近7日間のアクセスTOP3</h2>
           <div className="grid gap-2">
             {analyticsStats.topPages.map((p, i) => (
               <Link

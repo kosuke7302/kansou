@@ -77,9 +77,9 @@ export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber,
 
   return (
     <section id="comment-form" className="max-sm:hidden bg-white border border-gray-200 rounded-lg p-4">
-      <h2 className="text-sm font-semibold">💬 今回の感想を一言</h2>
+      <h2 className="text-sm font-semibold">今回の感想を一言</h2>
       <p className="text-xs text-gray-400 mt-0.5 mb-3">
-        「○○最高」「ここ意味わからん」だけでもOK！放送前の考察・予想も歓迎です。運営が全部読んで返信します。初めての投稿には🔰「初コメント」バッジが付きます。
+        「○○最高」「ここ意味わからん」だけでもOK！放送前の考察・予想も歓迎です。運営が全部読んで返信します。初めての投稿には「初コメント」バッジが付きます。
       </p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
@@ -95,7 +95,7 @@ export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber,
         )}
         {state.success && (
           <p className="text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
-            {state.isFirstComment ? "🔰投稿しました！「初コメント」バッジ獲得です！" : "投稿しました！"}
+            {state.isFirstComment ? "投稿しました！「初コメント」バッジ獲得です！" : "投稿しました！"}
           </p>
         )}
 
