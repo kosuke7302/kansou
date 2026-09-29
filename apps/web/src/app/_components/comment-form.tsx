@@ -79,7 +79,7 @@ export function CommentForm({ slug, workId, workTitle, episodeId, episodeNumber,
     <section id="comment-form" className="max-sm:hidden bg-white border border-line rounded-card p-4">
       <h2 className="font-head text-sm font-semibold">今回の感想を一言</h2>
       <p className="text-xs text-ink-muted mt-0.5 mb-3">
-        「○○最高」「ここ意味わからん」だけでもOK！放送前の考察・予想も歓迎です。運営が全部読んで返信します。初めての投稿には「初コメント」バッジが付きます。
+        「○○最高」「ここ意味わからん」だけでもOK！放送前の考察・予想も歓迎です。初めての投稿には「初コメント」バッジが付きます。
       </p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />

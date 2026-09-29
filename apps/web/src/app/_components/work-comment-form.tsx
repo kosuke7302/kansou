@@ -72,7 +72,7 @@ export function WorkCommentForm({ slug, workId, workTitle }: Props) {
     <section id="comment-form" className="max-sm:hidden bg-white border border-line rounded-card p-4">
       <h2 className="font-head text-sm font-semibold">作品全体の感想を投稿する</h2>
       <p className="text-xs text-ink-muted mt-0.5 mb-3">
-        運営が全部読んで返信します。初めての投稿には「初コメント」バッジが付きます。
+        初めての投稿には「初コメント」バッジが付きます。
       </p>
       <form action={action} className="space-y-3">
         <input type="hidden" name="slug" value={slug} />
