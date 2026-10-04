@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { works, episodes, comments } from "@kansou/db";
-import { eq, asc, count, isNull, isNotNull, and } from "drizzle-orm";
+import { works, episodes, comments, threads } from "@kansou/db";
+import { eq, asc, desc, count, isNull, isNotNull, and } from "drizzle-orm";
+import { isThreadPilot } from "@/lib/thread-pilot";
+import { ThreadSection } from "@/app/_components/thread-section";
 import { StreamingBanner } from "@/app/_components/streaming-banner";
 import { FavoriteButton } from "@/app/_components/favorite-button";
 import { ShareButtons } from "@/app/_components/share-buttons";
@@ -92,7 +94,7 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
     db
       .select({ workCommentCount: count(comments.id) })
       .from(comments)
-      .where(and(eq(comments.workId, work.id), isNull(comments.episodeId))),
+      .where(and(eq(comments.workId, work.id), isNull(comments.episodeId), isNull(comments.threadId))),
     episodesQuery,
     volumesQuery,
     movieEpisodeQuery,
@@ -104,6 +106,22 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
         .from(comments)
         .where(eq(comments.episodeId, movieEpisode.id))
         .orderBy(asc(comments.createdAt))
+    : [];
+
+  const threadList = isThreadPilot(slug)
+    ? await db
+        .select({
+          id: threads.id,
+          title: threads.title,
+          authorName: threads.authorName,
+          createdAt: threads.createdAt,
+          commentCount: count(comments.id),
+        })
+        .from(threads)
+        .leftJoin(comments, eq(comments.threadId, threads.id))
+        .where(eq(threads.workId, work.id))
+        .groupBy(threads.id, threads.title, threads.authorName, threads.createdAt)
+        .orderBy(desc(threads.createdAt))
     : [];
 
   return (
@@ -140,6 +158,13 @@ export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {
       </Link>
 
       <StreamingBanner platforms={work.platforms} />
+
+      {isThreadPilot(slug) && (
+        <ThreadSection
+          slug={slug}
+          threads={threadList.map((t) => ({ ...t, commentCount: Number(t.commentCount) }))}
+        />
+      )}
 
       {isMovie && movieEpisode ? (
         <>

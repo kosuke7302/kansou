@@ -63,6 +63,20 @@ export const comments = pgTable("comments", {
   likeCount: integer("like_count").default(0).notNull(),
   isOfficial: boolean("is_official").default(false).notNull(), // 管理画面ログイン中の投稿（運営の返信）かどうか
   isFirstComment: boolean("is_first_comment").default(false).notNull(), // このユーザー/匿名IDにとって初めての投稿か
+  threadId: integer("thread_id").references(() => threads.id, { onDelete: "cascade" }), // ユーザーが立てたスレへのコメントの場合
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ユーザーが作品ごとに立てる議論スレ（試験運用中: 対象作品は THREAD_PILOT_SLUGS で限定）
+export const threads = pgTable("threads", {
+  id: serial("id").primaryKey(),
+  workId: integer("work_id")
+    .references(() => works.id, { onDelete: "cascade" })
+    .notNull(),
+  title: varchar("title", { length: 100 }).notNull(),
+  authorName: varchar("author_name", { length: 100 }).notNull().default("名前未設定"),
+  userId: text("user_id"),
+  anonId: text("anon_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

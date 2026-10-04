@@ -41,7 +41,7 @@ export default async function WorkReviewsPage({ params }: { params: Params }) {
   const commentList = await db
     .select()
     .from(comments)
-    .where(and(eq(comments.workId, work.id), isNull(comments.episodeId)))
+    .where(and(eq(comments.workId, work.id), isNull(comments.episodeId), isNull(comments.threadId)))
     .orderBy(asc(comments.createdAt));
 
   return (
