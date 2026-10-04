@@ -11,6 +11,8 @@ import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { EpisodeNav } from "@/app/_components/episode-nav";
 import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
+import { ThreadCreateButton } from "@/app/_components/thread-create-form";
+import { isThreadPilot } from "@/lib/thread-pilot";
 
 const BASE_URL = "https://www.kansou-log.com";
 
@@ -154,6 +156,8 @@ export default async function EpisodePage({
             <ShareButtons title={shareTitle} url={pageUrl} />
           </div>
         </div>
+
+        {isThreadPilot(slug) && <ThreadCreateButton slug={slug} />}
 
         {work.type !== "movie" && (
           <EpisodeNav
