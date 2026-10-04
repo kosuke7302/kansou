@@ -57,19 +57,3 @@ export function ThreadCreateForm({ slug }: { slug: string }) {
   );
 }
 
-export function ThreadCreateButton({ slug }: { slug: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="space-y-2">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full min-h-12 bg-accent-600 text-white text-sm font-semibold px-4 rounded-card hover:bg-accent-700 transition-colors"
-      >
-        {open ? "閉じる" : "この作品のスレを立てる"}
-      </button>
-      {open && <ThreadCreateForm slug={slug} />}
-    </div>
-  );
-}

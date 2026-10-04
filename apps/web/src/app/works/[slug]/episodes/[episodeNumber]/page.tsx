@@ -11,7 +11,6 @@ import { CommentThread } from "@/app/_components/comment-thread";
 import { EpisodeRating } from "@/app/_components/episode-rating";
 import { EpisodeNav } from "@/app/_components/episode-nav";
 import { MobileCommentCta } from "@/app/_components/mobile-comment-cta";
-import { ThreadCreateButton } from "@/app/_components/thread-create-form";
 import { isThreadPilot } from "@/lib/thread-pilot";
 
 const BASE_URL = "https://www.kansou-log.com";
@@ -157,7 +156,14 @@ export default async function EpisodePage({
           </div>
         </div>
 
-        {isThreadPilot(slug) && <ThreadCreateButton slug={slug} />}
+        {isThreadPilot(slug) && (
+          <Link
+            href={`/works/${slug}/threads`}
+            className="flex items-center justify-center w-full min-h-12 bg-accent-600 text-white text-sm font-semibold px-4 rounded-card hover:bg-accent-700 transition-colors"
+          >
+            スレを見る
+          </Link>
+        )}
 
         {work.type !== "movie" && (
           <EpisodeNav

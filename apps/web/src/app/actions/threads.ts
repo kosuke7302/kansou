@@ -61,6 +61,7 @@ export async function createThread(
   });
 
   revalidatePath(`/works/${slug}`);
+  revalidatePath(`/works/${slug}/threads`);
   return { success: true, threadId: thread.id };
 }
 
@@ -100,5 +101,6 @@ export async function postThreadComment(
 
   revalidatePath(`/works/${slug}/threads/${threadId}`);
   revalidatePath(`/works/${slug}`);
+  revalidatePath(`/works/${slug}/threads`);
   return { success: true, threadId };
 }
